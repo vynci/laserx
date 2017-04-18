@@ -1,0 +1,215 @@
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="detail-header">
+				<h2 class="page-header">
+					{{pharmacyDetail.name}}
+				</h2>
+				<p>
+					{{pharmacyDetail.locationInfo?.address}}
+				</p>
+			</div>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Pharmacy Details
+				</div>
+				<div class="card-block">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<th scope="row">Owner's Name</th>
+									<td>{{pharmacyDetail.owner_firstname}} {{pharmacyDetail.owner_lasttname}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Pharmacist's Name</th>
+									<td>{{pharmacyDetail.pharmacist_firstname}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Pharmacist's License Number</th>
+									<td>{{pharmacyDetail.pharmacist_lastname}}</td>
+								</tr>
+								<tr>
+									<th scope="row">LTO Number</th>
+									<td>{{pharmacyDetail.pharmacist_licensenbr}}</td>
+								</tr>
+								<tr>
+									<th scope="row">LTO Expiration Date</th>
+									<td>{{pharmacyDetail.gov_id1_expirationdate}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Business Classification</th>
+									<td>{{pharmacyDetail.business_classification}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Email</th>
+									<td>{{pharmacyDetail.email}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Mobile No.</th>
+									<td>{{pharmacyDetail.mobile}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Transactions
+				</div>
+				<div class="card-block">
+					<div class="table-responsive">
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Transaction Date</th>
+										<th>Doctor</th>
+										<th>Prescription</th>
+										<th>LN/BN</th>
+										<th>Expiry Date</th>
+										<th>Instruction</th>
+										<th>Remarks</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47403</th>
+										<td>03/29/17 09:25:59</td>
+										<td>GALLO MEDICAL CLINIC</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16008</td>
+										<td>02/18</td>
+										<td>1x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47403</th>
+										<td>03/29/17 09:25:59</td>
+										<td>GALLO MEDICAL CLINIC</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16008</td>
+										<td>02/18</td>
+										<td>1x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">46185</th>
+										<td>03/10/17 09:03:12</td>
+										<td>MARIETTA BUSTILLO</td>
+										<td>CEFALEXIN DROPS 10ML</td>
+										<td>5622</td>
+										<td>09/18</td>
+										<td>3x a DAY</td>
+										<td>PARTIALLY FILLED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+									<tr>
+										<th scope="row">47404</th>
+										<td>03/29/17 09:33:49</td>
+										<td>MELANIE PAULINE LO</td>
+										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
+										<td>16051</td>
+										<td>02/18</td>
+										<td>4x a DAY</td>
+										<td>FULLY SERVED</td>
+										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									</tr>
+								</tbody>
+							</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+</div>

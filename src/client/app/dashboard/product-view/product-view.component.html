@@ -1,0 +1,91 @@
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
+		</div>
+	</div>
+	<br>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Product Details
+				</div>
+				<div class="card-block">
+					<div class="row">
+						<div class="col-lg-12" style="text-align: right;">
+							<button class="btn btn-sm btn-primary" (click)="enableEdit()"><i class="fa fa-fw fa-pencil"></i> Edit</button>
+							<button class="btn btn-sm btn-secondary" (click)="disableEdit()" *ngIf="isEdit"><i class="fa fa-fw fa-times"></i> Cancel</button>
+						</div>
+					</div>
+					<br>
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<th scope="row">ID</th>
+									<td>{{productDetail.id}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Product</th>
+									<td *ngIf="!isEdit">{{productDetail.name}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Product Name" [(ngModel)]="productDetail.name"></td>
+								</tr>
+								<tr>
+									<th scope="row">Brand</th>
+									<td *ngIf="!isEdit">{{productDetail.brand?.id || 'n/a'}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Brand"></td>
+								</tr>
+								<tr>
+									<th scope="row">Serial Number</th>
+									<td *ngIf="!isEdit">{{productDetail.serial_number}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Serial Number" [(ngModel)]="productDetail.serial_number"></td>
+								</tr>
+								<tr>
+									<th scope="row">Strength</th>
+									<td *ngIf="!isEdit">{{productDetail.strength}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Strength" [(ngModel)]="productDetail.strength"></td>
+								</tr>
+								<tr>
+									<th scope="row">Strength Unit</th>
+									<td *ngIf="!isEdit">{{productDetail.strength_unit}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Strength Unit" [(ngModel)]="productDetail.strength_unit"></td>
+								</tr>
+								<tr>
+									<th scope="row">Retail Price</th>
+									<td *ngIf="!isEdit">{{productDetail.retail_price}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Retail Price" [(ngModel)]="productDetail.retail_price"></td>
+								</tr>
+								<tr>
+									<th scope="row">Date Added</th>
+									<td>{{formatDate(productDetail.created_at, true)}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Date Updated</th>
+									<td>{{formatDate(productDetail.updated_at, true)}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-lg-12">
+							<alert *ngIf="isUpdateSuccess" [type]="alert.type" dismissible="true">
+								{{alert.message}}
+							</alert>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12" style="text-align: right;">
+							<button class="btn btn-sm btn-success" (click)="updateProduct()" *ngIf="isEdit"><i class="fa fa-fw fa-check"></i> Update</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>

@@ -1,0 +1,116 @@
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h2 class="page-header detail-header">
+				{{pharmacyName}}
+			</h2>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Transaction Details
+				</div>
+				<div class="card-block">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<th scope="row">Transaction Date</th>
+									<td>{{formatDate(transactionDetail.transaction_datetime, false)}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Transaction ID</th>
+									<td>{{transactionDetail.id}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Doctor Name</th>
+									<td>{{transactionDetail.doctor_firstname}} {{transactionDetail.doctor_lastname}}</td>
+								</tr>
+								<tr>
+									<th scope="row">License Number</th>
+									<td>{{transactionDetail.license_number}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Product List
+				</div>
+				<div class="card-block">
+					<div class="table-responsive">
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Serial Number</th>
+										<th>Product Name</th>
+										<th>Quantity</th>
+										<th>Frequency</th>
+										<th>LN/BN</th>
+										<th>Expiry Date</th>
+										<th>Remarks</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let transactionProduct of transactionProducts">
+										<th scope="row">{{transactionProduct.id || 'n/a'}}</th>
+										<td>{{transactionProduct.serial_number  || 'n/a'}}</td>
+										<td>{{transactionProduct.product_name  || 'n/a'}}</td>
+										<td>{{transactionProduct.quantity}} {{transactionProduct.quantity_unit}}</td>
+										<td>{{transactionProduct.frequency}}x a {{transactionProduct.frequency_unit}}</td>
+										<td>{{transactionProduct.batchlotnumber  || 'n/a'}}</td>
+										<td>{{transactionProduct.expiry_date  || 'n/a'}}</td>
+										<td>{{transactionProduct.remarks  || 'n/a'}}</td>
+									</tr>
+								</tbody>
+							</table>
+					</div>
+					<!-- <div class="row">
+						<div class="col-lg-6">
+						</div>
+						<div class="col-lg-6" style="text-align: right;">
+							<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
+							[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination>
+						</div>
+					</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Prescription
+				</div>
+				<div class="card-block">
+					<div style="text-align: center;">
+						<img [src]="transactionDetail.prescription?.key" *ngIf="transactionDetail.prescription?.key" alt="">
+						<div *ngIf="!transactionDetail.prescription?.key"><p>No Image Available.</p></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -4,7 +4,7 @@ import { BlankPageComponent } from './index';
 
 export const BlankPageRoutes: Route[] = [
 	{
-		path: 'blankpage',
+		path: 'pharmacies',
 		component: BlankPageComponent
 	}
 ];

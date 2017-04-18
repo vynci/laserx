@@ -4,7 +4,7 @@ import { TableComponent } from './index';
 
 export const TableRoutes: Route[] = [
 	{
-		path: 'tables',
-		component: TableComponent
-	},
+		path: 'transactions',
+		component: TableComponent,
+	}
 ];
