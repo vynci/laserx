@@ -9,6 +9,9 @@ import { Component } from '@angular/core';
 export class SidebarComponent {
 	isActive = false;
 	showMenu: string = '';
+
+	public isAdmin:boolean = false;
+
 	eventCalled() {
 		this.isActive = !this.isActive;
 	}

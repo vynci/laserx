@@ -1,0 +1,59 @@
+import { Component, ChangeDetectionStrategy, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { ProductService } from '../services/product.service';
+import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
+
+@Component({
+	moduleId: module.id,
+    selector: 'system-users',
+    templateUrl: './system-users.component.html',
+		providers: [ProductService]
+})
+
+export class SystemUsersComponent {
+	@ViewChild('childModal') public childModal:ModalDirective;
+
+	public products:Array<Object> = [];
+
+	constructor(
+		private router: Router,
+		private _productService : ProductService,
+	){}
+
+	public totalItems:number = 1;
+	public currentPage:number = 1;
+
+	public maxSize:number = 5;
+	public bigTotalItems:number = 1;
+	public bigCurrentPage:number = 1;
+
+	public setPage(pageNo:number):void {
+		this.currentPage = pageNo;
+	};
+
+	public pageChanged(event:any):void {
+		console.log('Page changed to: ' + event.page);
+		console.log('Number items per page: ' + event.itemsPerPage);
+
+		this._productService.getByPage(event.itemsPerPage, event.page)
+		.subscribe(data => this.products = data.result);
+	};
+
+	public viewProduct(productId:any):void{
+		console.log(productId);
+		this.router.navigate(['/dashboard/product-view', productId]);
+	}
+
+	ngOnInit(): void {
+		this._productService.getAll()
+		.subscribe(data => this.products = data.result);
+
+		this._productService.getCount()
+		.subscribe(data => {
+			console.log(data);
+			this.bigTotalItems = data.result[0].row_count;
+		});
+	}
+
+
+}

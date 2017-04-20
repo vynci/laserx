@@ -10,4 +10,14 @@ import { Component } from '@angular/core';
 	templateUrl: 'login.component.html'
 })
 
-export class LoginComponent { }
+export class LoginComponent {
+	public loginInfo:any = {
+		username : '',
+		password : ''
+	};
+
+	public login():void {
+		console.log('username: ' + this.loginInfo.username);
+		console.log('password: ' + this.loginInfo.password);
+	};
+ }

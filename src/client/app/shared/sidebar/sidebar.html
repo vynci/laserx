@@ -18,10 +18,10 @@
         <a (click)="eventCalled()" [routerLink]="['pharmacies']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             Pharmacies
         </a>
-        <a (click)="eventCalled()" routerLink="/dashboard/doctors" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/doctors" [routerLinkActive]="['router-link-active']" class="list-group-item">
           Doctors
         </a>
-        <a (click)="eventCalled()" routerLink="/dashboard/products" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/products" [routerLinkActive]="['router-link-active']" class="list-group-item">
           Products
         </a>
     </ul>

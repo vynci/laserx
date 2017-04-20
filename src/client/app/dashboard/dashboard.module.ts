@@ -13,6 +13,7 @@ import { TableModule } from './tables/table.module';
 import { DashModule } from './dashboard/dash.module';
 import { MessageCenterModule } from './message-center/message-center.module';
 import { ProductsModule } from './products/products.module';
+import { SystemUsersModule } from './systemUsers/systemUsers.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { AccountModule } from './account/account.module';
 import { DashboardComponent } from './dashboard.component';
@@ -36,6 +37,7 @@ import {SidebarComponent} from '../shared/index';
       DashModule,
       MessageCenterModule,
       ProductsModule,
+      SystemUsersModule,
       DoctorsModule,
       AccountModule
     ],

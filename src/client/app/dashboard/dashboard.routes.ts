@@ -9,6 +9,7 @@ import { TableRoutes } from './tables/index';
 import { DashRoutes } from './dashboard/index';
 import { MessageCenterRoutes } from './message-center/index';
 import { ProductsRoutes } from './products/index';
+import { SystemUsersRoutes } from './systemUsers/index';
 import { DoctorsRoutes } from './doctors/index';
 import { AccountRoutes } from './account/index';
 
@@ -29,7 +30,8 @@ export const DashboardRoutes: Route[] = [
         ...ProductsRoutes,
         ...DoctorsRoutes,
         ...AccountRoutes,
-        ...ProductViewRoutes
+        ...ProductViewRoutes,
+        ...SystemUsersRoutes
     	]
   	}
 ];
