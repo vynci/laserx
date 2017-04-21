@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
     moduleId: module.id,
@@ -7,6 +8,11 @@ import { Component } from '@angular/core';
 })
 
 export class TopNavComponent {
+
+	constructor(
+		private router: Router
+	){}	
+
 	changeTheme(color: string): void {
 		var link: any = $('<link>');
 		link
@@ -26,4 +32,10 @@ export class TopNavComponent {
 		sidebar.toggleClass('sidebar-left-zero');
 		mainContainer.toggleClass('main-container-ml-zero');
 	}
+
+	public login():void {
+		localStorage.removeItem('currentUser');
+		localStorage.removeItem('sessionToken');
+		this.router.navigate(['/']);	
+	};	
 }

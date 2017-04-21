@@ -8,7 +8,7 @@ export class AuthService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = 'http://stg.ph.api.snaprx.mclinica.com/api/1/'
-	private url = this.endpoint + 'classes/pharmacy';
+	private url = this.endpoint + 'login';
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
 
@@ -40,11 +40,8 @@ export class AuthService {
 		.map((response: Response) => response.json());
 	}
 
-	getCount(){
-		let url = this.endpoint + 'functions/count-table-rows';
-		let options = new RequestOptions({ headers: this.headers, body: {'table_name' : 'pharmacy'}});
-
-		return this.http.post(url, JSON.stringify({table_name: 'pharmacy'}), {headers: this.headers})
+	login(username: string, password: string){
+		return this.http.post(this.url, JSON.stringify({username: username, password:password}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

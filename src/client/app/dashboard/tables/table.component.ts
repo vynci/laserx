@@ -35,10 +35,12 @@ export class TableComponent {
 
 	public getPharmacyName(id:number):string {
 		var pharmacyName = 'Loading...';
-
+		
 		this.pharmacyNameList.forEach(pharmacy => {
-			if(id === pharmacy.id){
-				pharmacyName = pharmacy.name
+			if(pharmacy){
+				if(id === pharmacy.id){
+					pharmacyName = pharmacy.name
+				}
 			}
 		});
 
@@ -47,12 +49,14 @@ export class TableComponent {
 
 	private parseData(data:any):void{
 		data.forEach(transaction => {
-			this._pharmacyService.getById(transaction.pharmacy.id)
-			.subscribe(pharmacy => {
-				this.pharmacyNameList.push(
-						{id: pharmacy.result[0].id, name: pharmacy.result[0].name}
-				);
-			});
+			if(transaction.pharmacy){
+				this._pharmacyService.getById(transaction.pharmacy.id)
+				.subscribe(pharmacy => {
+					this.pharmacyNameList.push(
+							{id: pharmacy.result[0].id, name: pharmacy.result[0].name}
+					);
+				});
+			}
 		});
 	}
 
