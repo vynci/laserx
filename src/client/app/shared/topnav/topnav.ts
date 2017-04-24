@@ -11,7 +11,7 @@ export class TopNavComponent {
 
 	constructor(
 		private router: Router
-	){}	
+	){}
 
 	changeTheme(color: string): void {
 		var link: any = $('<link>');
@@ -33,9 +33,9 @@ export class TopNavComponent {
 		mainContainer.toggleClass('main-container-ml-zero');
 	}
 
-	public login():void {
+	public logout():void {
 		localStorage.removeItem('currentUser');
 		localStorage.removeItem('sessionToken');
-		this.router.navigate(['/']);	
-	};	
+		this.router.navigate(['/']);
+	};
 }

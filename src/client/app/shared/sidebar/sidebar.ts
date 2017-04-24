@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
 	moduleId: module.id,
@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 	templateUrl: 'sidebar.html'
 })
 
-export class SidebarComponent {
+export class SidebarComponent implements OnInit{
 	isActive = false;
 	showMenu: string = '';
 

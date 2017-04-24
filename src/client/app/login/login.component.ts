@@ -18,17 +18,22 @@ export class LoginComponent {
 		password : ''
 	};
 
+	public status:string = '';
+
 	constructor(
 		private router: Router,
 		private _authService : AuthService
-	){}	
+	){}
 
 	public login():void {
 		this._authService.login(this.loginInfo.username, this.loginInfo.password)
 		.subscribe(data => {
-			localStorage.setItem('currentUser', data.result.user.id);			
+			localStorage.setItem('currentUser', data.result.user.id);
 			localStorage.setItem('sessionToken', data.result.session_token);
 			this.router.navigate(['/dashboard/home']);
-		});		
+		}, error => {
+			console.log(error);
+			this.status = 'Invalid Username/Password';
+		});
 	};
  }
