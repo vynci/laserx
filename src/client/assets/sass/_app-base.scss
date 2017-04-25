@@ -411,6 +411,19 @@ a:hover{
             }
         }
     }
+    & .non-expand {
+      ul.submenu {
+        list-style-type: none;
+        height: auto;
+        li {
+          a {
+            color: #FFF;
+            padding: 10px;
+            display: none;
+          }
+        }
+      }
+    }
 }
 
 .spinner {

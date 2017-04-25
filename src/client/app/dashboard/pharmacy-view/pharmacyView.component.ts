@@ -26,6 +26,9 @@ export class PharmacyViewComponent implements OnInit{
 		}
 	}
 
+	isEdit: boolean = false;
+	isUpdateSuccess: boolean = false;
+	public isAdmin:boolean = false;
 	private transactionList:Array<Object> = [];
 
 	constructor(
@@ -47,7 +50,19 @@ export class PharmacyViewComponent implements OnInit{
 
 	};*/
 
+	public enableEdit():void {
+		this.isEdit = true;
+	};
+
+	public disableEdit():void {
+		this.isEdit = false;
+	};
+
 	ngOnInit(): void {
+		if (localStorage.getItem('roleId') === '1') {
+			this.isAdmin = true;
+		}
+
 		this._pharmacyService.getById(this.route.snapshot.params['id'])
 			.subscribe(data => {
 				this.pharmacyDetail = data.result[0];
@@ -60,6 +75,18 @@ export class PharmacyViewComponent implements OnInit{
 					/*this.parseTransactions(data.result);*/
 				});
 	}
+
+	public update():void {
+		this._pharmacyService.update(this.route.snapshot.params['id'], this.pharmacyDetail)
+		.subscribe(data => {
+			this.isEdit = false;
+			this.isUpdateSuccess = true;
+			setTimeout(() => {
+				this.isUpdateSuccess = false;
+				}, 2000);
+		});
+	};
+
 
 	goBack(): void {
 		this.location.back();

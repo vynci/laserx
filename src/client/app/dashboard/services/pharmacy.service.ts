@@ -48,4 +48,11 @@ export class PharmacyService {
 		.map((response: Response) => response.json());
 	}
 
+	update(id: number, data: any){
+		let url = this.endpoint + 'classes/pharmacy/' + id;
+
+		return this.http.put(url, JSON.stringify(data), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
 }

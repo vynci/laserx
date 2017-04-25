@@ -15,29 +15,43 @@ export class HelperService {
 
 	constructor(private http: Http) { }
 
-	getAll(){
-		return this.http.get(this.url, this.options)
-			.map((response: Response) => response.json());
-	}
-
-	getById(id: number){
-		let search = new URLSearchParams('where={"id":{"eq":' + id + '}}');
-		let options = new RequestOptions({ headers: this.headers, search: search});
-
-
-		return this.http.get(this.url, options)
-		.map((response: Response) => response.json());
-	}
-
-	getByPage(limit: number, page: number){
+	getUserList(limit: number, page: number){
 		let skip = (page - 1) * limit;
+		let url = this.endpoint + 'users';
 
 		let search = new URLSearchParams('skip=' + skip);
 		search.append('limit', limit.toString());
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 
-		return this.http.get(this.url, options)
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
+	getByUserId(id: number){
+		let url = this.endpoint + 'users/' + id;
+		let options = new RequestOptions({ headers: this.headers});
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
+	updateUser(id: number, data: any){
+		let url = this.endpoint + 'users/' + id;
+		let headers = new Headers({
+			'Content-Type': 'application/json',
+			'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss',
+			'X-Warp-Session-Token': localStorage.getItem('sessionToken')
+		});
+
+		return this.http.put(url, JSON.stringify(data), {headers: headers})
+		.map((response: Response) => response.json());
+	}
+
+	getUserCount(){
+		let url = this.endpoint + 'functions/count-table-rows';
+
+		return this.http.post(url, JSON.stringify({table_name: 'user'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

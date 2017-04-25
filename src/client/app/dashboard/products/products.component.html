@@ -36,8 +36,8 @@
 						<tbody>
 							<tr *ngFor="let product of products">
 								<th scope="row"><a style="cursor: pointer;">{{product.id}}</a></th>
-								<td>{{product.name}}</td>
-								<td>{{product.brand?.id || 'n/a'}}</td>
+								<td>{{product.sku_name}}</td>
+								<td>{{product.brand_name || 'n/a'}}</td>
 								<td>{{product.serial_number}}</td>
 								<td>
 									<button class="btn btn-default btn-sm" (click)="viewProduct(product.id)"><i class="fa fa-fw fa-eye"></i></button>

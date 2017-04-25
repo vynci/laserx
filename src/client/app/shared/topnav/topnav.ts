@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
@@ -12,6 +12,8 @@ export class TopNavComponent {
 	constructor(
 		private router: Router
 	){}
+
+  public username:string = '';
 
 	changeTheme(color: string): void {
 		var link: any = $('<link>');
@@ -35,7 +37,13 @@ export class TopNavComponent {
 
 	public logout():void {
 		localStorage.removeItem('currentUser');
+    localStorage.removeItem('username');
+    localStorage.removeItem('roleId');
 		localStorage.removeItem('sessionToken');
 		this.router.navigate(['/']);
 	};
+
+  ngOnInit(): void {
+    this.username = localStorage.getItem('username');
+  }  
 }

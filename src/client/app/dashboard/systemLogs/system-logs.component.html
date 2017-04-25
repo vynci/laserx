@@ -1,0 +1,80 @@
+<div class="container-fluid">
+	<!-- Page Heading -->
+	<div class="row">
+		<div class="col-xl-12">
+			<h2 class="page-header detail-header">
+				System Logs
+			</h2>
+		</div>
+	</div>
+	<!-- /.row -->
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card card-block">
+				<div class="row">
+					<div class="col-lg-3"></div>
+					<div class="col-lg-3"></div>
+					<div class="col-lg-3"></div>
+					<div class="col-lg-3">
+						<div class="form-group input-group">
+							<input type="text" class="form-control" placeholder="Search">
+							<span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span>
+						</div>
+					</div>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Username</th>
+								<th>IP Address</th>
+								<th>Status</th>
+								<th>Details</th>
+								<th>Date Created</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row"><a style="cursor: pointer;">1407</a></th>
+								<td>mclinica.horizon</td>
+								<td>172.31.6.41</td>
+								<td>Success</td>
+								<td>Login Successfull</td>
+								<td>04/24/17 23:25:32</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- <div class="row">
+					<div class="col-lg-6">
+					</div>
+					<div class="col-lg-6" style="text-align: right;">
+						<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
+						[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination>
+					</div>
+				</div> -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Delete Product</h5>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to <b>DELETE</b> this product?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" (click)="lgModal.hide()">Yes, I'm Sure</button>
+				<button type="button" class="btn btn-secondary" (click)="lgModal.hide()">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

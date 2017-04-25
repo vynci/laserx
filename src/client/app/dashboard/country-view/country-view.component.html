@@ -1,0 +1,78 @@
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-lg-12">
+			<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
+		</div>
+	</div>
+	<br>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header card-default">
+					Country Details
+				</div>
+				<div class="card-block">
+					<div class="row">
+						<div class="col-lg-12" style="text-align: right;">
+							<button class="btn btn-sm btn-primary" (click)="enableEdit()"><i class="fa fa-fw fa-pencil"></i> Edit</button>
+							<button class="btn btn-sm btn-secondary" (click)="disableEdit()" *ngIf="isEdit"><i class="fa fa-fw fa-times"></i> Cancel</button>
+						</div>
+					</div>
+					<br>
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<th scope="row">ID</th>
+									<td>{{countryDetail.id}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Country Name</th>
+									<td *ngIf="!isEdit">{{countryDetail.name}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Country Name" [(ngModel)]="countryDetail.name"></td>
+								</tr>
+								<tr>
+									<th scope="row">ISO Country Code</th>
+									<td *ngIf="!isEdit">{{countryDetail.country_code || 'n/a'}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="ISO Country Code" [(ngModel)]="countryDetail.country_code"></td>
+								</tr>
+								<tr>
+									<th scope="row">Country Code (Number)</th>
+									<td *ngIf="!isEdit">{{countryDetail.country_number}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Country Code (Number)" [(ngModel)]="countryDetail.country_number"></td>
+								</tr>
+								<tr>
+									<th scope="row">Currency Code</th>
+									<td *ngIf="!isEdit">{{countryDetail.currency_code}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Currency Code" [(ngModel)]="countryDetail.currency_code"></td>
+								</tr>
+								<tr>
+									<th scope="row">Language</th>
+									<td *ngIf="!isEdit">{{countryDetail.language}}</td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Language" [(ngModel)]="countryDetail.language"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-lg-12">
+							<alert *ngIf="isUpdateSuccess" [type]="alert.type" dismissible="true">
+								{{alert.message}}
+							</alert>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12" style="text-align: right;">
+							<button class="btn btn-sm btn-success" (click)="update()" *ngIf="isEdit"><i class="fa fa-fw fa-check"></i> Update</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>

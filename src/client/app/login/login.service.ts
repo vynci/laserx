@@ -9,8 +9,7 @@ export class AuthService {
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = 'http://stg.ph.api.snaprx.mclinica.com/api/1/'
 	private url = this.endpoint + 'login';
-	private search = new URLSearchParams('limit=10');
-	private options = new RequestOptions({ headers: this.headers, search: this.search});
+	private options = new RequestOptions({ headers: this.headers});
 
 	constructor(private http: Http) { }
 
@@ -37,6 +36,13 @@ export class AuthService {
 
 
 		return this.http.get(this.url, options)
+		.map((response: Response) => response.json());
+	}
+
+	getUserInfo(userId: string){
+		var userUrl = this.endpoint + 'users/' + userId;
+
+		return this.http.get(userUrl, this.options)
 		.map((response: Response) => response.json());
 	}
 

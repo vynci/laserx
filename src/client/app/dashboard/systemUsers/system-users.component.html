@@ -3,7 +3,7 @@
 	<div class="row">
 		<div class="col-xl-12">
 			<h2 class="page-header detail-header">
-				System Users!
+				System Users
 			</h2>
 		</div>
 	</div>
@@ -27,20 +27,26 @@
 						<thead>
 							<tr>
 								<th>ID</th>
-								<th>Product</th>
-								<th>Brand</th>
-								<th>Serial Number</th>
+								<th>First Name</th>
+								<th>Last Name</th>
+								<th>Email</th>
+								<th>Role</th>
+								<th>Date Modified</th>
+								<th>Date Activated</th>
 								<th>Action</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr *ngFor="let product of products">
-								<th scope="row"><a style="cursor: pointer;">5</a></th>
-								<td>5</td>
-								<td>5</td>
-								<td>5</td>
+							<tr *ngFor="let user of users">
+								<th scope="row"><a style="cursor: pointer;">{{user.id}}</a></th>
+								<td>{{user.first_name}}</td>
+								<td>{{user.last_name}}</td>
+								<td>{{user.email}}</td>
+								<td>{{user.role_code}}</td>
+								<td>{{user.updated_at}}</td>
+								<td>{{user.created_at}}</td>
 								<td>
-									<button class="btn btn-default btn-sm" (click)="viewProduct(product.id)"><i class="fa fa-fw fa-eye"></i></button>
+									<button class="btn btn-default btn-sm" (click)="viewUser(user.id)"><i class="fa fa-fw fa-eye"></i></button>
 									<!-- <button class="btn btn-primary btn-sm" (click)="viewProduct(product.id)"><i class="fa fa-fw fa-pencil"></i></button> -->
 									<button class="btn btn-danger btn-sm" (click)="lgModal.show()"><i class="fa fa-fw fa-times"></i></button>
 								</td>
@@ -69,10 +75,10 @@
 				<button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<h5 class="modal-title">Delete Product</h5>
+				<h5 class="modal-title">Delete User</h5>
 			</div>
 			<div class="modal-body">
-				<p>Are you sure you want to <b>DELETE</b> this product?</p>
+				<p>Are you sure you want to <b>DELETE</b> this user?</p>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger" (click)="lgModal.hide()">Yes, I'm Sure</button>

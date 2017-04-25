@@ -24,5 +24,29 @@
         <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/products" [routerLinkActive]="['router-link-active']" class="list-group-item">
           Products
         </a>
+        <div class="nested-menu" *ngIf="isAdmin">
+          <a class="list-group-item" (click)="addExpandClass('pages')">
+            <span><i class="fa fa-plus"></i> &nbsp; System Settings</span>
+          </a>
+          <li class="nested" [ngClass]="{'expand' : showMenu === 'pages' , 'non-expand' : showMenu !== 'pages'}">
+            <ul class="submenu">
+              <li>
+                <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/system-users" [routerLinkActive]="['router-link-active']" class="list-group-item"><span>Users</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/system-countries" [routerLinkActive]="['router-link-active']" class="list-group-item"><span>Countries</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/system-provinces" [routerLinkActive]="['router-link-active']" class="list-group-item"><span>Provinces</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" *ngIf="isAdmin" routerLink="/dashboard/system-logs" [routerLinkActive]="['router-link-active']" class="list-group-item"><span>Logs</span></a>
+              </li>
+            </ul>
+          </li>
+        </div>
+        <!-- <a [routerLink]="['blankpage']" [routerLinkActive]="['router-link-active']" class="list-group-item">
+          <i class="fa fa-file-o"></i> &nbsp;BlankPage
+        </a> -->
     </ul>
 </nav>

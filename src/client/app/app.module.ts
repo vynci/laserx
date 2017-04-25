@@ -10,6 +10,7 @@ import { LoginModule } from './login/login.module';
 import { SignupModule } from './signup/signup.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { SharedModule } from './shared/shared.module';
+import { AuthGuard } from './guards/index';
 
 @NgModule({
 	imports: [

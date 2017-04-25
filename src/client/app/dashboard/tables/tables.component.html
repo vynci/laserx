@@ -40,7 +40,10 @@
                     <td>{{formatDate(transaction.transaction_datetime, true)}}</td>
                     <td>{{getPharmacyName(transaction.pharmacy?.id || '')}}</td>
                     <td>{{transaction.doctor_firstname}} {{transaction.doctor_lastname}}</td>
-                    <td><button class="btn btn-default" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button></td>
+                    <td>
+                      <button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>
+                      <button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -56,4 +59,24 @@
           </div>
         </div>
     </div>
+</div>
+
+<div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title">Delete Transaction</h5>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to <b>DELETE</b> this transaction?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="lgModal.hide()">Yes, I'm Sure</button>
+        <button type="button" class="btn btn-secondary" (click)="lgModal.hide()">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

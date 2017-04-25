@@ -31,6 +31,7 @@
 								<th>Province</th>
 								<th>Email</th>
 								<th>Mobile</th>
+								<th *ngIf="isAdmin">Action</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -40,6 +41,9 @@
 								<td>Metro Manila</td>
 								<td>{{pharmacy.email}}</td>
 								<td>{{pharmacy.mobile}}</td>
+								<td *ngIf="isAdmin">
+									<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -53,6 +57,26 @@
 						[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Delete Pharmacy</h5>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to <b>DELETE</b> this pharmacy?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" (click)="lgModal.hide()">Yes, I'm Sure</button>
+				<button type="button" class="btn btn-secondary" (click)="lgModal.hide()">Close</button>
 			</div>
 		</div>
 	</div>

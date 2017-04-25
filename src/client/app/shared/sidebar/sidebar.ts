@@ -6,7 +6,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 	templateUrl: 'sidebar.html'
 })
 
-export class SidebarComponent implements OnInit{
+export class SidebarComponent{
 	isActive = false;
 	showMenu: string = '';
 
@@ -16,10 +16,17 @@ export class SidebarComponent implements OnInit{
 		this.isActive = !this.isActive;
 	}
 	addExpandClass(element: any) {
+		console.log(element);
 		if (element === this.showMenu) {
 			this.showMenu = '0';
 		} else {
 			this.showMenu = element;
+		}
+	}
+
+	ngOnInit(): void {
+		if (localStorage.getItem('roleId') === '1') {
+			this.isAdmin = true;
 		}
 	}
 }

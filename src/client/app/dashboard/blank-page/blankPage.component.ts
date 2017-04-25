@@ -3,6 +3,8 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PharmacyService } from '../services/pharmacy.service';
 import { LocationService } from '../services/location.service';
 
+import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
+
 @Component({
 	moduleId: module.id,
     selector: 'blank-page',
@@ -12,6 +14,7 @@ import { LocationService } from '../services/location.service';
 
 export class BlankPageComponent {
 	public pharmacies:Array<Object> = [];
+	public isAdmin:boolean = false;
 
 	constructor(
 		private router: Router,
@@ -44,6 +47,10 @@ export class BlankPageComponent {
 	}
 
 	ngOnInit(): void {
+		if (localStorage.getItem('roleId') === '1') {
+			this.isAdmin = true;
+		}
+
 		this._pharmacyService.getAll()
 		.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
 

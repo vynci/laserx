@@ -4,6 +4,8 @@ import { TransactionService } from '../services/transaction.service';
 import { PharmacyService } from '../services/pharmacy.service';
 import { PharmacyModel } from './pharmacy-model';
 
+import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
+
 @Component({
 	moduleId: module.id,
 	selector: 'tables-cmp',
@@ -15,6 +17,7 @@ export class TableComponent {
 
 	public transactions:Array<Object> = [];
 	private pharmacyNameList:Array<PharmacyModel> = [];
+	public isAdmin:boolean = false;
 
 	constructor(
 		private router: Router,
@@ -35,7 +38,7 @@ export class TableComponent {
 
 	public getPharmacyName(id:number):string {
 		var pharmacyName = 'Loading...';
-		
+
 		this.pharmacyNameList.forEach(pharmacy => {
 			if(pharmacy){
 				if(id === pharmacy.id){
@@ -88,6 +91,10 @@ export class TableComponent {
 	}
 
 	ngOnInit(): void {
+		if (localStorage.getItem('roleId') === '1') {
+			this.isAdmin = true;
+		}
+
 		this._transactionService.getAll()
 		.subscribe(data => {
 			this.transactions = data.result;
