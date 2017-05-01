@@ -1,5 +1,6 @@
 import { Injectable }    from '@angular/core';
 import { Headers, Http, Response, RequestOptions, URLSearchParams} from '@angular/http';
+import { Config } from '../../shared/index';
 
 import 'rxjs/add/operator/map';
 
@@ -7,7 +8,7 @@ import 'rxjs/add/operator/map';
 export class TransactionService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
-	private endpoint = 'http://stg.ph.api.snaprx.mclinica.com/api/1/'
+	private endpoint = Config.API;
 	private url = this.endpoint + 'classes/transactionitem';
 
 	private search = new URLSearchParams('limit=10');
