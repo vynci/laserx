@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './login.service';
-/**
-*	This class represents the lazy loaded LoginComponent.
-*/
+
 import { Router, ActivatedRoute, Params } from '@angular/router';
 
 @Component({
@@ -19,6 +17,7 @@ export class LoginComponent {
 	};
 
 	public status:string = '';
+	public isLoading:boolean = false;
 
 	constructor(
 		private router: Router,
@@ -36,13 +35,15 @@ export class LoginComponent {
 	}
 
 	public login():void {
+		this.isLoading = true;
+
 		this._authService.login(this.loginInfo.username, this.loginInfo.password)
 		.subscribe(data => {
 			localStorage.setItem('currentUser', data.result.user.id);
 			localStorage.setItem('sessionToken', data.result.session_token);
 			this.getUserInfo(data.result.user.id);
 		}, error => {
-			console.log(error);
+			this.isLoading = false;
 			this.status = 'Invalid Username/Password';
 		});
 	};

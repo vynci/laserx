@@ -22,6 +22,7 @@ import { SystemProvincesModule } from './systemProvinces/systemProvinces.module'
 import { SystemLogsModule } from './systemLogs/systemLogs.module';
 import { DoctorsModule } from './doctors/doctors.module';
 import { AccountModule } from './account/account.module';
+import { AboutModule } from './about/about.module';
 import { DashboardComponent } from './dashboard.component';
 
 import {TopNavComponent} from '../shared/index';
@@ -51,7 +52,8 @@ import { AuthGuard } from '../guards/index';
       SystemProvincesModule,
       SystemLogsModule,
       DoctorsModule,
-      AccountModule
+      AccountModule,
+      AboutModule
     ],
     providers: [AuthGuard],
     declarations: [DashboardComponent, TopNavComponent, SidebarComponent],

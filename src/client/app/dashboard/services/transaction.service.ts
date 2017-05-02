@@ -38,7 +38,7 @@ export class TransactionService {
 
 	getByPharmacyId(id: number){
 		let search = new URLSearchParams('where={"pharmacy.id":{"eq":' + id + '}}');
-		search.append('limit', 10000);
+		search.append('limit', '10000');
 		search.append('sort', '[{"transaction_datetime":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 

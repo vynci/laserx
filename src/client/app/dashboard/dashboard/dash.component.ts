@@ -37,8 +37,8 @@ export class DashComponent implements OnInit {
 		console.log('Page changed to: ' + event.page);
 		console.log('Number items per page: ' + event.itemsPerPage);
 
-		this._pharmacyService.getByPage(event.itemsPerPage, event.page)
-		.subscribe(data => this.pharmacies = data.result);
+		/*this._pharmacyService.getByPage(event.itemsPerPage, event.page)
+		.subscribe(data => this.pharmacies = data.result);*/
 	};
 
 	public viewPharmacy(pharmacyId:any):void{

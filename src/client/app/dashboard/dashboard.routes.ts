@@ -18,6 +18,7 @@ import { SystemProvincesRoutes } from './systemProvinces/index';
 import { SystemLogsRoutes } from './systemLogs/index';
 import { DoctorsRoutes } from './doctors/index';
 import { AccountRoutes } from './account/index';
+import { AboutRoutes } from './about/index';
 
 import { DashboardComponent } from './index';
 import { AuthGuard } from '../guards/index';
@@ -37,6 +38,7 @@ export const DashboardRoutes: Route[] = [
         ...ProductsRoutes,
         ...DoctorsRoutes,
         ...AccountRoutes,
+        ...AboutRoutes,
         ...ProductViewRoutes,
         ...UserViewRoutes,
         ...CountryViewRoutes,

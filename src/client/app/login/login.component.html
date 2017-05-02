@@ -14,7 +14,12 @@
 				</div>
 				<a class="btn btn-primary btn-block" style="background-color: #009afd;color: #fff; border: 0; border-bottom: 3px solid #007BCE;" (click)="login()"> Log in </a>
 				&nbsp;
-				<p>{{status}}</p>
+				<div class="loader" *ngIf="isLoading">
+					<div class="bounce1"></div>
+					<div class="bounce2"></div>
+					<div class="bounce3"></div>
+				</div>
+				<p *ngIf="!isLoading">{{status}}</p>
 				<!-- <a type="submit" class="btn rounded-btn" routerLink="/signup">Register</a> -->
 			<!--</form>-->
 		</div>
