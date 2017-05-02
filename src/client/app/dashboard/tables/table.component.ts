@@ -18,6 +18,7 @@ export class TableComponent {
 	public transactions:Array<Object> = [];
 	private pharmacyNameList:Array<PharmacyModel> = [];
 	public isAdmin:boolean = false;
+	public isLoading:boolean = false;
 
 	constructor(
 		private router: Router,
@@ -91,12 +92,14 @@ export class TableComponent {
 	}
 
 	ngOnInit(): void {
+		this.isLoading = true;
 		if (localStorage.getItem('roleId') === '1') {
 			this.isAdmin = true;
 		}
 
 		this._transactionService.getAll()
 		.subscribe(data => {
+			this.isLoading = false;
 			this.transactions = data.result;
 			this.parseData(this.transactions);
 		});

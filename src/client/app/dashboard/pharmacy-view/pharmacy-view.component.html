@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<div class="col-lg-6" style="text-align: right;">
-			<button class="btn btn-sm btn-primary" (click)="enableEdit()"><i class="fa fa-fw fa-pencil"></i> Edit</button>
+			<button class="btn btn-sm btn-primary" (click)="enableEdit()" *ngIf="isAdmin"><i class="fa fa-fw fa-pencil"></i> Edit</button>
 			<button class="btn btn-sm btn-secondary" (click)="disableEdit()" *ngIf="isEdit"><i class="fa fa-fw fa-times"></i> Cancel</button>
 		</div>
 	</div>
@@ -77,24 +77,24 @@
 							</tbody>
 						</table>
 					</div>
+					<br>
+					<div class="row">
+						<div class="col-lg-12">
+							<alert *ngIf="isUpdateSuccess" [type]="alert.type" dismissible="true">
+								{{alert.message}}
+							</alert>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12" style="text-align: right;">
+							<button class="btn btn-sm btn-success" (click)="update()" *ngIf="isEdit"><i class="fa fa-fw fa-check"></i> Update</button>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<br>
-	<div class="row">
-		<div class="col-lg-12">
-			<alert *ngIf="isUpdateSuccess" [type]="alert.type" dismissible="true">
-				{{alert.message}}
-			</alert>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-lg-12" style="text-align: right;">
-			<button class="btn btn-sm btn-success" (click)="update()" *ngIf="isEdit"><i class="fa fa-fw fa-check"></i> Update</button>
-		</div>
-	</div>
 
 	<div class="row">
 		<div class="col-lg-12">
@@ -105,130 +105,24 @@
 				<div class="card-block">
 					<div class="table-responsive">
 						<div class="table-responsive">
-							<table class="table table-bordered">
+							<table class="table table-bordered table-hover">
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Transaction Date</th>
+										<th>Date</th>
 										<th>Doctor</th>
-										<th>Prescription</th>
-										<th>LN/BN</th>
-										<th>Expiry Date</th>
-										<th>Instruction</th>
-										<th>Remarks</th>
-										<th>Action</th>
+										<th>Transaction</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47403</th>
-										<td>03/29/17 09:25:59</td>
-										<td>GALLO MEDICAL CLINIC</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16008</td>
-										<td>02/18</td>
-										<td>1x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47403</th>
-										<td>03/29/17 09:25:59</td>
-										<td>GALLO MEDICAL CLINIC</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16008</td>
-										<td>02/18</td>
-										<td>1x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">46185</th>
-										<td>03/10/17 09:03:12</td>
-										<td>MARIETTA BUSTILLO</td>
-										<td>CEFALEXIN DROPS 10ML</td>
-										<td>5622</td>
-										<td>09/18</td>
-										<td>3x a DAY</td>
-										<td>PARTIALLY FILLED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
-									</tr>
-									<tr>
-										<th scope="row">47404</th>
-										<td>03/29/17 09:33:49</td>
-										<td>MELANIE PAULINE LO</td>
-										<td>METHISOPRINOL;ISOPRINOSINE;500MG;TABLETS</td>
-										<td>16051</td>
-										<td>02/18</td>
-										<td>4x a DAY</td>
-										<td>FULLY SERVED</td>
-										<td><button class="btn btn-default" (click)="viewTransaction('4')"><i class="fa fa-fw fa-eye"></i></button></td>
+									<tr *ngFor="let transaction of transactions">
+										<th scope="row">{{transaction.id}}</th>
+										<td>{{formatDate(transaction.transaction_datetime, true)}}</td>
+										<td>{{transaction.doctor_firstname}} {{transaction.doctor_lastname}}</td>
+										<td>
+											<button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>
+											<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
+										</td>
 									</tr>
 								</tbody>
 							</table>

@@ -14,6 +14,7 @@ export class ProductsComponent {
 	@ViewChild('childModal') public childModal:ModalDirective;
 
 	public products:Array<Object> = [];
+	public isLoading:boolean = false;
 
 	constructor(
 		private router: Router,
@@ -32,9 +33,6 @@ export class ProductsComponent {
 	};
 
 	public pageChanged(event:any):void {
-		console.log('Page changed to: ' + event.page);
-		console.log('Number items per page: ' + event.itemsPerPage);
-
 		this._productService.getByPage(event.itemsPerPage, event.page)
 		.subscribe(data => this.products = data.result);
 	};
@@ -45,8 +43,13 @@ export class ProductsComponent {
 	}
 
 	ngOnInit(): void {
+		this.isLoading = true;
+
 		this._productService.getAll()
-		.subscribe(data => this.products = data.result);
+		.subscribe(data => {
+			this.isLoading = false;
+			this.products = data.result
+		});
 
 		this._productService.getCount()
 		.subscribe(data => {

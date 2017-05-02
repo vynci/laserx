@@ -1,6 +1,6 @@
 import 'rxjs/add/operator/switchMap';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location }               from '@angular/common';
 import { PharmacyService } from '../services/pharmacy.service';
 import { TransactionService } from '../services/transaction.service';
@@ -29,10 +29,11 @@ export class PharmacyViewComponent implements OnInit{
 	isEdit: boolean = false;
 	isUpdateSuccess: boolean = false;
 	public isAdmin:boolean = false;
-	private transactionList:Array<Object> = [];
+	public transactions:Array<Object> = [];
 
 	constructor(
 		private route: ActivatedRoute,
+		private router: Router,
 		private location: Location,
 		private _pharmacyService : PharmacyService,
 		private _locationService : LocationService,
@@ -45,10 +46,6 @@ export class PharmacyViewComponent implements OnInit{
 			this.pharmacyDetail.locationInfo = data.result[0];
 		});
 	};
-/*
-	private parseTransactions(data:any):void {
-
-	};*/
 
 	public enableEdit():void {
 		this.isEdit = true;
@@ -57,6 +54,22 @@ export class PharmacyViewComponent implements OnInit{
 	public disableEdit():void {
 		this.isEdit = false;
 	};
+
+	public formatDate(date:any, isTimeIncluded:boolean):string {
+		var dateString = new Date(date).toUTCString();
+
+		if(isTimeIncluded){
+			dateString = dateString.split(' ').slice(0, 5).join(' ');
+			} else {
+				dateString = dateString.split(' ').slice(0, 4).join(' ');
+			}
+
+			return dateString;
+	};
+
+	public viewTransaction(transactionId:any):void{
+		this.router.navigate(['/dashboard/transaction-view', transactionId]);
+	}
 
 	ngOnInit(): void {
 		if (localStorage.getItem('roleId') === '1') {
@@ -72,7 +85,7 @@ export class PharmacyViewComponent implements OnInit{
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'])
 			.subscribe(data => {
 					console.log(data);
-					/*this.parseTransactions(data.result);*/
+					this.transactions = data.result;
 				});
 	}
 
@@ -86,7 +99,6 @@ export class PharmacyViewComponent implements OnInit{
 				}, 2000);
 		});
 	};
-
 
 	goBack(): void {
 		this.location.back();

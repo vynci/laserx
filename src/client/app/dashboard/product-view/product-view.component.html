@@ -31,7 +31,7 @@
 								<tr>
 									<th scope="row">Product</th>
 									<td *ngIf="!isEdit">{{productDetail.sku_name}}</td>
-									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Product Name" [(ngModel)]="productDetail.name"></td>
+									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Product Name" [(ngModel)]="productDetail.sku_name"></td>
 								</tr>
 								<tr>
 									<th scope="row">Brand</th>

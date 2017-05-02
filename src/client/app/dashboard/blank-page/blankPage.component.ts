@@ -3,6 +3,11 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PharmacyService } from '../services/pharmacy.service';
 import { LocationService } from '../services/location.service';
 
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/observable/fromEvent';
+
 import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 
 @Component({
@@ -15,6 +20,10 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 export class BlankPageComponent {
 	public pharmacies:Array<Object> = [];
 	public isAdmin:boolean = false;
+	public isLoading:boolean = false;
+
+	search        = '';
+	searchControl = new FormControl();
 
 	constructor(
 		private router: Router,
@@ -23,7 +32,7 @@ export class BlankPageComponent {
 	){}
 
 	public totalItems:number = 64;
-	public currentPage:number = 4;
+	public currentPage:number = 1;
 
 	public maxSize:number = 5;
 	public bigTotalItems:number = 175;
@@ -34,10 +43,8 @@ export class BlankPageComponent {
 	};
 
 	public pageChanged(event:any):void {
-		console.log('Page changed to: ' + event.page);
-		console.log('Number items per page: ' + event.itemsPerPage);
-
-		this._pharmacyService.getByPage(event.itemsPerPage, event.page)
+		this.currentPage = event.page;
+		this._pharmacyService.find(this.search, this.currentPage)
 		.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
 	};
 
@@ -47,15 +54,30 @@ export class BlankPageComponent {
 	}
 
 	ngOnInit(): void {
+		this.isLoading = true;
+
 		if (localStorage.getItem('roleId') === '1') {
 			this.isAdmin = true;
 		}
 
 		this._pharmacyService.getAll()
-		.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
+		.subscribe(resPharmacyData => {
+			this.isLoading = false;
+			this.pharmacies = resPharmacyData.result
+		});
 
 		this._pharmacyService.getCount()
 		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
+
+		// debounce keystroke events
+		this.searchControl.valueChanges
+		.debounceTime(250)
+		.subscribe(newValue => {
+			this.search = newValue;
+			this.currentPage = 1;
+			this._pharmacyService.find(this.search, this.currentPage)
+			.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
+		});
 	}
 
 

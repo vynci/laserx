@@ -29,13 +29,19 @@ export class PharmacyService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPage(limit: number, page: number){
-		let skip = (page - 1) * limit;
+	find(searchString: string, page: number){
+		let search = new URLSearchParams();
+		let skip = (page - 1) * 10;
+		let searchParams = {
+			'name' : {
+				has : searchString
+			}
+		};
 
-		let search = new URLSearchParams('skip=' + skip);
-		search.append('limit', limit.toString());
+		search.append('where', JSON.stringify(searchParams));
+		search.append('skip', skip.toString());
+		search.append('limit', '10');
 		let options = new RequestOptions({ headers: this.headers, search: search});
-
 
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
