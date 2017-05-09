@@ -14,11 +14,16 @@
             <div class="row">
               <div class="col-lg-3"></div>
               <div class="col-lg-3"></div>
-              <div class="col-lg-3"></div>
               <div class="col-lg-3">
                 <div class="form-group input-group">
+                  <span class="input-group-btn"><button class="btn btn-secondary" type="button" (click)="dateModal.show()"><i class="fa fa-calendar"></i></button></span>
+                  <input type="text" class="form-control" placeholder="Filter By Date.." [(ngModel)]="filterDateString">
+                </div>
+              </div>
+              <div class="col-lg-3" style="text-align: right;">
+                <div class="form-group">
                   <input type="text" class="form-control" placeholder="Search">
-                  <span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span>
+                  <!-- <span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span> -->
                 </div>
               </div>
             </div>
@@ -28,7 +33,7 @@
                 <thead>
                   <tr>
                     <th>ID</th>
-                    <th>Date</th>
+                    <th>Dispense Date</th>
                     <th>Pharmacy Name</th>
                     <th>Doctor</th>
                     <th>Transaction</th>
@@ -37,9 +42,9 @@
                 <tbody>
                   <tr *ngFor="let transaction of transactions">
                     <th scope="row">{{transaction.id}}</th>
-                    <td>{{formatDate(transaction.transaction_datetime, true)}}</td>
+                    <td>{{formatDate(transaction.dispense_date, true)}}</td>
                     <td>{{getPharmacyName(transaction.pharmacy?.id || '')}}</td>
-                    <td>{{transaction.doctor_firstname}} {{transaction.doctor_lastname}}</td>
+                    <td>{{getPhysicianName(transaction.physician?.id) || ''}}</td>
                     <td>
                       <button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>
                       <button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
@@ -57,7 +62,7 @@
                   <div class="bounce3"></div>
                 </div>
               </div>
-            </div>          
+            </div>
 
             <div class="row">
               <div class="col-lg-6">
@@ -87,6 +92,54 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" (click)="lgModal.hide()">Yes, I'm Sure</button>
         <button type="button" class="btn btn-secondary" (click)="lgModal.hide()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div bsModal #dateModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="dateModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title">Filter Transactions By Date</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for=""><b>From:</b></label>
+          <div class="row">
+            <div class="col-md-4">
+              <input type="number" min="1" max="12" class="form-control" placeholder="MM" [(ngModel)]="filterDate.from.month">
+            </div>
+            <div class="col-md-4">
+              <input type="number" min="1" max="31" class="form-control" placeholder="DD" [(ngModel)]="filterDate.from.day">
+            </div>
+            <div class="col-md-4">
+              <input type="number" min="2000" max="3000" class="form-control" placeholder="YYYY" [(ngModel)]="filterDate.from.year">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for=""><b>To:</b></label>
+          <div class="row">
+            <div class="col-md-4">
+              <input type="number" min="1" max="12" class="form-control" placeholder="MM" [(ngModel)]="filterDate.to.month">
+            </div>
+            <div class="col-md-4">
+              <input type="number" min="1" max="31" class="form-control" placeholder="DD" [(ngModel)]="filterDate.to.day">
+            </div>
+            <div class="col-md-4">
+              <input type="number" min="2000" max="3000" class="form-control" placeholder="YYYY" [(ngModel)]="filterDate.to.year">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="filterTransactionsByDate(); dateModal.hide()">Filter</button>
+        <button type="button" class="btn btn-secondary" (click)="dateModal.hide()">Close</button>
       </div>
     </div>
   </div>

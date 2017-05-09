@@ -57,7 +57,7 @@ export class TransactionViewComponent {
 	private getPharmacyName(id:number):void {
 		this._pharmacyService.getById(id)
 			.subscribe(data => {
-				this.pharmacyName = data.result[0].name;
+				this.pharmacyName = data.result[0].organization_branch;
 			});
 	}
 

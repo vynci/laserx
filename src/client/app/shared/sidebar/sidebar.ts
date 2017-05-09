@@ -25,7 +25,7 @@ export class SidebarComponent{
 	}
 
 	ngOnInit(): void {
-		if (localStorage.getItem('roleId') === '1') {
+		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 	}

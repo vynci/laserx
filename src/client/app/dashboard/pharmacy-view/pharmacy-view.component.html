@@ -10,7 +10,7 @@
 		<div class="col-lg-6">
 			<div class="detail-header">
 				<h2 class="page-header">
-					{{pharmacyDetail.name}}
+					{{pharmacyDetail.organization_branch}}
 				</h2>
 				<p *ngIf="!isEdit">
 					{{pharmacyDetail.locationInfo?.address}}
@@ -25,7 +25,7 @@
 	</div>
 	<br>
 	<div class="row">
-		<div class="col-lg-12">
+		<div class="col-lg-6">
 			<div class="card">
 				<div class="card-header card-default">
 					Pharmacy Details
@@ -36,42 +36,42 @@
 							<tbody>
 								<tr>
 									<th scope="row">Owner's Name</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.owner_firstname}} {{pharmacyDetail.owner_lasttname}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.organization_ownership || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Owner's Name" [(ngModel)]="pharmacyDetail.owner_firstname"></td>
 								</tr>
 								<tr>
 									<th scope="row">Pharmacist's Name</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_firstname}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_firstname || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Pharmacist's Name" [(ngModel)]="pharmacyDetail.pharmacist_firstname"></td>
 								</tr>
 								<tr>
 									<th scope="row">Pharmacist's License Number</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_lastname}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_lastname || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Pharmacist's License Number" [(ngModel)]="pharmacyDetail.pharmacist_lastname"></td>
 								</tr>
 								<tr>
 									<th scope="row">LTO Number</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_licensenbr}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.license_number || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="LTO Number" [(ngModel)]="pharmacyDetail.pharmacist_licensenbr"></td>
 								</tr>
 								<tr>
 									<th scope="row">LTO Expiration Date</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.gov_id1_expirationdate}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.expiration_date || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="LTO Expiration Date" [(ngModel)]="pharmacyDetail.gov_id1_expirationdate"></td>
 								</tr>
 								<tr>
 									<th scope="row">Business Classification</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.business_classification}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.business_classification  || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Business Classification" [(ngModel)]="pharmacyDetail.business_classification"></td>
 								</tr>
 								<tr>
 									<th scope="row">Email</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.email}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.email || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Email" [(ngModel)]="pharmacyDetail.email"></td>
 								</tr>
 								<tr>
 									<th scope="row">Mobile No.</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.mobile}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.mobile || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Mobile No." [(ngModel)]="pharmacyDetail.mobile"></td>
 								</tr>
 							</tbody>
@@ -89,6 +89,18 @@
 						<div class="col-lg-12" style="text-align: right;">
 							<button class="btn btn-sm btn-success" (click)="update()" *ngIf="isEdit"><i class="fa fa-fw fa-check"></i> Update</button>
 						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default">
+					Location
+				</div>
+				<div class="card-block">
+					<div style="height: 400px !important;">
+						<div id="map-pharmacy-view" style="height: 400px;"></div>
 					</div>
 				</div>
 			</div>

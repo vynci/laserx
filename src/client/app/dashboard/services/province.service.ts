@@ -9,7 +9,7 @@ export class ProvinceService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/province';
+	private url = this.endpoint + 'classes/region';
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
 
@@ -48,7 +48,7 @@ export class ProvinceService {
 	}
 
 	update(id: number, data: any){
-		let url = this.endpoint + 'classes/province/' + id;
+		let url = this.endpoint + 'classes/region/' + id;
 
 		return this.http.put(url, JSON.stringify(data), {headers: this.headers})
 		.map((response: Response) => response.json());

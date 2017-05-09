@@ -12,9 +12,11 @@
 		<div class="col-lg-12">
 			<div class="card card-block">
 				<div class="row">
-					<div class="col-lg-3"></div>
-					<div class="col-lg-3"></div>
-					<div class="col-lg-3"></div>
+					<div class="col-lg-9">
+						<a class="btn btn-danger">Expired License </a>
+						<a class="btn btn-primary">Expired Meds </a>
+						<a class="btn btn-warning">Counterfeit </a>
+					</div>
 					<div class="col-lg-3">
 						<div class="form-group input-group">
 							<input type="text" class="form-control" type=text [value]="search" [formControl]="searchControl" placeholder="Search">
@@ -36,11 +38,11 @@
 						</thead>
 						<tbody>
 							<tr *ngFor="let pharmacy of pharmacies">
-								<th scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(pharmacy.id)">{{pharmacy.name}}</a></th>
-								<td>{{pharmacy.owner_firstname}} {{pharmacy.owner_lastname}}</td>
+								<th scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(pharmacy.id)">{{pharmacy.organization_branch}}</a></th>
+								<td>{{pharmacy.organization_ownership || 'n/a'}}</td>
 								<td>Metro Manila</td>
-								<td>{{pharmacy.email}}</td>
-								<td>{{pharmacy.mobile}}</td>
+								<td>{{pharmacy.email || 'n/a'}}</td>
+								<td>{{pharmacy.mobile || 'n/a'}}</td>
 								<td *ngIf="isAdmin">
 									<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
 								</td>

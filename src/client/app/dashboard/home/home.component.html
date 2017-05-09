@@ -1,3 +1,57 @@
-<div style="height: 850px !important;">
+<!-- <div style="height: 850px !important;">
 	<div id="map"></div>
+</div> -->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default" style="text-align: right;">
+					<button class="btn btn-sm btn-default">All Pharmacies </button>
+				</div>
+				<div class="card-block">
+					<div style="height: 500px !important;">
+						<div id="map"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default" style="text-align: right;">
+					<a class="btn btn-sm btn-danger" (click)="viewPharmacies()">Expired License </a>
+				</div>
+				<div class="card-block">
+					<div style="height: 500px !important;">
+						<div id="map2" style="height: 500px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default" style="text-align: right;">
+					<a class="btn btn-sm btn-primary" (click)="viewPharmacies()">Expired Meds </a>
+				</div>
+				<div class="card-block">
+					<div style="height: 500px !important;">
+						<div id="map3" style="height: 500px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default" style="text-align: right;">
+					<a class="btn btn-sm btn-warning" (click)="viewPharmacies()">Counterfeit </a>
+				</div>
+				<div class="card-block">
+					<div style="height: 500px !important;">
+						<div id="map4" style="height: 500px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

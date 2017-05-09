@@ -1,8 +1,10 @@
 import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TransactionService } from '../services/transaction.service';
+import { HelperService } from '../services/helper.service';
 import { PharmacyService } from '../services/pharmacy.service';
 import { PharmacyModel } from './pharmacy-model';
+import { PhysicianModel } from './physician-model';
 
 import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 
@@ -10,20 +12,22 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 	moduleId: module.id,
 	selector: 'tables-cmp',
 	templateUrl: 'tables.component.html',
-	providers: [TransactionService, PharmacyService]
+	providers: [TransactionService, PharmacyService, HelperService]
 })
 
 export class TableComponent {
 
 	public transactions:Array<Object> = [];
 	private pharmacyNameList:Array<PharmacyModel> = [];
+	private physicianNameList:Array<PhysicianModel> = [];
 	public isAdmin:boolean = false;
 	public isLoading:boolean = false;
 
 	constructor(
 		private router: Router,
 		private _transactionService : TransactionService,
-		private _pharmacyService : PharmacyService
+		private _pharmacyService : PharmacyService,
+		private _helperService : HelperService
 	){}
 
 	public totalItems:number = 64;
@@ -33,12 +37,32 @@ export class TableComponent {
 	public bigTotalItems:number = 175;
 	public bigCurrentPage:number = 1;
 
+	public filterDateString:string = null;
+	public filterDate:any = {
+		from : {
+			month : null,
+			day : null,
+			year : null
+		},
+		to : {
+			month : null,
+			day : null,
+			year : null
+		}
+	};
+
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
 	};
 
+	public filterTransactionsByDate():void{
+		console.log(this.filterDate);
+		this.filterDateString = this.filterDate.from.month + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year;
+		this.filterDateString = this.filterDateString + ' - ' + this.filterDate.to.month + '/' + this.filterDate.to.day + '/' + this.filterDate.to.year;
+	}
+
 	public getPharmacyName(id:number):string {
-		var pharmacyName = 'Loading...';
+		var pharmacyName = 'n/a';
 
 		this.pharmacyNameList.forEach(pharmacy => {
 			if(pharmacy){
@@ -51,6 +75,20 @@ export class TableComponent {
 		return pharmacyName;
 	};
 
+	public getPhysicianName(id:number):string {
+		var physicianName = 'n/a';
+
+		this.physicianNameList.forEach(physician => {
+			if(physician){
+				if(id === physician.id){
+					physicianName = physician.name
+				}
+			}
+			});
+
+			return physicianName;
+	};
+
 	private parseData(data:any):void{
 		data.forEach(transaction => {
 			if(transaction.pharmacy){
@@ -61,6 +99,14 @@ export class TableComponent {
 					);
 				});
 			}
+			if(transaction.physician){
+				this._helperService.getByUserId(transaction.physician.id)
+				.subscribe(physician => {
+					this.physicianNameList.push(
+							{id: physician.result.id, name: physician.result.first_name + ' ' + physician.result.last_name}
+					);
+				});
+				}
 		});
 	}
 
@@ -93,7 +139,7 @@ export class TableComponent {
 
 	ngOnInit(): void {
 		this.isLoading = true;
-		if (localStorage.getItem('roleId') === '1') {
+		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 

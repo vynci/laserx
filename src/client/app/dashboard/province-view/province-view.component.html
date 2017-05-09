@@ -30,12 +30,12 @@
 								</tr>
 								<tr>
 									<th scope="row">Country</th>
-									<td *ngIf="!isEdit">{{provinceDetail.country?.id}}</td>
+									<td *ngIf="!isEdit">{{provinceDetail.country_id}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Country Name" [(ngModel)]="provinceDetail.country.id"></td>
 								</tr>
 								<tr>
 									<th scope="row">Province Name</th>
-									<td *ngIf="!isEdit">{{provinceDetail.name || 'n/a'}}</td>
+									<td *ngIf="!isEdit">{{provinceDetail.region_name || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="ISO Country Code" [(ngModel)]="provinceDetail.name"></td>
 								</tr>
 							</tbody>

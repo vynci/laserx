@@ -37,7 +37,7 @@
 						<tbody>
 							<tr *ngFor="let country of countries">
 								<th scope="row"><a style="cursor: pointer;">{{country.id}}</a></th>
-								<td>{{country.name}} ({{country.country_code}})</td>
+								<td>{{country.country_name}}</td>
 								<td>{{country.country_number || 'n/a'}}</td>
 								<td>{{country.currency_code  || 'n/a'}}</td>
 								<td>{{country.language  || 'n/a'}}</td>

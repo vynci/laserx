@@ -10,7 +10,7 @@ export class TransactionProductService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/transaction_product';
+	private url = this.endpoint + 'classes/prescription_packaging';
 
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
@@ -19,7 +19,7 @@ export class TransactionProductService {
 
 	getById(id: number){
 		console.log(id);
-		let search = new URLSearchParams('where={"transactionitem.id":{"eq":' + id + '}}');
+		let search = new URLSearchParams('where={"prescription.id":{"eq":' + id + '}}');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 
@@ -42,7 +42,7 @@ export class TransactionProductService {
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
 
-		return this.http.post(url, JSON.stringify({table_name: 'transaction_product'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'prescription_packaging'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

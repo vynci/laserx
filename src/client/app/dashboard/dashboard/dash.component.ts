@@ -15,7 +15,7 @@ export class DashComponent implements OnInit {
 	public transactionFeed:Array<Object> = [];
 	public transactions:Array<Object> = [];
 	public pharmacies:Array<Object> = [];
-
+	search        = '';
 	constructor(
 		private router: Router,
 		private _helperService : HelperService,
@@ -34,11 +34,9 @@ export class DashComponent implements OnInit {
 	};
 
 	public pageChanged(event:any):void {
-		console.log('Page changed to: ' + event.page);
-		console.log('Number items per page: ' + event.itemsPerPage);
-
-		/*this._pharmacyService.getByPage(event.itemsPerPage, event.page)
-		.subscribe(data => this.pharmacies = data.result);*/
+		this.currentPage = event.page;
+		this._pharmacyService.find(this.search, this.currentPage)
+		.subscribe(resPharmacyData => this.transactions = resPharmacyData.result);
 	};
 
 	public viewPharmacy(pharmacyId:any):void{
@@ -167,7 +165,7 @@ export class DashComponent implements OnInit {
 	}
 
 	ngOnInit(){
-		this._helperService.getPharmacyCountPerProvince()
+		/*this._helperService.getPharmacyCountPerProvince()
 			.subscribe(data => {
 				console.log(data);
 				this.setPharmacyGraph(data);
@@ -179,13 +177,21 @@ export class DashComponent implements OnInit {
 				var tmp = data.result;
 				tmp.splice(7);
 				this.transactionFeed = tmp;
-			});
+			});*/
 
-		this._helperService.getTransactionCountPerPharmacy()
+		/*this._pharmacyService.getAll()
+		.subscribe(data => {
+			this.transactions = data.result;
+		});*/
+
+		/*this._pharmacyService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
+
+		/*this._helperService.getTransactionCountPerPharmacy()
 			.subscribe(data => {
 				var tmp = data.result;
 				tmp.splice(10)
 				this.transactions = tmp;
-			});
+		});*/
 	}
 }

@@ -9,21 +9,40 @@ export class PharmacyService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/pharmacy';
+	private url = this.endpoint + 'classes/organization';
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
 
 	constructor(private http: Http) { }
 
 	getAll(){
-		return this.http.get(this.url, this.options)
+		let search = new URLSearchParams();
+		let searchParams = {
+			'organization_type' : {
+				eq : 'Pharmacy'
+			}
+		};
+		search.append('limit', '10');
+
+		search.append('where', JSON.stringify(searchParams));
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(this.url, options)
 			.map((response: Response) => response.json());
 	}
 
 	getById(id: number){
-		let search = new URLSearchParams('where={"id":{"eq":' + id + '}}');
+		let search = new URLSearchParams();
+		let searchParams = {
+			'organization_type' : {
+				eq : 'Pharmacy'
+			},
+			'id' : {
+				eq: id
+			}
+		};
+		search.append('where', JSON.stringify(searchParams));
 		let options = new RequestOptions({ headers: this.headers, search: search});
-
 
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
@@ -32,9 +51,13 @@ export class PharmacyService {
 	find(searchString: string, page: number){
 		let search = new URLSearchParams();
 		let skip = (page - 1) * 10;
+
 		let searchParams = {
-			'name' : {
+			'organization_branch' : {
 				has : searchString
+			},
+			'organization_type' : {
+				eq : 'Pharmacy'
 			}
 		};
 
@@ -49,9 +72,8 @@ export class PharmacyService {
 
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
-		let options = new RequestOptions({ headers: this.headers, body: {'table_name' : 'pharmacy'}});
 
-		return this.http.post(url, JSON.stringify({table_name: 'pharmacy'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'organization'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

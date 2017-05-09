@@ -34,12 +34,14 @@
                       <th>Pharmacy</th>
                       <th>Mobile</th>
                       <th>Perscription</th>
+                      <th>Last Transaction</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let transaction of transactions">
                       <th scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(transaction.id)">{{transaction.name}}</a></th>
                       <td>{{transaction.mobile}}</td>
+                      <td>{{transaction.total_prescription}}</td>
                       <td>{{transaction.total_prescription}}</td>
                     </tr>
                   </tbody>
@@ -70,7 +72,7 @@
                 <tbody>
                   <tr>
                     <th scope="row">Total Prescriptions</th>
-                    <td>45805</td>
+                    <td>n/a</td>
                   </tr>
                 </tbody>
               </table>

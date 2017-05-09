@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from './login.service';
 
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 @Component({
 	moduleId: module.id,
@@ -28,7 +29,7 @@ export class LoginComponent {
 		console.log(userId);
 		this._authService.getUserInfo(userId)
 		.subscribe(userInfo => {
-			localStorage.setItem('roleId', userInfo.result.role.id);
+			localStorage.setItem('roleId', userInfo.result.user_type);
 			localStorage.setItem('username', userInfo.result.username);
 			this.router.navigate(['/dashboard/home']);
 		});

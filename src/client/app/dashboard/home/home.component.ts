@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-
+import { Router, ActivatedRoute, Params } from '@angular/router';
 /**
 *	This class represents the lazy loaded HomeComponent.
 */
@@ -598,7 +598,9 @@ export class HomeComponent implements OnInit {
 	 }
 	/* END*/
 
-	constructor() {
+	constructor(
+		private router: Router
+	) {
 		for (let i = 0; i < 4; i++) {
 			this.addSlide();
 		}
@@ -611,6 +613,10 @@ export class HomeComponent implements OnInit {
 			text: `${['Dummy ', 'Dummy ', 'Dummy ', 'Dummy '][this.slides.length % 4]}
       			${['text 0', 'text 1', 'text 2', 'text 3'][this.slides.length % 4]}`
 		});
+	}
+
+	public viewPharmacies():void{
+		this.router.navigate(['/dashboard/pharmacies']);
 	}
 
 	ngOnInit() {
@@ -655,6 +661,42 @@ export class HomeComponent implements OnInit {
 			styles: labelsOff
 		});
 
+		var map2 = new google.maps.Map(document.getElementById('map2'), {
+			zoom: 10,
+			center: {lat: 14.599512, lng: 120.984222},
+			mapTypeControl: false,
+			streetViewControl: false,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+
+		map2.setOptions({
+			styles: labelsOff
+		});
+
+		var map3 = new google.maps.Map(document.getElementById('map3'), {
+			zoom: 10,
+			center: {lat: 14.599512, lng: 120.984222},
+			mapTypeControl: false,
+			streetViewControl: false,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+
+		map3.setOptions({
+			styles: labelsOff
+		});
+
+		var map4 = new google.maps.Map(document.getElementById('map4'), {
+			zoom: 10,
+			center: {lat: 14.599512, lng: 120.984222},
+			mapTypeControl: false,
+			streetViewControl: false,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+			});
+
+		map4.setOptions({
+			styles: labelsOff
+		});
+
 		var infowindow = new google.maps.InfoWindow();
 
 		var marker:Object;
@@ -675,6 +717,72 @@ export class HomeComponent implements OnInit {
 					infowindow.open(map, marker);
 				}
 			})(marker, i, pharmacyName, pharmacyAddress));
+		}
+
+		var infowindow2 = new google.maps.InfoWindow();
+
+		var marker2:Object;
+
+		for (var i = 0; i < this.pharmacies.length; i++) {
+			var pharmacyName = this.pharmacies[i].name;
+			var pharmacyAddress = this.pharmacies[i].location_address + ', ' + this.pharmacies[i].location_city + ', ' + this.pharmacies[i].provinceName + ', ' + this.pharmacies[i].countryName;
+
+			marker2 = new google.maps.Marker({
+				position: new google.maps.LatLng(this.pharmacies[i].location_latitude, this.pharmacies[i].location_longitude),
+				map: map2,
+					icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_red.png'
+				});
+
+				google.maps.event.addListener(marker2, 'click', (function(marker2, i, pharmacyName, pharmacyAddress) {
+					return function() {
+						infowindow2.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress +'</p>');
+						infowindow2.open(map2, marker2);
+					}
+				})(marker2, i, pharmacyName, pharmacyAddress));
+		}
+
+		var infowindow3 = new google.maps.InfoWindow();
+
+		var marker3:Object;
+
+		for (var i = 0; i < this.pharmacies.length; i++) {
+			var pharmacyName = this.pharmacies[i].name;
+			var pharmacyAddress = this.pharmacies[i].location_address + ', ' + this.pharmacies[i].location_city + ', ' + this.pharmacies[i].provinceName + ', ' + this.pharmacies[i].countryName;
+
+			marker3 = new google.maps.Marker({
+				position: new google.maps.LatLng(this.pharmacies[i].location_latitude, this.pharmacies[i].location_longitude),
+				map: map3,
+				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_green.png'
+				});
+
+				google.maps.event.addListener(marker3, 'click', (function(marker3, i, pharmacyName, pharmacyAddress) {
+					return function() {
+						infowindow3.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress +'</p>');
+						infowindow3.open(map3, marker3);
+					}
+				})(marker3, i, pharmacyName, pharmacyAddress));
+		}
+
+		var infowindow4 = new google.maps.InfoWindow();
+
+		var marker4:Object;
+
+		for (var i = 0; i < this.pharmacies.length; i++) {
+			var pharmacyName = this.pharmacies[i].name;
+			var pharmacyAddress = this.pharmacies[i].location_address + ', ' + this.pharmacies[i].location_city + ', ' + this.pharmacies[i].provinceName + ', ' + this.pharmacies[i].countryName;
+
+			marker4 = new google.maps.Marker({
+				position: new google.maps.LatLng(this.pharmacies[i].location_latitude, this.pharmacies[i].location_longitude),
+				map: map4,
+				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_darkblue.png'
+				});
+
+				google.maps.event.addListener(marker4, 'click', (function(marker4, i, pharmacyName, pharmacyAddress) {
+					return function() {
+						infowindow4.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress +'</p>');
+						infowindow4.open(map4, marker4);
+					}
+				})(marker4, i, pharmacyName, pharmacyAddress));
 		}
 
 	}

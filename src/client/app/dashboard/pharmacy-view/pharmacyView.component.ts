@@ -7,6 +7,7 @@ import { TransactionService } from '../services/transaction.service';
 import { LocationService } from '../services/location.service';
 
 declare var pharmacyDetail: any;
+declare var google: any;
 
 @Component({
 	moduleId: module.id,
@@ -28,6 +29,8 @@ export class PharmacyViewComponent implements OnInit{
 
 	isEdit: boolean = false;
 	isUpdateSuccess: boolean = false;
+	private map: any;
+	private marker:Object;
 	public isAdmin:boolean = false;
 	public transactions:Array<Object> = [];
 
@@ -44,6 +47,53 @@ export class PharmacyViewComponent implements OnInit{
 		this._locationService.getById(locationId)
 		.subscribe(data => {
 			this.pharmacyDetail.locationInfo = data.result[0];
+
+			var labelsOff = [{
+				featureType: "administrative",
+				elementType: "labels",
+				stylers: [{
+					visibility: "off"
+				}]
+			},
+			{
+				featureType: "poi",
+				elementType: "labels",
+				stylers: [{
+					visibility: "off"
+				}]
+			},
+			{
+				featureType: "water",
+				elementType: "labels",
+				stylers: [{
+					visibility: "off"
+				}]
+			},
+			{
+				featureType: "road",
+				elementType: "labels",
+				stylers: [{
+					visibility: "off"
+				}]
+			}];
+
+			this.map = new google.maps.Map(document.getElementById('map-pharmacy-view'), {
+				zoom: 13,
+				center: {lat: data.result[0].latitude, lng: data.result[0].longitude},
+				mapTypeControl: false,
+				streetViewControl: false,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+				});
+
+			this.map.setOptions({
+				styles: labelsOff
+			});
+
+			this.marker = new google.maps.Marker({
+				position: new google.maps.LatLng(data.result[0].latitude, data.result[0].longitude),
+				map: this.map,
+				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_blue.png'
+			});
 		});
 	};
 
@@ -72,7 +122,7 @@ export class PharmacyViewComponent implements OnInit{
 	}
 
 	ngOnInit(): void {
-		if (localStorage.getItem('roleId') === '1') {
+		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 
@@ -80,13 +130,13 @@ export class PharmacyViewComponent implements OnInit{
 			.subscribe(data => {
 				this.pharmacyDetail = data.result[0];
 				this.getLocation(this.pharmacyDetail.location.id);
-			});
+		});
 
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'])
 			.subscribe(data => {
 					console.log(data);
 					this.transactions = data.result;
-				});
+		});
 	}
 
 	public update():void {

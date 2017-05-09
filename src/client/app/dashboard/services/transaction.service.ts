@@ -9,7 +9,7 @@ export class TransactionService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/transactionitem';
+	private url = this.endpoint + 'classes/prescription';
 
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
@@ -18,7 +18,7 @@ export class TransactionService {
 
 	getAll(){
 
-		let search = new URLSearchParams('sort=' + '[{"transaction_datetime":-1}]');
+		let search = new URLSearchParams('sort=' + '[{"prescription_date":-1}]');
 		search.append('limit', '10');
 
 		let options = new RequestOptions({ headers: this.headers, search: search});
@@ -39,7 +39,7 @@ export class TransactionService {
 	getByPharmacyId(id: number){
 		let search = new URLSearchParams('where={"pharmacy.id":{"eq":' + id + '}}');
 		search.append('limit', '10000');
-		search.append('sort', '[{"transaction_datetime":-1}]');
+		search.append('sort', '[{"prescription_date":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 		return this.http.get(this.url, options)
@@ -51,7 +51,7 @@ export class TransactionService {
 
 		let search = new URLSearchParams('skip=' + skip);
 		search.append('limit', limit.toString());
-		search.append('sort', '[{"transaction_datetime":-1}]');
+		search.append('sort', '[{"prescription_date":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 
@@ -62,7 +62,7 @@ export class TransactionService {
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
 
-		return this.http.post(url, JSON.stringify({table_name: 'transactionitem'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'prescription'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

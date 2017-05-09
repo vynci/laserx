@@ -56,7 +56,7 @@ export class BlankPageComponent {
 	ngOnInit(): void {
 		this.isLoading = true;
 
-		if (localStorage.getItem('roleId') === '1') {
+		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 

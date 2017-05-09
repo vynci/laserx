@@ -32,7 +32,7 @@ $topnav-background-color: #000;
 .topnav{
   border-radius: 0;
   background-color: $topnav-background-color;
-  padding : 6px;
+  padding : 8px;
     z-index:99;
     .text-center{
         text-align: center;
@@ -244,7 +244,7 @@ a:hover{
         }
     }
 }
-@media screen and (max-width: 1440px) {
+@media screen and (max-width: 5000px) {
     #toggle-sidebar{
         display:block;
     }
@@ -314,7 +314,7 @@ a:hover{
     right: 0;
     bottom: 0;
     overflow: auto;
-    background: #f6f6f6;
+    background: #fff;
     text-align: center;
     color: #333;
     padding: 3em;

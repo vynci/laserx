@@ -9,7 +9,7 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<h2 class="page-header detail-header">
-				{{pharmacyName}}
+				{{pharmacyName || 'n/a'}}
 			</h2>
 		</div>
 	</div>
@@ -26,7 +26,7 @@
 							<tbody>
 								<tr>
 									<th scope="row">Transaction Date</th>
-									<td>{{formatDate(transactionDetail.transaction_datetime, false)}}</td>
+									<td>{{formatDate(transactionDetail.dispense_date, false)}}</td>
 								</tr>
 								<tr>
 									<th scope="row">Transaction ID</th>
@@ -34,11 +34,11 @@
 								</tr>
 								<tr>
 									<th scope="row">Doctor Name</th>
-									<td>{{transactionDetail.doctor_firstname}} {{transactionDetail.doctor_lastname}}</td>
+									<td>null null</td>
 								</tr>
 								<tr>
 									<th scope="row">License Number</th>
-									<td>{{transactionDetail.license_number}}</td>
+									<td>null</td>
 								</tr>
 							</tbody>
 						</table>
@@ -61,9 +61,9 @@
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Serial Number</th>
 										<th>Product Name</th>
-										<th>Quantity</th>
+										<th>Quantity Prescribed</th>
+										<th>Quantity Dispensed</th>
 										<th>Frequency</th>
 										<th>LN/BN</th>
 										<th>Expiry Date</th>
@@ -73,11 +73,11 @@
 								<tbody>
 									<tr *ngFor="let transactionProduct of transactionProducts">
 										<th scope="row">{{transactionProduct.id || 'n/a'}}</th>
-										<td>{{transactionProduct.serial_number  || 'n/a'}}</td>
-										<td>{{transactionProduct.product_name  || 'n/a'}}</td>
-										<td>{{transactionProduct.quantity}} {{transactionProduct.quantity_unit}}</td>
-										<td>{{transactionProduct.frequency}}x a {{transactionProduct.frequency_unit}}</td>
-										<td>{{transactionProduct.batchlotnumber  || 'n/a'}}</td>
+										<td>{{transactionProduct.packaging  || 'n/a'}}</td>
+										<td>{{transactionProduct.quantity_dispensed  || 'n/a'}}</td>
+										<td>{{transactionProduct.quantity_prescribed}} {{transactionProduct.quantity_unit}}</td>
+										<td>{{transactionProduct.duration}}x a {{transactionProduct.duration_unit}}</td>
+										<td>{{transactionProduct.batch_lot_number  || 'n/a'}}</td>
 										<td>{{transactionProduct.expiry_date  || 'n/a'}}</td>
 										<td>{{transactionProduct.remarks  || 'n/a'}}</td>
 									</tr>
