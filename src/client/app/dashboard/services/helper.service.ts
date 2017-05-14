@@ -56,10 +56,10 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
-	getTransactionCountPerPharmacy(){
+	getTransactionCountPerPharmacy(id: number){
 		let url = this.endpoint + 'functions/get-transaction-count-per-pharmacy';
 
-		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({pharmacy_id: id}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

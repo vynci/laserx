@@ -165,7 +165,7 @@ export class DashComponent implements OnInit {
 	}
 
 	ngOnInit(){
-		/*this._helperService.getPharmacyCountPerProvince()
+		this._helperService.getPharmacyCountPerProvince()
 			.subscribe(data => {
 				console.log(data);
 				this.setPharmacyGraph(data);
@@ -177,21 +177,21 @@ export class DashComponent implements OnInit {
 				var tmp = data.result;
 				tmp.splice(7);
 				this.transactionFeed = tmp;
-			});*/
+			});
 
-		/*this._pharmacyService.getAll()
+		this._pharmacyService.getAll()
 		.subscribe(data => {
 			this.transactions = data.result;
-		});*/
+		});
 
-		/*this._pharmacyService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
+		this._pharmacyService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
 
-		/*this._helperService.getTransactionCountPerPharmacy()
+		this._helperService.getTransactionCountPerPharmacy(43558)
 			.subscribe(data => {
-				var tmp = data.result;
+				/*var tmp = data.result;
 				tmp.splice(10)
-				this.transactions = tmp;
-		});*/
+				this.transactions = tmp;*/
+		});
 	}
 }

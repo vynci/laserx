@@ -71,8 +71,11 @@
   float: left;
   padding-top:    .25rem;
   padding-bottom: .25rem;
-  margin-right: 1rem;
-  font-size: $font-size-lg;
+  margin-right: 2rem;
+  font-size: $font-size-lg !important;
+  font-weight: 300 !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase !important;
 
   @include hover-focus {
     text-decoration: none;
@@ -148,8 +151,6 @@
 
   .nav-link {
     display: block;
-    padding-top:    .425rem;
-    padding-bottom: .425rem;
 
     + .nav-link {
       margin-left: 1rem;

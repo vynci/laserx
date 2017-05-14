@@ -1,7 +1,8 @@
-<!-- <div style="height: 850px !important;">
+<div (window:resize)="onResize($event)" [ngStyle]="{'height': styleExp}">
+<!-- <div (window:resize)="onResize($event)" style="height: 850px;"> -->
 	<div id="map"></div>
-</div> -->
-<div class="container-fluid">
+</div>
+<!-- <div class="container-fluid">
 	<div class="row">
 		<div class="col-lg-6">
 			<div class="card">
@@ -54,4 +55,4 @@
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->

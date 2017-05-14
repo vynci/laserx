@@ -110,7 +110,8 @@
   display: block;
   width: 100%;
   min-height: 0.01%; // Workaround for IE9 bug (see https://github.com/twbs/bootstrap/issues/14837)
-  overflow-x: auto;
+  // overflow-x: auto;
+  overflow-x: hidden;
 
   // TODO: find out if we need this still.
   //

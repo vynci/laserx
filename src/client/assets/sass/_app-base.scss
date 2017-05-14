@@ -1,13 +1,55 @@
 @import "../bootstrap/bootstrap.scss";
 
-.detail-header {
-  padding: 15px 0px;
+.no-padding {
+  padding: 0;
+}
+
+.card-no-top-padding {
+  padding-top: 0px;
+  padding-bottom: 30px;
+  padding-left: 0.875rem;
+  border: 0px;
+}
+
+.card-with-subtitle {
+  padding-bottom: 14px;
+}
+
+.card-subtitle{
+  padding-left: 26px;
+}
+
+.page-cover-container {
+  background: #ccc url(../assets/img/cover.jpg);
+  background-size: cover;
+  min-height: 260px;
+  position: relative;
 }
 
 .container-fluid {
-  padding-top: 15px !important;
+  padding-top: 30px !important;
   padding-left: 30px !important;
   padding-right: 30px !important;
+}
+
+.container-fluid-list {
+  padding-top: 15px !important;
+  top: -72px;
+  position: relative;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.action-dropdown {
+  margin-right: 2rem;
+  background: $brand-primary;
+  border: 0;
+  color: #FFF;
+  font-weight: 600 !important;
+  letter-spacing: .1em !important;
+  padding: 8px 15px;
+  text-shadow: none;
+  -webkit-border-radius: 3px;
 }
 
 $topnav-background-color: #000;
@@ -29,15 +71,24 @@ $topnav-background-color: #000;
 .btn:focus{
     outline: 3px auto #FFF;
 }
+
+.topnav-links {
+  font-size: 11pt !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  font-weight: 300;
+  letter-spacing: .05em;
+  text-transform: uppercase !important;
+  padding-top: 7px !important;
+}
+
 .topnav{
   border-radius: 0;
   background-color: $topnav-background-color;
-  padding : 8px;
+  padding : 12px;
     z-index:99;
     .text-center{
         text-align: center;
         padding-left : 0;
-        cursor: pointer;
     }
     .top-right-nav{
         .buy-now{
@@ -169,6 +220,13 @@ a:hover{
     }
 }
 
+.page-header-section {
+  border-left: 10px solid #007402;
+  padding-top: 22px;
+  padding-right: 20px;
+  padding-left: 15px;
+}
+
 .bg-white {
     background: #fff;
 }
@@ -228,6 +286,24 @@ a:hover{
 }
 .hide-sm{
     display:block;
+}
+
+@media (min-width: 768px){
+  .container-fluid-list {
+    width: 750px;
+  }
+}
+
+@media (min-width: 992px){
+  .container-fluid-list {
+    width: 970px;
+  }
+}
+
+@media (min-width: 1200px){
+  .container-fluid-list {
+    width: 1170px;
+  }
 }
 
 @media (min-width: 0){
@@ -330,9 +406,7 @@ a:hover{
     }
     .input-underline {
         background: 0 0;
-        border: none;
         box-shadow: none;
-        border-bottom: 2px solid #333;
         color: #333;
         border-radius: 0;
     }
@@ -385,7 +459,7 @@ a:hover{
         }
     }
     .form-content {
-        padding: 40px 0;
+        padding: 18px 0;
     }
 }
 .nested-menu {

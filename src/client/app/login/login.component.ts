@@ -29,7 +29,7 @@ export class LoginComponent {
 		console.log(userId);
 		this._authService.getUserInfo(userId)
 		.subscribe(userInfo => {
-			localStorage.setItem('roleId', userInfo.result.user_type);
+			localStorage.setItem('roleId', userInfo.result.type);
 			localStorage.setItem('username', userInfo.result.username);
 			this.router.navigate(['/dashboard/home']);
 		});

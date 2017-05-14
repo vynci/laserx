@@ -7,8 +7,9 @@
   display: block;
   margin-bottom: $card-spacer-y;
   background-color: $card-bg;
-  border: $card-border-width solid $card-border-color;
-  @include border-radius($card-border-radius);
+  // border: $card-border-width solid $card-border-color;
+  border-radius: 0px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
 .card-block {
@@ -68,13 +69,17 @@
 //
 
 .card-header {
-  padding: $card-spacer-y $card-spacer-x;
-  background-color: $card-cap-bg;
-  border-bottom: $card-border-width solid $card-border-color;
-
-  &:first-child {
-    @include border-radius($card-border-radius-inner $card-border-radius-inner 0 0);
-  }
+  // padding: $card-spacer-y $card-spacer-x;
+  // background-color: $card-cap-bg;
+  // border-bottom: $card-border-width solid $card-border-color;
+  //
+  // &:first-child {
+  //   @include border-radius($card-border-radius-inner $card-border-radius-inner 0 0);
+  // }
+  border-left: 10px solid #c7caaa;
+  padding-top: 22px;
+  padding-right: 20px;
+  padding-left: 15px;
 }
 
 .card-footer {

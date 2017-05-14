@@ -1,29 +1,31 @@
 <div class="container-fluid">
     <!-- Page Heading -->
-    <div class="row">
-        <div class="col-xl-12">
-            <h2 class="page-header detail-header">
-                Dashboard
+    <div class="card card-block card-no-top-padding">
+      <div class="row">
+        <div class="col-xl-12 no-padding">
+          <div class="page-header-section">
+            <h2>
+              <b>Dashboard</b>
             </h2>
+          </div>
         </div>
+      </div>
     </div>
 
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-8">
         <div class="card">
           <div class="card-header card-default">
-            Transactions
+            <h5>Transactions</h5>
           </div>
           <div class="card-block">
             <div class="table-responsive">
               <div class="row">
-                <div class="col-lg-3"></div>
-                <div class="col-lg-3"></div>
-                <div class="col-lg-3"></div>
-                <div class="col-lg-3">
-                  <div class="form-group input-group">
-                    <input type="text" class="form-control" placeholder="Search">
-                    <span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span>
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                  <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Search...">
                   </div>
                 </div>
               </div>
@@ -39,10 +41,10 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let transaction of transactions">
-                      <th scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(transaction.id)">{{transaction.name}}</a></th>
-                      <td>{{transaction.mobile}}</td>
-                      <td>{{transaction.total_prescription}}</td>
-                      <td>{{transaction.total_prescription}}</td>
+                      <td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(transaction.id)">{{transaction.organization_branch}}</a></td>
+                      <td>{{transaction.mobile || 'n/a'}}</td>
+                      <td>{{transaction.total_prescription || 'n/a'}}</td>
+                      <td>{{transaction.total_prescription || 'n/a'}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -61,10 +63,10 @@
       </div>
     </div>
 
-      <div class="col-lg-6">
+      <div class="col-lg-4">
         <div class="card">
           <div class="card-header card-default">
-            Transaction Feed
+            <h5>Transaction Feed</h5>
           </div>
           <div class="card-block">
             <div class="table-responsive">
@@ -76,13 +78,12 @@
                   </tr>
                 </tbody>
               </table>
-
               <div *ngFor="let transaction of transactionFeed" style="padding: 15px 15px;">
                 <span><em>{{transaction.created_at}}</em></span><br>
                 <span>{{transaction.pharmacy_name}}</span><br>
                 <span><b>{{transaction.product_name}}</b></span>
               </div>
-
+              <p style="text-align: center;">Empty List.</p>
             </div>
           </div>
         </div>
@@ -93,7 +94,7 @@
       <div class="col-lg-6">
         <div class="card">
           <div class="card-header card-default">
-            Transactions per Day
+            <h5>Transactions per Day</h5>
           </div>
           <div class="card-block">
             <div class="table-responsive">
@@ -108,7 +109,7 @@
       <div class="col-lg-6">
         <div class="card">
           <div class="card-header card-default">
-            Pharmacies
+            <h5>Pharmacies</h5>
           </div>
           <div class="card-block">
             <div class="card card-block">

@@ -12,17 +12,26 @@
 						<input type="password" class="form-control input-underline input-lg" id="" placeholder="Password" [(ngModel)]="loginInfo.password">
 					</div>
 				</div>
-				<div>
-					<a class="btn btn-success btn-block" style="background-color: #007402; color: #fff; border: 0; border-bottom: 3px solid #003618;" (click)="login()"> Log in </a>
-					&nbsp;
+				<div class="row">
+					<div class="col-md-4">
+						<div style="text-align: left;">
+							<a class="btn btn-success" style="background-color: #007402; color: #fff; border: 0; border-bottom: 3px solid #003618;" (click)="login()"> Submit </a>
+							&nbsp;
+						</div>
+					</div>
+					<div class="col-md-8">
+					</div>
 				</div>
-
+				<br>
 				<div class="loader" *ngIf="isLoading">
 					<div class="bounce1"></div>
 					<div class="bounce2"></div>
 					<div class="bounce3"></div>
 				</div>
 				<p *ngIf="!isLoading">{{status}}</p>
+
+
+
 				<!-- <a type="submit" class="btn rounded-btn" routerLink="/signup">Register</a> -->
 			<!--</form>-->
 		</div>

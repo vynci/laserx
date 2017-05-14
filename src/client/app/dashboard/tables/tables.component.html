@@ -1,11 +1,17 @@
-<div class="container-fluid">
+<div class="page-cover-container"></div>
+
+<div class="container-fluid-list">
     <!-- Page Heading -->
-    <div class="row">
-        <div class="col-xl-12">
-            <h2 class="page-header detail-header">
-                Transactions
+    <div class="card card-block card-no-top-padding">
+      <div class="row">
+        <div class="col-xl-12 no-padding">
+          <div class="page-header-section">
+            <h2>
+              <b>Transactions</b>
             </h2>
+          </div>
         </div>
+      </div>
     </div>
     <!-- /.row -->
     <div class="row">
@@ -22,7 +28,7 @@
               </div>
               <div class="col-lg-3" style="text-align: right;">
                 <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Search">
+                  <input type="text" class="form-control" placeholder="Search...">
                   <!-- <span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span> -->
                 </div>
               </div>
@@ -43,7 +49,7 @@
                   <tr *ngFor="let transaction of transactions">
                     <th scope="row">{{transaction.id}}</th>
                     <td>{{formatDate(transaction.dispense_date, true)}}</td>
-                    <td>{{getPharmacyName(transaction.pharmacy?.id || '')}}</td>
+                    <td><a style="cursor: pointer;" (click)="viewPharmacy(transaction.pharmacy?.id)">{{getPharmacyName(transaction.pharmacy?.id || 'n/a')}}</a></td>
                     <td>{{getPhysicianName(transaction.physician?.id) || ''}}</td>
                     <td>
                       <button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>

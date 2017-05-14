@@ -34,7 +34,7 @@ export class TableComponent {
 	public currentPage:number = 4;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 175;
+	public bigTotalItems:number = 1000;
 	public bigCurrentPage:number = 1;
 
 	public filterDateString:string = null;
@@ -61,8 +61,12 @@ export class TableComponent {
 		this.filterDateString = this.filterDateString + ' - ' + this.filterDate.to.month + '/' + this.filterDate.to.day + '/' + this.filterDate.to.year;
 	}
 
+	public viewPharmacy(pharmacyId:any):void{
+		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
+	}
+
 	public getPharmacyName(id:number):string {
-		var pharmacyName = 'n/a';
+		var pharmacyName = 'Loading...';
 
 		this.pharmacyNameList.forEach(pharmacy => {
 			if(pharmacy){
@@ -95,7 +99,7 @@ export class TableComponent {
 				this._pharmacyService.getById(transaction.pharmacy.id)
 				.subscribe(pharmacy => {
 					this.pharmacyNameList.push(
-							{id: pharmacy.result[0].id, name: pharmacy.result[0].name}
+							{id: pharmacy.result[0].id, name: pharmacy.result[0].organization_branch}
 					);
 				});
 			}
@@ -150,8 +154,8 @@ export class TableComponent {
 			this.parseData(this.transactions);
 		});
 
-		this._transactionService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
+		/*this._transactionService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
 	}
 
 }

@@ -17,7 +17,7 @@ import {
 } from 'ng2-bootstrap/ng2-bootstrap';
 
 @NgModule({
-    imports: [FormsModule, CommonModule, ModalModule, AlertModule],
+    imports: [FormsModule, CommonModule, ModalModule, AlertModule, PaginationModule],
     declarations: [PharmacyViewComponent],
     exports: [PharmacyViewComponent]
 })

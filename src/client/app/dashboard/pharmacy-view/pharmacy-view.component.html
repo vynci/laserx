@@ -1,34 +1,59 @@
-<div class="container-fluid">
+<div id="map-pharmacy-view" class="page-cover-container"></div>
 
-	<div class="row">
+<div class="container-fluid-list">
+
+	<div class="card card-block card-with-subtitle card-no-top-padding">
+		<div class="row">
+			<div class="col-xl-12 no-padding">
+				<div class="page-header-section">
+					<h2>
+						<b>{{pharmacyDetail.organization_branch || 'Loading...'}}</b>
+					</h2>
+				</div>
+				<div class="card-subtitle">
+					<p *ngIf="!isEdit">
+						{{pharmacyDetail.locationInfo?.address || 'Loading...'}}
+					</p>
+					<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Address" [(ngModel)]="pharmacyDetail.locationInfo.address"></td>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div class="row">
 		<div class="col-lg-12">
 			<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
 		</div>
 	</div>
-
-	<div class="row">
-		<div class="col-lg-6">
-			<div class="detail-header">
-				<h2 class="page-header">
-					{{pharmacyDetail.organization_branch}}
-				</h2>
-				<p *ngIf="!isEdit">
-					{{pharmacyDetail.locationInfo?.address}}
-				</p>
-				<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Address" [(ngModel)]="pharmacyDetail.locationInfo.address"></td>
-			</div>
-		</div>
-		<div class="col-lg-6" style="text-align: right;">
-			<button class="btn btn-sm btn-primary" (click)="enableEdit()" *ngIf="isAdmin"><i class="fa fa-fw fa-pencil"></i> Edit</button>
-			<button class="btn btn-sm btn-secondary" (click)="disableEdit()" *ngIf="isEdit"><i class="fa fa-fw fa-times"></i> Cancel</button>
-		</div>
-	</div>
 	<br>
+	<div class="card card-block card-no-top-padding"  style="padding: 0px;">
+			<div class="page-header-section">
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="detail-header">
+							<h2 class="page-header">
+								{{pharmacyDetail.organization_branch}}
+							</h2>
+							<p *ngIf="!isEdit">
+								{{pharmacyDetail.locationInfo?.address}}
+							</p>
+							<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Address" [(ngModel)]="pharmacyDetail.locationInfo.address"></td>
+						</div>
+					</div>
+					<div class="col-lg-6" style="text-align: right;">
+						<button class="btn btn-sm btn-primary" (click)="enableEdit()" *ngIf="isAdmin"><i class="fa fa-fw fa-pencil"></i> Edit</button>
+						<button class="btn btn-sm btn-secondary" (click)="disableEdit()" *ngIf="isEdit"><i class="fa fa-fw fa-times"></i> Cancel</button>
+					</div>
+				</div>
+			</div>
+	</div> -->
+
+	<!-- <br> -->
 	<div class="row">
-		<div class="col-lg-6">
+		<div class="col-lg-12">
 			<div class="card">
 				<div class="card-header card-default">
-					Pharmacy Details
+					<h5>Pharmacy Details</h5>
 				</div>
 				<div class="card-block">
 					<div class="table-responsive">
@@ -93,15 +118,38 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-6">
+		<!-- <div class="col-lg-6">
 			<div class="card">
 				<div class="card-header card-default">
-					Location
+					<h5>Location</h5>
 				</div>
 				<div class="card-block">
 					<div style="height: 400px !important;">
 						<div id="map-pharmacy-view" style="height: 400px;"></div>
 					</div>
+				</div>
+			</div>
+		</div> -->
+	</div>
+
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default">
+					<h5>Expired Medicines</h5>
+				</div>
+				<div class="card-block">
+					<p style="text-align: center;">Empty List.</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="card">
+				<div class="card-header card-default">
+					<h5>Counterfeit</h5>
+				</div>
+				<div class="card-block">
+					<p style="text-align: center;">Empty List.</p>
 				</div>
 			</div>
 		</div>
@@ -112,7 +160,7 @@
 		<div class="col-lg-12">
 			<div class="card">
 				<div class="card-header card-default">
-					Transactions
+					<h5>Transactions</h5>
 				</div>
 				<div class="card-block">
 					<div class="table-responsive">
@@ -129,8 +177,8 @@
 								<tbody>
 									<tr *ngFor="let transaction of transactions">
 										<th scope="row">{{transaction.id}}</th>
-										<td>{{formatDate(transaction.transaction_datetime, true)}}</td>
-										<td>{{transaction.doctor_firstname}} {{transaction.doctor_lastname}}</td>
+										<td>{{formatDate(transaction.dispense_date, true)}}</td>
+										<td>{{transaction.doctor_firstname || 'null'}} {{transaction.doctor_lastname || 'null'}}</td>
 										<td>
 											<button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>
 											<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
@@ -138,6 +186,26 @@
 									</tr>
 								</tbody>
 							</table>
+							<p *ngIf="transactions.length == 0" style="text-align: center;">Empty List.</p>
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="loader" *ngIf="isLoading">
+										<div class="bounce1"></div>
+										<div class="bounce2"></div>
+										<div class="bounce3"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-6">
+									<!-- <pre class="card card-block card-header">Page: {{bigCurrentPage}} / {{numPages}}</pre> -->
+								</div>
+								<div class="col-lg-6" style="text-align: right;">
+									<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
+									[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination>
+								</div>
+							</div>
 					</div>
 				</div>
 			</div>

@@ -35,7 +35,7 @@ export class BlankPageComponent {
 	public currentPage:number = 1;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 175;
+	public bigTotalItems:number = 1000;
 	public bigCurrentPage:number = 1;
 
 	public setPage(pageNo:number):void {
@@ -66,8 +66,8 @@ export class BlankPageComponent {
 			this.pharmacies = resPharmacyData.result
 		});
 
-		this._pharmacyService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
+		/*this._pharmacyService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
 
 		// debounce keystroke events
 		this.searchControl.valueChanges

@@ -34,6 +34,13 @@ export class PharmacyViewComponent implements OnInit{
 	public isAdmin:boolean = false;
 	public transactions:Array<Object> = [];
 
+	public totalItems:number = 64;
+	public currentPage:number = 4;
+
+	public maxSize:number = 5;
+	public bigTotalItems:number = 175;
+	public bigCurrentPage:number = 1;
+
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
@@ -97,6 +104,17 @@ export class PharmacyViewComponent implements OnInit{
 		});
 	};
 
+	public setPage(pageNo:number):void {
+		this.currentPage = pageNo;
+	};
+
+	public pageChanged(event:any):void {
+		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], event.page)
+		.subscribe(resPharmacyData => {
+			this.transactions = resPharmacyData.result;
+		});
+	};
+
 	public enableEdit():void {
 		this.isEdit = true;
 	};
@@ -132,7 +150,7 @@ export class PharmacyViewComponent implements OnInit{
 				this.getLocation(this.pharmacyDetail.location.id);
 		});
 
-		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'])
+		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1)
 			.subscribe(data => {
 					console.log(data);
 					this.transactions = data.result;
