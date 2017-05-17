@@ -1,10 +1,23 @@
-<div class="container-fluid">
+<div class="page-cover-container"></div>
+
+<div class="container-fluid-list">
 	<!-- Page Heading -->
-	<div class="row">
-		<div class="col-xl-12">
-			<h2 class="page-header detail-header">
-				Message Center
-			</h2>
+	<div class="card card-block card-no-top-padding">
+		<div class="row">
+			<div class="col-xl-12 no-padding">
+				<div class="page-header-section">
+					<div class="row" style="height: 35px;">
+						<div class="col-lg-8">
+							<h2>
+								<b>Message Center</b>
+							</h2>
+						</div>
+						<div class="col-lg-4" style="text-align: right;">
+							<a class="btn btn-warning" (click)="login()"> <i class="fa fa-envelope"></i> Send Message </a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<!-- /.row -->
@@ -44,6 +57,17 @@
 						</tbody>
 					</table>
 				</div>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="loader" *ngIf="isLoading">
+							<div class="bounce1"></div>
+							<div class="bounce2"></div>
+							<div class="bounce3"></div>
+						</div>
+					</div>
+				</div>
+
 				<div class="row">
 					<div class="col-lg-6">
 						<!-- <pre class="card card-block card-header">Page: {{bigCurrentPage}} / {{numPages}}</pre> -->

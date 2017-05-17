@@ -70,6 +70,13 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
+	getAllPharmacyLocation(){
+		let url = this.endpoint + 'functions/get-all-pharmacy-location';
+
+		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
 	getPharmacyCountPerProvince(){
 		let url = this.endpoint + 'functions/get-pharmacy-count-per-province';
 

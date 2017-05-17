@@ -78,7 +78,7 @@ export class DashComponent implements OnInit {
 				}
 			},
 			series: [{
-				name: 'Brands',
+				name: 'Percentage',
 				colorByPoint: true,
 				data: pharmacyData
 			}]
@@ -192,6 +192,13 @@ export class DashComponent implements OnInit {
 				/*var tmp = data.result;
 				tmp.splice(10)
 				this.transactions = tmp;*/
+		});
+
+		this._helperService.getAllPharmacyLocation()
+		.subscribe(data => {
+			/*var tmp = data.result;
+			tmp.splice(10)
+			this.transactions = tmp;*/
 		});
 	}
 }

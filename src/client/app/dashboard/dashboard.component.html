@@ -1,5 +1,5 @@
 <top-nav></top-nav>
 <sidebar-cmp></sidebar-cmp>
-<section class="main-container" [ngClass]="{sidebarPushRight: isActive, rightContent: isActive}">	
-	<router-outlet></router-outlet>
+<section class="main-container" [ngClass]="{sidebarPushRight: isActive, rightContent: isActive}">
+	<router-outlet (deactivate)="onDeactivate()"></router-outlet>
 </section>

@@ -658,13 +658,18 @@ export class HomeComponent implements OnInit {
 				}]
 		}];
 
+		var input = document.getElementById('pac-input');
+
 		var map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 7,
+			zoom: 6,
 			center: {lat: 14.599512, lng: 120.984222},
 			mapTypeControl: false,
+			zoomControl: false,
 			streetViewControl: false,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
+
+		map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
 		map.setOptions({
 			styles: labelsOff

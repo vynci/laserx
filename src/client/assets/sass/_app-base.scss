@@ -52,6 +52,12 @@
   -webkit-border-radius: 3px;
 }
 
+.divider {
+  border: 1px solid lightgray;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 $topnav-background-color: #000;
 .user-avatar {
     border: 3px solid #FFF;
@@ -394,6 +400,7 @@ a:hover{
     text-align: center;
     color: #333;
     padding: 3em;
+    padding-top: 100px;
     .col-lg-4{
         padding :0;
     }
@@ -441,7 +448,6 @@ a:hover{
     }
 
     .form-group {
-        padding: 8px 0;
         input::-webkit-input-placeholder {
         color: #333 !important;
         }
@@ -458,9 +464,7 @@ a:hover{
         color: #333 !important;
         }
     }
-    .form-content {
-        padding: 18px 0;
-    }
+
 }
 .nested-menu {
     .list-group-item {

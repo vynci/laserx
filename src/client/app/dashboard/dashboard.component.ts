@@ -11,4 +11,7 @@ import { Component } from '@angular/core';
 })
 
 export class DashboardComponent {
+	onDeactivate() {
+		document.body.scrollTop = 0;
+	}
 }

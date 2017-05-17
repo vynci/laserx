@@ -22,6 +22,8 @@ export class MessageCenterComponent {
 	public totalItems:number = 1;
 	public currentPage:number = 1;
 
+	public isLoading:boolean = false;
+
 	public maxSize:number = 1;
 	public bigTotalItems:number = 1;
 	public bigCurrentPage:number = 1;
@@ -44,8 +46,13 @@ export class MessageCenterComponent {
 	}
 
 	ngOnInit(): void {
+		this.isLoading = true;
+
 		this._messageService.getAll()
-		.subscribe(data => this.messages = data.result);
+		.subscribe(data => {
+			this.isLoading = false;
+			this.messages = data.result
+		});
 /*
 		this._messageService.getCount()
 		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
