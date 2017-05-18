@@ -1,17 +1,43 @@
-<!-- <button class="btn btn-default" id="toggle-sidebar" type="button" (click)="eventCalled()">
+<button class="btn btn-default side-bar-mobile-enable" id="toggle-sidebar" type="button" (click)="eventCalled()">
     &#9776;
-</button> -->
+</button>
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
     <ul class="list-group">
         <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item">
             Home
         </a>
+
+        <div class="nested-menu">
+          <a class="list-group-item" (click)="addExpandClass('pages')">
+            <span style="color: white; background: #007402; padding: 8px; border-radius: 6px;"><i class="fa fa-caret-down"></i> &nbsp; Actions</span>
+          </a>
+          <li class="nested" [ngClass]="{'expand' : showMenu === 'pages' , 'non-expand' : showMenu !== 'pages'}">
+            <ul class="submenu">
+              <li>
+                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(234, 68, 68);">Licensing</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(14, 98, 142);">Expired Meds</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(5, 37, 53);">Counterfeit</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(46, 182, 78)">Disaster Recovery</span></a>
+              </li>
+              <li>
+                <a (click)="eventCalled()" routerLink="/dashboard/message-center" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: #EB9316">Message Center</span></a>
+              </li>
+            </ul>
+          </li>
+        </div>
+
         <a (click)="eventCalled()" routerLink="/dashboard/dash" [routerLinkActive]="['router-link-active']" class="list-group-item">
           Dashboard
         </a>
-        <a (click)="eventCalled()" routerLink="/dashboard/message-center" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <!-- <a (click)="eventCalled()" routerLink="/dashboard/message-center" [routerLinkActive]="['router-link-active']" class="list-group-item">
           Message Center
-        </a>
+        </a> -->
         <a (click)="eventCalled()" [routerLink]="['transactions']" [routerLinkActive]="['router-link-active']" class="list-group-item">
             Transactions
         </a>

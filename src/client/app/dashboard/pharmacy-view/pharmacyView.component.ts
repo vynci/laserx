@@ -89,6 +89,7 @@ export class PharmacyViewComponent implements OnInit{
 				center: {lat: data.result[0].latitude, lng: data.result[0].longitude},
 				mapTypeControl: false,
 				zoomControl: false,
+				fullscreenControl: false,
 				streetViewControl: false,
 				mapTypeId: google.maps.MapTypeId.ROADMAP
 				});

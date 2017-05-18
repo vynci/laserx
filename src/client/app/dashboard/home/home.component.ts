@@ -665,6 +665,7 @@ export class HomeComponent implements OnInit {
 			center: {lat: 14.599512, lng: 120.984222},
 			mapTypeControl: false,
 			zoomControl: false,
+			fullscreenControl: false,
 			streetViewControl: false,
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
