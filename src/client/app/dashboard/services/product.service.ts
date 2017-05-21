@@ -9,7 +9,7 @@ export class ProductService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/product';
+	private url = this.endpoint + 'classes/packaging';
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
 
@@ -43,14 +43,14 @@ export class ProductService {
 
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
-		let options = new RequestOptions({ headers: this.headers, body: {'table_name' : 'product'}});
+		let options = new RequestOptions({ headers: this.headers, body: {'table_name' : 'packaging'}});
 
-		return this.http.post(url, JSON.stringify({table_name: 'product'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'packaging'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 
 	update(id: number, data: any){
-		let url = this.endpoint + 'classes/product/' + id;
+		let url = this.endpoint + 'classes/packaging/' + id;
 
 		return this.http.put(url, JSON.stringify(data), {headers: this.headers})
 		.map((response: Response) => response.json());

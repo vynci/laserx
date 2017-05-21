@@ -18,7 +18,7 @@ export class TransactionService {
 
 	getAll(){
 
-		let search = new URLSearchParams('sort=' + '[{"prescription_date":-1}]');
+		let search = new URLSearchParams('sort=' + '[{"dispense_date":-1}]');
 		search.append('limit', '10');
 
 		let options = new RequestOptions({ headers: this.headers, search: search});
@@ -40,7 +40,7 @@ export class TransactionService {
 		let search = new URLSearchParams('where={"pharmacy.id":{"eq":' + id + '}}');
 		search.append('limit', '10');
 		search.append('skip', (page - 1).toString());
-		search.append('sort', '[{"prescription_date":-1}]');
+		search.append('sort', '[{"dispense_date":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 		return this.http.get(this.url, options)
@@ -52,7 +52,7 @@ export class TransactionService {
 
 		let search = new URLSearchParams('skip=' + skip);
 		search.append('limit', limit.toString());
-		search.append('sort', '[{"prescription_date":-1}]');
+		search.append('sort', '[{"dispense_date":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 

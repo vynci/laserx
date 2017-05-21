@@ -52,11 +52,11 @@
 								</tr>
 								<tr>
 									<th scope="row">Doctor Name</th>
-									<td>null null</td>
+									<td>{{getTransactionInfo(transactionDetail.info, 'physician')}}</td>
 								</tr>
 								<tr>
 									<th scope="row">License Number</th>
-									<td>null</td>
+									<td>{{transactionDetail.physician_license_number}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -92,12 +92,12 @@
 									<tr *ngFor="let transactionProduct of transactionProducts">
 										<th scope="row">{{transactionProduct.id || 'n/a'}}</th>
 										<td>{{transactionProduct.packaging  || 'n/a'}}</td>
-										<td>{{transactionProduct.quantity_dispensed  || 'n/a'}}</td>
-										<td>{{transactionProduct.quantity_prescribed}} {{transactionProduct.quantity_unit}}</td>
-										<td>{{transactionProduct.duration}}x a {{transactionProduct.duration_unit}}</td>
+										<td>{{transactionProduct.quantity_dispensed  || 'n/a'}} {{transactionProduct.unit_dispensed  || 'n/a'}}</td>
+										<td>{{transactionProduct.quantity_prescribed}} {{transactionProduct.unit_prescribed  || 'n/a'}}</td>
+										<td>{{transactionProduct.instruction}}x {{transactionProduct.instruction_unit}}</td>
 										<td>{{transactionProduct.batch_lot_number  || 'n/a'}}</td>
 										<td>{{transactionProduct.expiry_date  || 'n/a'}}</td>
-										<td>{{transactionProduct.remarks  || 'n/a'}}</td>
+										<td>{{transactionProduct.remark  || 'n/a'}}</td>
 									</tr>
 								</tbody>
 							</table>
@@ -124,8 +124,8 @@
 				</div>
 				<div class="card-block">
 					<div style="text-align: center;">
-						<img [src]="transactionDetail.prescription?.key" *ngIf="transactionDetail.prescription?.key" alt="">
-						<div *ngIf="!transactionDetail.prescription?.key"><p>No Image Available.</p></div>
+						<img [src]="transactionDetail?.prescription_image_link" *ngIf="transactionDetail?.prescription_image_link" alt="">
+						<div *ngIf="!transactionDetail?.prescription_image_link"><p>No Image Available.</p></div>
 					</div>
 				</div>
 			</div>

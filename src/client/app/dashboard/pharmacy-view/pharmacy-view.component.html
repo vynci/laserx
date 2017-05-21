@@ -61,7 +61,7 @@
 							<tbody>
 								<tr>
 									<th scope="row">Owner's Name</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.organization_ownership || 'n/a'}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.ownerName || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Owner's Name" [(ngModel)]="pharmacyDetail.owner_firstname"></td>
 								</tr>
 								<tr>
@@ -81,7 +81,7 @@
 								</tr>
 								<tr>
 									<th scope="row">LTO Expiration Date</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.expiration_date || 'n/a'}}</td>
+									<td *ngIf="!isEdit">{{formatDate(pharmacyDetail.license_expiration_date, true) || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="LTO Expiration Date" [(ngModel)]="pharmacyDetail.gov_id1_expirationdate"></td>
 								</tr>
 								<tr>

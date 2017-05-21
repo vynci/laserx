@@ -50,7 +50,7 @@
                     <th scope="row">{{transaction.id}}</th>
                     <td>{{formatDate(transaction.dispense_date, true)}}</td>
                     <td><a style="cursor: pointer;" (click)="viewPharmacy(transaction.pharmacy?.id)">{{getPharmacyName(transaction.pharmacy?.id || 'n/a')}}</a></td>
-                    <td>{{getPhysicianName(transaction.physician?.id) || ''}}</td>
+                    <td>{{getTransactionInfo(transaction.info, 'physician')}}</td>
                     <td>
                       <button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>
                       <button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>

@@ -65,6 +65,19 @@ export class TableComponent {
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
 	}
 
+	public getTransactionInfo(data:string, type:string):string {
+		var result = 'Loading...';
+
+		if(data){
+			var infoObject = JSON.parse(data);
+			if(type === 'physician'){
+				result = infoObject.physician_firstname + ' ' + infoObject.physician_middlename + ' ' + infoObject.physician_lastname;
+			}
+		}
+
+		return result;
+	}
+
 	public getPharmacyName(id:number):string {
 		var pharmacyName = 'Loading...';
 
@@ -137,7 +150,6 @@ export class TableComponent {
 	};
 
 	public viewTransaction(transactionId:any):void{
-		console.log(transactionId);
 		this.router.navigate(['/dashboard/transaction-view', transactionId]);
 	}
 
@@ -154,8 +166,8 @@ export class TableComponent {
 			this.parseData(this.transactions);
 		});
 
-		/*this._transactionService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
+		this._transactionService.getCount()
+		.subscribe(data => this.bigTotalItems = data.result[0].row_count);
 	}
 
 }

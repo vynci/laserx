@@ -54,6 +54,29 @@ export class TransactionViewComponent {
 			return dateString;
 	};
 
+	public getTransactionInfo(data:string, type:string):string {
+		var result = 'Loading...';
+
+		if(data){
+			var infoObject = JSON.parse(data);
+			if(type === 'physician'){
+				result = infoObject.physician_firstname + ' ' + infoObject.physician_middlename + ' ' + infoObject.physician_lastname;
+			}
+		}
+
+		return result;
+	}
+
+	public getLicensenumber(data:string):string {
+		var result = 'null';
+
+		if(data){
+			result = data;
+		}
+
+		return result;
+	}
+
 	private getPharmacyName(id:number):void {
 		this._pharmacyService.getById(id)
 			.subscribe(data => {
@@ -68,6 +91,7 @@ export class TransactionViewComponent {
 		this._transactionService.getById(this.route.snapshot.params['id'])
 		.subscribe(data => {
 			this.transactionDetail = data.result[0];
+			console.log(this.transactionDetail);
 			this.getPharmacyName(data.result[0].pharmacy.id);
 		});
 	}

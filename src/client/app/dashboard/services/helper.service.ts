@@ -37,6 +37,15 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
+	getUserByOrganizationId(id: number){
+		let url = this.endpoint + 'users/'
+		let search = new URLSearchParams('where={"organization.id":{"eq":' + id + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
 	updateUser(id: number, data: any){
 		let url = this.endpoint + 'users/' + id;
 		let headers = new Headers({

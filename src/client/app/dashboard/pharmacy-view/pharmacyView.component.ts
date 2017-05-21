@@ -5,6 +5,7 @@ import { Location }               from '@angular/common';
 import { PharmacyService } from '../services/pharmacy.service';
 import { TransactionService } from '../services/transaction.service';
 import { LocationService } from '../services/location.service';
+import { HelperService } from '../services/helper.service';
 
 declare var pharmacyDetail: any;
 declare var google: any;
@@ -13,7 +14,7 @@ declare var google: any;
 	moduleId: module.id,
     selector: 'pharmacy-view',
     templateUrl: './pharmacy-view.component.html',
-		providers: [PharmacyService, LocationService, TransactionService]
+		providers: [PharmacyService, LocationService, TransactionService, HelperService]
 })
 
 export class PharmacyViewComponent implements OnInit{
@@ -24,7 +25,10 @@ export class PharmacyViewComponent implements OnInit{
 		},
 		locationInfo : {
 
-		}
+		},
+		ownerName : '',
+		mobile : '',
+		email : '',
 	}
 
 	isEdit: boolean = false;
@@ -47,7 +51,8 @@ export class PharmacyViewComponent implements OnInit{
 		private location: Location,
 		private _pharmacyService : PharmacyService,
 		private _locationService : LocationService,
-		private _transactionService : TransactionService
+		private _transactionService : TransactionService,
+		private _helperService : HelperService
 	) {}
 
 	public getLocation(locationId:number):void {
@@ -150,11 +155,17 @@ export class PharmacyViewComponent implements OnInit{
 			.subscribe(data => {
 				this.pharmacyDetail = data.result[0];
 				this.getLocation(this.pharmacyDetail.location.id);
+
+				this._helperService.getUserByOrganizationId(this.route.snapshot.params['id'])
+				.subscribe(data => {
+					this.pharmacyDetail.ownerName = data.result[0].first_name + ' ' + data.result[0].middle_name + ' ' + data.result[0].last_name;
+					this.pharmacyDetail.mobile = data.result[0].mobile;
+					this.pharmacyDetail.email = data.result[0].email;
+				});
 		});
 
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1)
 			.subscribe(data => {
-					console.log(data);
 					this.transactions = data.result;
 		});
 	}

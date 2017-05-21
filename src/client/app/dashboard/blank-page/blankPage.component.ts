@@ -35,7 +35,7 @@ export class BlankPageComponent {
 	public currentPage:number = 1;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 1000;
+	public bigTotalItems:number = 9960;
 	public bigCurrentPage:number = 1;
 
 	public setPage(pageNo:number):void {
