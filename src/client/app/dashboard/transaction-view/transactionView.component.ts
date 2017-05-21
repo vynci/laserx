@@ -17,6 +17,7 @@ export class TransactionViewComponent {
 	transactionDetail = {};
 	public transactionProducts:Array<Object> = [];
 	public pharmacyName: string = '';
+	private sortType:string = 'dispense_date';
 
 	constructor(
 		private route: ActivatedRoute,
@@ -38,7 +39,7 @@ export class TransactionViewComponent {
 	};
 
 	public pageChanged(event:any):void {
-		this._transactionService.getByPage(event.itemsPerPage, event.page)
+		this._transactionService.getByPage(event.itemsPerPage, event.page, this.sortType)
 		.subscribe(data => this.transactionProducts = data.result);
 	};
 

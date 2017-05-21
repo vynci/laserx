@@ -20,6 +20,8 @@ export class TableComponent {
 	public transactions:Array<Object> = [];
 	private pharmacyNameList:Array<PharmacyModel> = [];
 	private physicianNameList:Array<PhysicianModel> = [];
+	private sortType:string = '"dispense_date":-1';
+	private isSortAscending:boolean = false;
 	public isAdmin:boolean = false;
 	public isLoading:boolean = false;
 
@@ -30,8 +32,8 @@ export class TableComponent {
 		private _helperService : HelperService
 	){}
 
-	public totalItems:number = 64;
-	public currentPage:number = 4;
+	public pageLimit:number = 10;
+	public currentPage:number = 1;
 
 	public maxSize:number = 5;
 	public bigTotalItems:number = 1000;
@@ -56,7 +58,6 @@ export class TableComponent {
 	};
 
 	public filterTransactionsByDate():void{
-		console.log(this.filterDate);
 		this.filterDateString = this.filterDate.from.month + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year;
 		this.filterDateString = this.filterDateString + ' - ' + this.filterDate.to.month + '/' + this.filterDate.to.day + '/' + this.filterDate.to.year;
 	}
@@ -91,6 +92,25 @@ export class TableComponent {
 
 		return pharmacyName;
 	};
+
+	public sortList(type:string):void {
+		
+		this.pharmacyNameList = [];
+
+		if(this.isSortAscending){
+			this.isSortAscending = false;
+			this.sortType = '"' + type + '"' + ':' + '-1';
+		}else{
+			this.isSortAscending = true;
+			this.sortType = '"' + type + '"' + ':' + '+1';			
+		}
+
+		this._transactionService.getByPage(10, this.currentPage, this.sortType)
+		.subscribe(resPharmacyData => {
+			this.transactions = resPharmacyData.result
+			this.parseData(this.transactions);
+		});		
+	};	
 
 	public getPhysicianName(id:number):string {
 		var physicianName = 'n/a';
@@ -142,7 +162,7 @@ export class TableComponent {
 	public pageChanged(event:any):void {
 		this.pharmacyNameList = [];
 
-		this._transactionService.getByPage(event.itemsPerPage, event.page)
+		this._transactionService.getByPage(this.pageLimit, event.page, this.sortType)
 		.subscribe(resPharmacyData => {
 			this.transactions = resPharmacyData.result
 			this.parseData(this.transactions);
@@ -159,12 +179,19 @@ export class TableComponent {
 			this.isAdmin = true;
 		}
 
-		this._transactionService.getAll()
+		// this._transactionService.getAll()
+		// .subscribe(data => {
+		// 	this.isLoading = false;
+		// 	this.transactions = data.result;
+		// 	this.parseData(this.transactions);
+		// });
+
+		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType)
 		.subscribe(data => {
 			this.isLoading = false;
 			this.transactions = data.result;
 			this.parseData(this.transactions);
-		});
+		});		
 
 		this._transactionService.getCount()
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);

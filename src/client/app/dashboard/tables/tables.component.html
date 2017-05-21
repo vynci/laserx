@@ -38,10 +38,10 @@
               <table class="table table-bordered table-hover">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Dispense Date</th>
-                    <th>Pharmacy Name</th>
-                    <th>Doctor</th>
+                    <th (click)="sortList('id')">ID</th>
+                    <th (click)="sortList('dispense_date')">Dispense Date</th>
+                    <th (click)="sortList('organization_branch')">Pharmacy Name</th>
+                    <th (click)="sortList('dispense_date')">Doctor</th>
                     <th>Transaction</th>
                   </tr>
                 </thead>
@@ -49,7 +49,7 @@
                   <tr *ngFor="let transaction of transactions">
                     <th scope="row">{{transaction.id}}</th>
                     <td>{{formatDate(transaction.dispense_date, true)}}</td>
-                    <td><a style="cursor: pointer;" (click)="viewPharmacy(transaction.pharmacy?.id)">{{getPharmacyName(transaction.pharmacy?.id || 'n/a')}}</a></td>
+                    <td><a style="cursor: pointer;" (click)="viewPharmacy(transaction.pharmacy?.id)">{{getPharmacyName(transaction.pharmacy?.id) || 'n/a'}}</a></td>
                     <td>{{getTransactionInfo(transaction.info, 'physician')}}</td>
                     <td>
                       <button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>

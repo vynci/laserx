@@ -47,14 +47,24 @@ export class TransactionService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPage(limit: number, page: number){
+	getByPage(limit: number, page: number, sortType:string){
+		let fromDate = new Date(2017,4,17);
+		let toDate = new Date(2017,4,19);
+
 		let skip = (page - 1) * limit;
-
 		let search = new URLSearchParams('skip=' + skip);
+	
+		let searchParams = {
+			'dispense_date' : {
+				gte : fromDate.toISOString(),
+				lte : toDate.toISOString()
+			}
+		};
+	
+		search.append('where', JSON.stringify(searchParams));		
 		search.append('limit', limit.toString());
-		search.append('sort', '[{"dispense_date":-1}]');
+		search.append('sort', '[{' + sortType + '}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
-
 
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
