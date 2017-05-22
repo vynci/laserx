@@ -53,15 +53,15 @@ export class TransactionService {
 
 		let skip = (page - 1) * limit;
 		let search = new URLSearchParams('skip=' + skip);
-	
+
 		let searchParams = {
 			'dispense_date' : {
 				gte : fromDate.toISOString(),
 				lte : toDate.toISOString()
 			}
 		};
-	
-		search.append('where', JSON.stringify(searchParams));		
+
+		/*search.append('where', JSON.stringify(searchParams));		*/
 		search.append('limit', limit.toString());
 		search.append('sort', '[{' + sortType + '}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});

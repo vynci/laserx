@@ -39,7 +39,7 @@
                 <thead>
                   <tr>
                     <th (click)="sortList('id')">ID</th>
-                    <th (click)="sortList('dispense_date')">Dispense Date</th>
+                    <th (click)="sortList('dispense_date')">Dispensed Date</th>
                     <th (click)="sortList('organization_branch')">Pharmacy Name</th>
                     <th (click)="sortList('dispense_date')">Doctor</th>
                     <th>Transaction</th>
@@ -47,7 +47,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let transaction of transactions">
-                    <th scope="row">{{transaction.id}}</th>
+                    <td>{{transaction.id}}</td>
                     <td>{{formatDate(transaction.dispense_date, true)}}</td>
                     <td><a style="cursor: pointer;" (click)="viewPharmacy(transaction.pharmacy?.id)">{{getPharmacyName(transaction.pharmacy?.id) || 'n/a'}}</a></td>
                     <td>{{getTransactionInfo(transaction.info, 'physician')}}</td>
@@ -72,6 +72,7 @@
 
             <div class="row">
               <div class="col-lg-6">
+                <p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of {{bigTotalItems}} entries</p>
               </div>
               <div class="col-lg-6" style="text-align: right;">
                 <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"

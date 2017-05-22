@@ -90,12 +90,12 @@
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Business Classification" [(ngModel)]="pharmacyDetail.business_classification"></td>
 								</tr>
 								<tr>
-									<th scope="row">Email</th>
+									<th scope="row">Email Address</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.email || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Email" [(ngModel)]="pharmacyDetail.email"></td>
 								</tr>
 								<tr>
-									<th scope="row">Mobile No.</th>
+									<th scope="row">Mobile Number</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.mobile || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Mobile No." [(ngModel)]="pharmacyDetail.mobile"></td>
 								</tr>

@@ -144,7 +144,7 @@ export class SeedConfig {
    * `index.html`.
    * @type {string}
    */
-  APP_TITLE = 'SnapRX - Snap. Scan. Save.';
+  APP_TITLE = 'FDA Electronic Logbook';
 
   /**
    * The base folder of the applications source files.

@@ -3,26 +3,28 @@
 		<div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3">
       <img src="assets/img/logo.png" width="100%" />
 			<br><br>
-			<!--<form>-->
-				<div class="form-content">
-					<div class="form-group input-group-lg">
-						<input type="text" class="form-control input-underline input-lg" id="" placeholder="Username" [(ngModel)]="loginInfo.username">
-					</div>
-
-					<div class="form-group input-group-lg">
-						<input type="password" class="form-control input-underline input-lg" id="" placeholder="Password" [(ngModel)]="loginInfo.password">
-					</div>
+			<form name="form" role="form" (ngSubmit)="login()" #f="ngForm" novalidate>
+				<div class="form-group input-group-lg">
+					<input type="text" name="username" class="form-control input-underline input-lg" id="" placeholder="Username" [(ngModel)]="loginInfo.username" #username="ngModel" required>
 				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div style="text-align: left;">
-							<a class="btn btn-success" style="background-color: #007402; color: #fff; border: 0; border-bottom: 3px solid #003618;" (click)="login()"> Submit </a>
-							&nbsp;
+
+				<div class="form-group input-group-lg">
+					<input type="password" name="password" class="form-control input-underline input-lg" id="" placeholder="Password" [(ngModel)]="loginInfo.password" #password="ngModel" required>
+				</div>
+
+				<div class="form-group">
+					<div class="row">
+						<div class="col-md-4">
+							<div style="text-align: left;">
+								<button class="btn btn-success" style="background-color: #007402; color: #fff; border: 0; border-bottom: 3px solid #003618; text-transform: uppercase; font-weight: bold;"> Submit </button>
+								&nbsp;
+							</div>
+						</div>
+						<div class="col-md-8">
 						</div>
 					</div>
-					<div class="col-md-8">
-					</div>
 				</div>
+
 				<br>
 				<div class="loader" *ngIf="isLoading">
 					<div class="bounce1"></div>
@@ -30,11 +32,7 @@
 					<div class="bounce3"></div>
 				</div>
 				<p *ngIf="!isLoading">{{status}}</p>
-
-
-
-				<!-- <a type="submit" class="btn rounded-btn" routerLink="/signup">Register</a> -->
-			<!--</form>-->
+			</form>
 		</div>
 	</div>
 </div>
