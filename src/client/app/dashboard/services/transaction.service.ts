@@ -47,9 +47,14 @@ export class TransactionService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPage(limit: number, page: number, sortType:string){
-		let fromDate = new Date(2017,4,17);
-		let toDate = new Date(2017,4,19);
+	getByPage(limit: number, page: number, sortType:string, dateFilter: any){
+		let fromDate = new Date(2000,1,1);
+		let toDate = new Date();
+
+		if(dateFilter){
+			fromDate = new Date(dateFilter.from.year, dateFilter.from.month, dateFilter.from.day);
+			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 1);
+		}
 
 		let skip = (page - 1) * limit;
 		let search = new URLSearchParams('skip=' + skip);
@@ -61,7 +66,7 @@ export class TransactionService {
 			}
 		};
 
-		/*search.append('where', JSON.stringify(searchParams));		*/
+		search.append('where', JSON.stringify(searchParams));
 		search.append('limit', limit.toString());
 		search.append('sort', '[{' + sortType + '}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});

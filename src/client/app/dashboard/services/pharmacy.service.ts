@@ -48,18 +48,36 @@ export class PharmacyService {
 		.map((response: Response) => response.json());
 	}
 
-	find(searchString: string, page: number){
+	find(searchString: string, page: number, isLicenseExpired: boolean){
 		let search = new URLSearchParams();
 		let skip = (page - 1) * 10;
+		let toDate = new Date();
 
-		let searchParams = {
-			'organization_branch' : {
-				has : searchString
-			},
-			'organization_type' : {
-				eq : 'Pharmacy'
+		let searchParams = {};
+
+		if(isLicenseExpired){
+			searchParams = {
+				'organization_branch' : {
+					has : searchString
+				},
+				'organization_type' : {
+					eq : 'Pharmacy'
+				},
+				'license_expiration_date' : {
+					lte : toDate.toISOString()
+				}
 			}
-		};
+
+		}else{
+			searchParams = {
+				'organization_branch' : {
+					has : searchString
+				},
+				'organization_type' : {
+					eq : 'Pharmacy'
+				}
+			}
+		}
 
 		search.append('where', JSON.stringify(searchParams));
 		search.append('skip', skip.toString());

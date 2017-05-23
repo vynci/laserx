@@ -23,11 +23,8 @@
 					<div class="col-lg-3">
 						<div class="form-group input-group">
 							<span class="input-group-addon"><i class="fa fa-filter"></i></span>
-							<select class="form-control" placeholder="Select Filter">
-								<option>All Pharmacies</option>
-								<option>Expired License</option>
-								<option>Expired Medicines</option>
-								<option>Counterfeit</option>
+							<select class="form-control" placeholder="Select Filter" [(ngModel)]="selectedFilterValue" (ngModelChange)="filter()">
+								<option *ngFor="let filter of filters" [ngValue]="filter">{{filter}}</option>
 							</select>
 						</div>
 					</div>
@@ -52,7 +49,7 @@
 						</thead>
 						<tbody>
 							<tr *ngFor="let pharmacy of pharmacies">
-								<td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(pharmacy.id)">{{pharmacy.organization_branch}}</a></td>
+								<td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(pharmacy.id)">{{pharmacy.organization_chain}} {{pharmacy.organization_branch}}</a></td>
 								<td>{{pharmacy.organization_ownership || 'n/a'}}</td>
 								<td>Metro Manila</td>
 								<td>{{pharmacy.email || 'n/a'}}</td>

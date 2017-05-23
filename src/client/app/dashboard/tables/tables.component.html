@@ -23,7 +23,7 @@
               <div class="col-lg-3">
                 <div class="form-group input-group">
                   <span class="input-group-btn"><button class="btn btn-secondary" type="button" (click)="dateModal.show()"><i class="fa fa-calendar"></i></button></span>
-                  <input type="text" class="form-control" placeholder="Filter By Date.." [(ngModel)]="filterDateString">
+                  <input type="text" class="form-control" placeholder="Filter By Date.." [(ngModel)]="filterDateString" [readonly]="true">
                 </div>
               </div>
               <div class="col-lg-3" style="text-align: right;">
@@ -117,31 +117,67 @@
         <div class="form-group">
           <label for=""><b>From:</b></label>
           <div class="row">
-            <div class="col-md-4">
-              <input type="number" min="1" max="12" class="form-control" placeholder="MM" [(ngModel)]="filterDate.from.month">
+            <div class="col-md-3">
+              <!-- <input type="number" min="1" max="12" class="form-control" placeholder="MM" [(ngModel)]="filterDate.from.month"> -->
+              <select class="form-control" placeholder="Month" [(ngModel)]="filterDate.from.month">
+                <option *ngFor="let month of monthList; let i = index" [attr.data-index]="i" [ngValue]="i">{{month}}</option>
+              </select>
             </div>
-            <div class="col-md-4">
-              <input type="number" min="1" max="31" class="form-control" placeholder="DD" [(ngModel)]="filterDate.from.day">
+            <div class="col-md-3">
+              <select class="form-control" placeholder="Month" [(ngModel)]="filterDate.from.day">
+                <option *ngFor="let day of dayList" [ngValue]="day">{{day}}</option>
+              </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <input type="number" min="2000" max="3000" class="form-control" placeholder="YYYY" [(ngModel)]="filterDate.from.year">
             </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-warning" (click)="getDateToday('from')">Today</button>
+            </div>
+
           </div>
         </div>
 
         <div class="form-group">
           <label for=""><b>To:</b></label>
           <div class="row">
-            <div class="col-md-4">
-              <input type="number" min="1" max="12" class="form-control" placeholder="MM" [(ngModel)]="filterDate.to.month">
+            <div class="col-md-3">
+              <select class="form-control" placeholder="Month" [(ngModel)]="filterDate.to.month">
+                <option *ngFor="let month of monthList; let i = index" [attr.data-index]="i" [ngValue]="i">{{month}}</option>
+              </select>
             </div>
-            <div class="col-md-4">
-              <input type="number" min="1" max="31" class="form-control" placeholder="DD" [(ngModel)]="filterDate.to.day">
+            <div class="col-md-3">
+              <select class="form-control" placeholder="Month" [(ngModel)]="filterDate.to.day">
+                <option *ngFor="let day of dayList" [ngValue]="day">{{day}}</option>
+              </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <input type="number" min="2000" max="3000" class="form-control" placeholder="YYYY" [(ngModel)]="filterDate.to.year">
             </div>
+            <div class="col-md-3">
+              <button type="button" class="btn btn-warning" (click)="getDateToday('to')">Today</button>
+            </div>
           </div>
+        </div>
+
+        <hr>
+
+        <div>
+          <div class="row">
+            <div class="col-md-3 col-sm-3">
+              <button type="button" class="btn btn-secondary" (click)="quickDateFilter('lastMonth')">Last Month</button>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <button type="button" class="btn btn-secondary" (click)="quickDateFilter('thisMonth')">This Month</button>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <button type="button" class="btn btn-secondary" (click)="quickDateFilter('thisWeek')">This Week</button>
+            </div>
+            <div class="col-md-3 col-sm-3">
+              <button type="button" class="btn btn-secondary" (click)="quickDateFilter('thisYear')">This Year</button>
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="modal-footer">

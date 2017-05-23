@@ -17,13 +17,16 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 
 export class TableComponent {
 
-	public transactions:Array<Object> = [];
 	private pharmacyNameList:Array<PharmacyModel> = [];
 	private physicianNameList:Array<PhysicianModel> = [];
 	private sortType:string = '"dispense_date":-1';
 	private isSortAscending:boolean = false;
+	private today:any = new Date();
+
 	public isAdmin:boolean = false;
 	public isLoading:boolean = false;
+
+	public transactions:Array<Object> = [];
 
 	constructor(
 		private router: Router,
@@ -42,24 +45,85 @@ export class TableComponent {
 	public filterDateString:string = null;
 	public filterDate:any = {
 		from : {
-			month : null,
-			day : null,
-			year : null
+			month : 0,
+			day : 1,
+			year : 2000
 		},
 		to : {
-			month : null,
-			day : null,
-			year : null
+			month : this.today.getMonth(),
+			day : this.today.getDate(),
+			year : this.today.getFullYear()
 		}
 	};
+
+	private monthList:Array<string> = [
+		'January', 'Febuary', 'March', 'April',
+		'May', 'June', 'July', 'August',
+		'September', 'October', 'November', 'December',
+	];
+
+	private dayList:Array<number> = [];
+
+	private generateDays():void{
+		for (var i = 1; i < 32; i++) {
+			this.dayList.push(i);
+		}
+	}
 
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
 	};
 
+	public getDateToday(type:string):void {
+		this.filterDate[type].month = this.today.getMonth();
+		this.filterDate[type].day = this.today.getDate();
+		this.filterDate[type].year = this.today.getFullYear();
+	};
+
+	public quickDateFilter(type:string):void {
+		var month, day, year = 0;
+
+		this.filterDate.to.month = this.today.getMonth();
+		this.filterDate.to.day = this.today.getDate();
+		this.filterDate.to.year = this.today.getFullYear();
+
+		if(type === 'lastMonth'){
+			month = this.today.getMonth() - 1;
+			day = 1;
+			year = this.today.getFullYear();
+
+			this.filterDate.to.month = this.today.getMonth();
+			this.filterDate.to.day = 1;
+			this.filterDate.to.year = this.today.getFullYear();
+
+		} else if( type === 'thisMonth'){
+			month = this.today.getMonth();
+			day = 1;
+			year = this.today.getFullYear();
+		} else if( type === 'thisWeek'){
+			month = this.today.getMonth();
+			day = this.today.getDate() - this.today.getDay();
+			year = this.today.getFullYear();
+		} else {
+			month = 0;
+			day = 1;
+			year = this.today.getFullYear();
+		}
+
+		this.filterDate.from.month = month;
+		this.filterDate.from.day = day;
+		this.filterDate.from.year = year;
+	};
+
 	public filterTransactionsByDate():void{
-		this.filterDateString = this.filterDate.from.month + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year;
-		this.filterDateString = this.filterDateString + ' - ' + this.filterDate.to.month + '/' + this.filterDate.to.day + '/' + this.filterDate.to.year;
+		this.filterDateString = (this.filterDate.from.month + 1) + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year;
+		this.filterDateString = this.filterDateString + ' - ' + (this.filterDate.to.month + 1) + '/' + this.filterDate.to.day + '/' + this.filterDate.to.year;
+
+		this._transactionService.getByPage(10, this.currentPage, this.sortType, this.filterDate)
+		.subscribe(data => {
+			this.transactions = data.result
+			this.parseData(this.transactions);
+		});
 	}
 
 	public viewPharmacy(pharmacyId:any):void{
@@ -94,7 +158,7 @@ export class TableComponent {
 	};
 
 	public sortList(type:string):void {
-		
+
 		this.pharmacyNameList = [];
 
 		if(this.isSortAscending){
@@ -102,15 +166,15 @@ export class TableComponent {
 			this.sortType = '"' + type + '"' + ':' + '-1';
 		}else{
 			this.isSortAscending = true;
-			this.sortType = '"' + type + '"' + ':' + '+1';			
+			this.sortType = '"' + type + '"' + ':' + '+1';
 		}
 
-		this._transactionService.getByPage(10, this.currentPage, this.sortType)
+		this._transactionService.getByPage(10, this.currentPage, this.sortType, this.filterDate)
 		.subscribe(resPharmacyData => {
 			this.transactions = resPharmacyData.result
 			this.parseData(this.transactions);
-		});		
-	};	
+		});
+	};
 
 	public getPhysicianName(id:number):string {
 		var physicianName = 'n/a';
@@ -132,7 +196,7 @@ export class TableComponent {
 				this._pharmacyService.getById(transaction.pharmacy.id)
 				.subscribe(pharmacy => {
 					this.pharmacyNameList.push(
-							{id: pharmacy.result[0].id, name: pharmacy.result[0].organization_branch}
+							{id: pharmacy.result[0].id, name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch}
 					);
 				});
 			}
@@ -162,7 +226,7 @@ export class TableComponent {
 	public pageChanged(event:any):void {
 		this.pharmacyNameList = [];
 
-		this._transactionService.getByPage(this.pageLimit, event.page, this.sortType)
+		this._transactionService.getByPage(this.pageLimit, event.page, this.sortType, this.filterDate)
 		.subscribe(resPharmacyData => {
 			this.transactions = resPharmacyData.result
 			this.parseData(this.transactions);
@@ -179,22 +243,17 @@ export class TableComponent {
 			this.isAdmin = true;
 		}
 
-		// this._transactionService.getAll()
-		// .subscribe(data => {
-		// 	this.isLoading = false;
-		// 	this.transactions = data.result;
-		// 	this.parseData(this.transactions);
-		// });
-
-		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType)
+		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, null)
 		.subscribe(data => {
 			this.isLoading = false;
 			this.transactions = data.result;
 			this.parseData(this.transactions);
-		});		
+		});
 
 		this._transactionService.getCount()
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);
+
+		this.generateDays();
 	}
 
 }

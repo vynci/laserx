@@ -15,6 +15,8 @@ export class DashComponent implements OnInit {
 	public transactionFeed:Array<Object> = [];
 	public transactions:Array<Object> = [];
 	public pharmacies:Array<Object> = [];
+	public isLoading:boolean = false;
+
 	search        = '';
 	constructor(
 		private router: Router,
@@ -35,7 +37,7 @@ export class DashComponent implements OnInit {
 
 	public pageChanged(event:any):void {
 		this.currentPage = event.page;
-		this._pharmacyService.find(this.search, this.currentPage)
+		this._pharmacyService.find(this.search, this.currentPage, false)
 		.subscribe(resPharmacyData => this.transactions = resPharmacyData.result);
 	};
 
@@ -165,6 +167,8 @@ export class DashComponent implements OnInit {
 	}
 
 	ngOnInit(){
+		this.isLoading = true;
+
 		this._helperService.getPharmacyCountPerProvince()
 			.subscribe(data => {
 				console.log(data);
@@ -182,6 +186,7 @@ export class DashComponent implements OnInit {
 		this._pharmacyService.getAll()
 		.subscribe(data => {
 			this.transactions = data.result;
+			this.isLoading = false;
 		});
 
 		this._pharmacyService.getCount()
