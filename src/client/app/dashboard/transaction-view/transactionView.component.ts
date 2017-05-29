@@ -5,17 +5,20 @@ import { Location }               from '@angular/common';
 import { TransactionService } from '../services/transaction.service';
 import { TransactionProductService } from '../services/transaction-product.service';
 import { PharmacyService } from '../services/pharmacy.service';
+import { ProductService } from '../services/product.service';
+import { ProductModel } from './product-model';
 
 @Component({
 	moduleId: module.id,
     selector: 'transaction-view',
     templateUrl: './transaction-view.component.html',
-		providers: [TransactionService, TransactionProductService, PharmacyService]
+		providers: [TransactionService, TransactionProductService, PharmacyService, ProductService]
 })
 
 export class TransactionViewComponent {
 	transactionDetail = {};
 	public transactionProducts:Array<Object> = [];
+	public productNameList:Array<ProductModel> = [];
 	public pharmacyName: string = '';
 	private sortType:string = 'dispense_date';
 
@@ -24,7 +27,8 @@ export class TransactionViewComponent {
 		private location: Location,
 		private _transactionService : TransactionService,
 		private _transactionProductService : TransactionProductService,
-		private _pharmacyService : PharmacyService
+		private _pharmacyService : PharmacyService,
+		private _productService : ProductService
 	) {}
 
 	public totalItems:number = 64;
@@ -48,11 +52,11 @@ export class TransactionViewComponent {
 
 		if(isTimeIncluded){
 			dateString = dateString.split(' ').slice(0, 5).join(' ');
-			} else {
-				dateString = dateString.split(' ').slice(0, 4).join(' ');
-			}
+		} else {
+			dateString = dateString.split(' ').slice(0, 4).join(' ');
+		}
 
-			return dateString;
+		return dateString;
 	};
 
 	public getTransactionInfo(data:string, type:string):string {
@@ -62,6 +66,8 @@ export class TransactionViewComponent {
 			var infoObject = JSON.parse(data);
 			if(type === 'physician'){
 				result = infoObject.physician_firstname + ' ' + infoObject.physician_middlename + ' ' + infoObject.physician_lastname;
+			}else if(type === 'pharmacist'){
+				result = infoObject.pharmacist_firstname + ' ' + infoObject.pharmacist_middlename + ' ' + infoObject.pharmacist_lastname;
 			}
 		}
 
@@ -78,6 +84,35 @@ export class TransactionViewComponent {
 		return result;
 	}
 
+	public getProductName(id:number):string {
+		var productName = 'Loading...';
+		this.productNameList.forEach(product => {
+			if(product){
+				if(id === product.transactionProductId){
+					productName = product.name
+				}
+			}
+		});
+
+		return productName;
+	};
+
+	private parseData(data:any):void{
+		data.forEach(transactionProduct => {
+			if(transactionProduct){
+				this._productService.getById(transactionProduct.packaging.id)
+				.subscribe(packaging => {
+					this._productService.getDrugById(packaging.result[0].drug_id)
+					.subscribe(drug => {
+						this.productNameList.push(
+							{id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transactionProduct.id}
+						);
+					});
+				});
+			}
+		});
+	}
+
 	private getPharmacyName(id:number):void {
 		this._pharmacyService.getById(id)
 			.subscribe(data => {
@@ -87,12 +122,14 @@ export class TransactionViewComponent {
 
 	ngOnInit(): void {
 		this._transactionProductService.getById(this.route.snapshot.params['id'])
-		.subscribe(data => this.transactionProducts = data.result);
+		.subscribe(data => {
+			this.transactionProducts = data.result;
+			this.parseData(this.transactionProducts);
+		});
 
 		this._transactionService.getById(this.route.snapshot.params['id'])
 		.subscribe(data => {
 			this.transactionDetail = data.result[0];
-			console.log(this.transactionDetail);
 			this.getPharmacyName(data.result[0].pharmacy.id);
 		});
 	}

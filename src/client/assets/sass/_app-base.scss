@@ -376,6 +376,10 @@ a:hover{
     display : none !important;
   }
 
+  .modal-image-mobile {
+    width: 100%;
+  }
+
 }
 
 @media screen and (max-width: 600px) {
@@ -392,7 +396,7 @@ a:hover{
   .top-nav-logo {
     display : none !important;
   }
-  
+
 }
 
 @media screen and (max-width: 5000px) {

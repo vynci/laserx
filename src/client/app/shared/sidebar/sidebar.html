@@ -3,7 +3,7 @@
 </button>
 <nav class="sidebar" [ngClass]="{sidebarPushRight: isActive}">
     <ul class="list-group">
-        <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item">
+        <a (click)="eventCalled()" routerLink="/dashboard/home/all" [routerLinkActive]="['router-link-active']" class="list-group-item">
             Home
         </a>
 
@@ -14,16 +14,16 @@
           <li class="nested" [ngClass]="{'expand' : showMenu === 'pages' , 'non-expand' : showMenu !== 'pages'}">
             <ul class="submenu">
               <li>
-                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(234, 68, 68);">Licensing</span></a>
+                <a (click)="eventCalled()" routerLink="/dashboard/home/licensing" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(234, 68, 68);">Licensing</span></a>
               </li>
               <li>
-                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(14, 98, 142);">Expired Meds</span></a>
+                <a (click)="eventCalled()" routerLink="/dashboard/home/expired-meds" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(14, 98, 142);">Expired Meds</span></a>
               </li>
               <li>
-                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(5, 37, 53);">Counterfeit</span></a>
+                <a (click)="eventCalled()" routerLink="/dashboard/home/counterfeit" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(5, 37, 53);">Counterfeit</span></a>
               </li>
               <li>
-                <a (click)="eventCalled()" routerLink="/dashboard/home" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(46, 182, 78)">Disaster Recovery</span></a>
+                <a (click)="eventCalled()" routerLink="/dashboard/home/disaster-recovery" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: rgb(46, 182, 78)">Disaster Recovery</span></a>
               </li>
               <li>
                 <a (click)="eventCalled()" routerLink="/dashboard/message-center" [routerLinkActive]="['router-link-active']" class="list-group-item"><span style="color: #EB9316">Message Center</span></a>

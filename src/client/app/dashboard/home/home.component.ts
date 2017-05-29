@@ -1,10 +1,13 @@
-import { Component, OnInit} from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import { Router, NavigationEnd, ActivatedRoute, Params } from '@angular/router';
 /**
 *	This class represents the lazy loaded HomeComponent.
 */
 declare var google: any;
 declare var pharmacies: any;
+/*declare var marker: any;*/
+/*declare var infowindow: any;*/
+/*declare var map: any;*/
 
 @Component({
 	moduleId: module.id,
@@ -36,18 +39,7 @@ export class NotificationComponent { }
 })
 
 export class HomeComponent implements OnInit {
-	/* Carousel Variable */
-	myInterval: number = 5000;
-	index: number = 0;
-	slides: Array<any> = [];
-	imgUrl: Array<any> = [
-		`assets/img/slider1.jpg`,
-		`assets/img/slider2.jpg`,
-		`assets/img/slider3.jpg`,
-		`assets/img/slider0.jpg`
-	];
-	/* END */
-	/* Alert component */
+	@ViewChild('mapDiv') mapDiv: ElementRef;
 	pharmacies = [
 		{
 			"id": "2",
@@ -581,39 +573,25 @@ export class HomeComponent implements OnInit {
 		}
 ]
 
-	public alerts:Array<Object> = [
-	   {
-	     type: 'danger',
-	     msg: 'Oh snap! Change a few things up and try submitting again.'
-	   },
-	   {
-	     type: 'success',
-	     msg: 'Well done! You successfully read this important alert message.',
-	     closable: true
-	   }
-	 ];
-
-	 public closeAlert(i:number):void {
-	   this.alerts.splice(i, 1);
-	 }
-	/* END*/
 
 	public styleExp:string = (window.innerHeight - 50) + 'px';
+	private subscription;
+	private actionType:string = 'all';
 
 	constructor(
-		private router: Router
+		private router: Router,
+		private route: ActivatedRoute
 	) {
-		for (let i = 0; i < 4; i++) {
-			this.addSlide();
-		}
-	}
+		this.subscription = router.events.subscribe((val) => {
+			if(val instanceof NavigationEnd){
+				let action:string = val.url;
+				let actions:Array<string> = action.split('/');
+				action = actions[3];
 
-	addSlide() {
-		let i = this.slides.length;
-		this.slides.push({
-			image: this.imgUrl[i],
-			text: `${['Dummy ', 'Dummy ', 'Dummy ', 'Dummy '][this.slides.length % 4]}
-      			${['text 0', 'text 1', 'text 2', 'text 3'][this.slides.length % 4]}`
+				this.actionType = action;
+				this.deleteMarkers();
+				this.initiateMarkers();
+			}
 		});
 	}
 
@@ -621,13 +599,9 @@ export class HomeComponent implements OnInit {
 		this.router.navigate(['/dashboard/pharmacies']);
 	}
 
-	public onResize(event):void {
-		console.log('resize');
-		/*this.styleExp = (window.innerHeight - 50) + 'px';*/
-	}
+	private markers:Array<any> = [];
 
-	ngOnInit() {
-		this.styleExp = (window.innerHeight - 50) + 'px';
+	private initiateMap():void{
 
 		var labelsOff = [{
 			featureType: "administrative",
@@ -635,32 +609,32 @@ export class HomeComponent implements OnInit {
 			stylers: [{
 				visibility: "off"
 				}]
+				},
+				{
+			featureType: "poi",
+			elementType: "labels",
+			stylers: [{
+				visibility: "off"
+			}]
 			},
 			{
-				featureType: "poi",
-				elementType: "labels",
-				stylers: [{
-					visibility: "off"
-				}]
+			featureType: "water",
+			elementType: "labels",
+			stylers: [{
+				visibility: "off"
+			}]
 			},
 			{
-				featureType: "water",
-				elementType: "labels",
-				stylers: [{
-					visibility: "off"
-				}]
-			},
-			{
-				featureType: "road",
-				elementType: "labels",
-				stylers: [{
-					visibility: "off"
-				}]
+			featureType: "road",
+			elementType: "labels",
+			stylers: [{
+				visibility: "off"
+			}]
 		}];
 
 		var input = document.getElementById('pac-input');
 
-		var map = new google.maps.Map(document.getElementById('map'), {
+		this.map = new google.maps.Map(this.mapDiv.nativeElement, {
 			zoom: 6,
 			center: {lat: 14.599512, lng: 120.984222},
 			mapTypeControl: false,
@@ -670,38 +644,84 @@ export class HomeComponent implements OnInit {
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		});
 
-		map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+		this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-		map.setOptions({
+		this.map.setOptions({
 			styles: labelsOff
 		});
 
-		var infowindow = new google.maps.InfoWindow();
+		this.initiateMarkers();
+	}
 
-		var marker:Object;
+	private infowindow:any = new google.maps.InfoWindow();
+	private marker:any;
+	private map:any;
 
-		google.maps.event.addListener(map, 'resize', function() {
-			console.log('resize!');
-		});
+	public viewPharmacy():void{
+		this.router.navigate(['/dashboard/pharmacy-view', 45360]);
+	}
 
-		for (var i = 0; i < this.pharmacies.length; i++) {
+	private initiateMarkers():void{
+		var pinColor = 'spin_blue.png'
+		var tmp = 0;
+
+		if(this.actionType === 'expired-meds'){
+			pinColor = 'spin_blue.png';
+			tmp = 10;
+		}else if(this.actionType === 'counterfeit'){
+			pinColor = 'spin_darkblue.png';
+			tmp = 38;
+		}else if(this.actionType === 'disaster-recovery'){
+			pinColor = 'spin_green.png';
+			tmp = 0;
+		}else if(this.actionType === 'licensing'){
+			pinColor = 'spin_red.png';
+			tmp = 45;
+		}else{
+			pinColor = 'spin_blue.png';
+			tmp = 0;
+		}
+
+		for (var i = 0; i < (this.pharmacies.length - tmp); i++) {
 			var pharmacyName = this.pharmacies[i].name;
 			var pharmacyAddress = this.pharmacies[i].location_address + ', ' + this.pharmacies[i].location_city + ', ' + this.pharmacies[i].provinceName + ', ' + this.pharmacies[i].countryName;
 
-			marker = new google.maps.Marker({
+			this.marker = new google.maps.Marker({
 				position: new google.maps.LatLng(this.pharmacies[i].location_latitude, this.pharmacies[i].location_longitude),
-				map: map,
-				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_blue.png'
+				map: this.map,
+				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/' + pinColor
 			});
 
-			google.maps.event.addListener(marker, 'click', (function(marker, i, pharmacyName, pharmacyAddress) {
+			this.markers.push(this.marker);
+
+			google.maps.event.addListener(this.marker, 'click', (function(marker, i, pharmacyName, pharmacyAddress, infowindow, map) {
 				return function() {
-					infowindow.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress +'</p>');
+					infowindow.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress + '</p><div style="padding-top: 15px;border-top: 1px dashed gray;"><a class="btn btn-primary" href="dashboard/pharmacy-view/43560">View Info</a></div>');
 					infowindow.open(map, marker);
 				}
-			})(marker, i, pharmacyName, pharmacyAddress));
+			})(this.marker, i, pharmacyName, pharmacyAddress, this.infowindow, this.map));
 		}
-
-
 	}
+
+	private deleteMarkers():void{
+		for (var i = 0; i < this.markers.length; i++) {
+			this.markers[i].setMap(null);
+		}
+		this.markers = [];
+	}
+
+	ngOnInit(){
+		console.log(this.route.snapshot.params['action']);
+		this.actionType = this.route.snapshot.params['action'];
+	}
+
+	ngOnDestroy(){
+		this.subscription.unsubscribe();
+	}
+
+	ngAfterViewInit() {
+		this.styleExp = (window.innerHeight - 50) + 'px';
+		this.initiateMap();
+	}
+
 }

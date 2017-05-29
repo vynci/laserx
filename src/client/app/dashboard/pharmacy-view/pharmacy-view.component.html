@@ -4,10 +4,10 @@
 
 	<div class="card card-block card-with-subtitle card-no-top-padding">
 		<div class="row">
-			<div class="col-xl-12 no-padding">
+			<div class="col-xl-8 no-padding">
 				<div class="page-header-section">
 					<h2>
-						<b>{{pharmacyDetail.organization_branch || 'Loading...'}}</b>
+						<b>{{pharmacyDetail.organization_chain}} {{pharmacyDetail.organization_branch}}</b>
 					</h2>
 				</div>
 				<div class="card-subtitle">
@@ -16,6 +16,9 @@
 					</p>
 					<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Address" [(ngModel)]="pharmacyDetail.locationInfo.address"></td>
 				</div>
+			</div>
+			<div class="col-xl-4" style="text-align: right; padding-top: 18px;">
+				<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
 			</div>
 		</div>
 	</div>
@@ -60,42 +63,42 @@
 						<table class="table table-bordered">
 							<tbody>
 								<tr>
-									<th scope="row">Owner's Name</th>
+									<th style="cursor: text;" scope="row">Owner's Name</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.ownerName || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Owner's Name" [(ngModel)]="pharmacyDetail.owner_firstname"></td>
 								</tr>
-								<tr>
-									<th scope="row">Pharmacist's Name</th>
+								<!-- <tr>
+									<th style="cursor: text;" scope="row">Pharmacist's Name</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_firstname || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Pharmacist's Name" [(ngModel)]="pharmacyDetail.pharmacist_firstname"></td>
 								</tr>
 								<tr>
-									<th scope="row">Pharmacist's License Number</th>
+									<th style="cursor: text;"scope="row">Pharmacist's License Number</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.pharmacist_lastname || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Pharmacist's License Number" [(ngModel)]="pharmacyDetail.pharmacist_lastname"></td>
-								</tr>
+								</tr> -->
 								<tr>
-									<th scope="row">LTO Number</th>
+									<th style="cursor: text;" scope="row">LTO Number</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.license_number || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="LTO Number" [(ngModel)]="pharmacyDetail.pharmacist_licensenbr"></td>
 								</tr>
 								<tr>
-									<th scope="row">LTO Expiration Date</th>
+									<th style="cursor: text;" scope="row">LTO Expiration Date</th>
 									<td *ngIf="!isEdit">{{formatDate(pharmacyDetail.license_expiration_date, true) || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="LTO Expiration Date" [(ngModel)]="pharmacyDetail.gov_id1_expirationdate"></td>
 								</tr>
-								<tr>
+								<!-- <tr>
 									<th scope="row">Business Classification</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.business_classification  || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Business Classification" [(ngModel)]="pharmacyDetail.business_classification"></td>
-								</tr>
+								</tr> -->
 								<tr>
-									<th scope="row">Email Address</th>
+									<th style="cursor: text;" scope="row">Email Address</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.email || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Email" [(ngModel)]="pharmacyDetail.email"></td>
 								</tr>
 								<tr>
-									<th scope="row">Mobile Number</th>
+									<th style="cursor: text;" scope="row">Mobile Number</th>
 									<td *ngIf="!isEdit">{{pharmacyDetail.mobile || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Mobile No." [(ngModel)]="pharmacyDetail.mobile"></td>
 								</tr>
@@ -139,7 +142,53 @@
 					<h5>Expired Medicines</h5>
 				</div>
 				<div class="card-block">
-					<p style="text-align: center;">Empty List.</p>
+
+					<div class="table-responsive">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Dispensed Date</th>
+										<th>Product</th>
+										<th>LN/BN</th>
+										<th>Expiry Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let transaction of transactions; let i=index">
+										<template [ngIf]="i<3">
+											<th scope="row">{{transaction.id}}</th>
+											<td>{{formatDate(transaction.dispense_date, true)}}</td>
+											<td>{{getProductName(transaction.id) || 'n/a'}}</td>
+											<td>{{transaction.batch_lot_number}}</td>
+											<td>{{formatDate(transaction.expiry_date, false)}}</td>
+										</template>
+									</tr>
+								</tbody>
+							</table>
+							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions..</p>
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="loader" *ngIf="isLoading">
+										<div class="bounce1"></div>
+										<div class="bounce2"></div>
+										<div class="bounce3"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-6">
+									<p *ngIf="transactions.length != 0" style="margin-top: 1rem; margin-bottom: 1rem;">Showing 1 to 3 of 3 entries</p>
+								</div>
+								<div class="col-lg-6" style="text-align: right;">
+									<!-- <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
+									[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination> -->
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -149,7 +198,52 @@
 					<h5>Counterfeit</h5>
 				</div>
 				<div class="card-block">
-					<p style="text-align: center;">Empty List.</p>
+					<div class="table-responsive">
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Dispensed Date</th>
+										<th>Product</th>
+										<th>LN/BN</th>
+										<th>Expiry Date</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr *ngFor="let transaction of transactions; let i=index">
+										<template [ngIf]="i<3">
+											<th scope="row">{{transaction.id}}</th>
+											<td>{{formatDate(transaction.dispense_date, true)}}</td>
+											<td>{{getProductName(transaction.id) || 'n/a'}}</td>
+											<td>{{transaction.batch_lot_number}}</td>
+											<td>{{formatDate(transaction.expiry_date, false)}}</td>
+										</template>
+									</tr>
+								</tbody>
+							</table>
+							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions..</p>
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="loader" *ngIf="isLoading">
+										<div class="bounce1"></div>
+										<div class="bounce2"></div>
+										<div class="bounce3"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-lg-6">
+									<p *ngIf="transactions.length != 0" style="margin-top: 1rem; margin-bottom: 1rem;">Showing 1 to 3 of 3 entries</p>
+								</div>
+								<div class="col-lg-6" style="text-align: right;">
+									<!-- <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
+									[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination> -->
+								</div>
+							</div>
+			</div>
+		</div>
 				</div>
 			</div>
 		</div>
@@ -163,30 +257,60 @@
 					<h5>Transactions</h5>
 				</div>
 				<div class="card-block">
+
+					<div class="row">
+						<div class="col-lg-3"></div>
+						<div class="col-lg-3"></div>
+						<div class="col-lg-3">
+							<!-- <div class="form-group input-group">
+								<span class="input-group-btn"><button class="btn btn-secondary" type="button" (click)="dateModal.show()"><i class="fa fa-calendar"></i></button></span>
+								<input type="text" class="form-control" placeholder="Filter By Date.." [(ngModel)]="filterDateString" [readonly]="true">
+							</div> -->
+						</div>
+						<div class="col-lg-3" style="text-align: right;">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Search...">
+								<!-- <span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span> -->
+							</div>
+						</div>
+					</div>
+
 					<div class="table-responsive">
 						<div class="table-responsive">
 							<table class="table table-bordered table-hover">
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Date</th>
+										<th>Dispensed Date</th>
 										<th>Doctor</th>
-										<th>Transaction</th>
+										<th>Prescription</th>
+										<th>LN/BN</th>
+										<th>Expiry Date</th>
+										<th>Instruction</th>
+										<th>Remarks</th>
+										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr *ngFor="let transaction of transactions">
-										<th scope="row">{{transaction.id}}</th>
-										<td>{{formatDate(transaction.dispense_date, true)}}</td>
-										<td>{{transaction.doctor_firstname || 'null'}} {{transaction.doctor_lastname || 'null'}}</td>
-										<td>
-											<button class="btn btn-default btn-sm" (click)="viewTransaction(transaction.id)"><i class="fa fa-fw fa-eye"></i></button>
-											<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
-										</td>
+									<tr *ngFor="let transaction of transactions let i=index">
+										<template [ngIf]="i<10">
+											<th scope="row">{{transaction.id}}</th>
+											<td>{{formatDate(transaction.dispense_date, true)}}</td>
+											<td>{{getTransactionInfo(transaction.info, 'physician')}}</td>
+											<td>{{getProductName(transaction.id) || 'n/a'}}</td>
+											<td>{{transaction.batch_lot_number}}</td>
+											<td>{{formatDate(transaction.expiry_date, false)}}</td>
+											<td>{{transaction.instruction}}x {{transaction.instruction_unit}}</td>
+											<td>{{transaction.remark || 'n/a'}}</td>
+											<td>
+												<button class="btn btn-default btn-sm" (click)="transactionModal.show()"><i class="fa fa-fw fa-eye"></i></button>
+												<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
+											</td>
+										</template>
 									</tr>
 								</tbody>
 							</table>
-							<p *ngIf="transactions.length == 0" style="text-align: center;">Empty List.</p>
+							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions..</p>
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="loader" *ngIf="isLoading">
@@ -199,7 +323,7 @@
 
 							<div class="row">
 								<div class="col-lg-6">
-									<!-- <pre class="card card-block card-header">Page: {{bigCurrentPage}} / {{numPages}}</pre> -->
+									<p *ngIf="transactions.length != 0" style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of {{bigTotalItems}} entries</p>
 								</div>
 								<div class="col-lg-6" style="text-align: right;">
 									<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
@@ -213,4 +337,69 @@
 	</div>
 	</div>
 
+</div>
+
+<div bsModal #transactionModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:90% !important">
+		<div class="modal-content" style="background-color: #222 !important; color: white;">
+			<div class="modal-header" style="border-bottom: 0px; padding-top: 10px; padding-bottom: 0px;">
+				<button type="button" class="close" (click)="transactionModal.hide()" aria-label="Close" style="color: white; opacity:1;">
+					<span aria-hidden="true" style="color: white;">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-8" style="text-align:center;">
+						<img class="modal-image-mobile" src="https://snaprx.s3.amazonaws.com/2015081802375355d29a818bb7b_21_20158181031m.jpg" alt="">
+					</div>
+					<div class="col-lg-4">
+						<div style="border-bottom: 1px solid white; padding-bottom: 10px; margin-bottom: 15px;">
+							<h5><b style="color: #22ba22;">Physician Details</b></h5>
+							<h6><b style="color: #a0ab42;">Name</b></h6>
+							<span>Test Test</span><br><br>
+							<h6><b style="color: #a0ab42;">License No.</b></h6>
+							<span>27192</span>
+						</div>
+						<div>
+							<h5><b style="color: #22ba22;">Product Details</b></h5>
+							<h6><b style="color: #a0ab42;">Product</b></h6>
+							<span>Test Test</span><br><br>
+							<h6><b style="color: #a0ab42;">Instruction</b></h6>
+							<span>4x a DAY</span><br><br>
+							<h6><b style="color: #a0ab42;">Quantity</b></h6>
+							<span>3 Tablets</span><br><br>
+							<h6><b style="color: #a0ab42;">Batch Lot Number</b></h6>
+							<span>M823574</span><br><br>
+							<h6><b style="color: #a0ab42;">Expiry Date</b></h6>
+							<span>2021-08-31</span><br><br>
+							<h6><b style="color: #a0ab42;">Remarks</b></h6>
+							<span>Partially Filled</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer" style="border-top: 0px; padding:0px;">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Delete Transaction</h5>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to <b>DELETE</b> this transaction?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" (click)="lgModal.hide()">Yes, I'm Sure</button>
+				<button type="button" class="btn btn-secondary" (click)="lgModal.hide()">Close</button>
+			</div>
+		</div>
+	</div>
 </div>

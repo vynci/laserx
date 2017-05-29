@@ -58,11 +58,11 @@
                     <div class="bounce3"></div>
                   </div>
                 </div>
-              </div>              
+              </div>
 
               <div class="row">
                 <div class="col-lg-6">
-                  <!-- <pre class="card card-block card-header">Page: {{bigCurrentPage}} / {{numPages}}</pre> -->
+                  <p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of 9960 entries</p>
                 </div>
                 <div class="col-lg-6" style="text-align: right;">
                   <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"

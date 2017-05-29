@@ -137,6 +137,8 @@ export class TableComponent {
 			var infoObject = JSON.parse(data);
 			if(type === 'physician'){
 				result = infoObject.physician_firstname + ' ' + infoObject.physician_middlename + ' ' + infoObject.physician_lastname;
+			}else if(type === 'pharmacist'){
+				result = infoObject.pharmacist_firstname + ' ' + infoObject.pharmacist_middlename + ' ' + infoObject.pharmacist_lastname;
 			}
 		}
 
@@ -243,7 +245,7 @@ export class TableComponent {
 			this.isAdmin = true;
 		}
 
-		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, null)
+		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate)
 		.subscribe(data => {
 			this.isLoading = false;
 			this.transactions = data.result;

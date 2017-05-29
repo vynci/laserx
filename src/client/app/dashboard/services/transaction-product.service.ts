@@ -18,7 +18,6 @@ export class TransactionProductService {
 	constructor(private http: Http) { }
 
 	getById(id: number){
-		console.log(id);
 		let search = new URLSearchParams('where={"prescription.id":{"eq":' + id + '}}');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 

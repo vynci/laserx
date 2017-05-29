@@ -31,7 +31,7 @@ export class LoginComponent {
 		.subscribe(userInfo => {
 			localStorage.setItem('roleId', userInfo.result.type);
 			localStorage.setItem('username', userInfo.result.username);
-			this.router.navigate(['/dashboard/home']);
+			this.router.navigate(['/dashboard/home/all']);
 		});
 	}
 
@@ -51,7 +51,7 @@ export class LoginComponent {
 
 	ngOnInit(): void {
 		if (localStorage.getItem('sessionToken')) {
-			this.router.navigate(['/dashboard/home']);
+			this.router.navigate(['/dashboard/home/all']);
 		}
 	}
  }

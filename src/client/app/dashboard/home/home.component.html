@@ -6,9 +6,9 @@
 	<span class="input-group-btn"><button class="btn btn-primary" type="button" style="border-radius: 0px !important;"><i class="fa fa-search"></i></button></span>
 </div>
 
-<div (window:resize)="onResize($event)" [ngStyle]="{'height': styleExp}">
+<div [ngStyle]="{'height': styleExp}">
 <!-- <div (window:resize)="onResize($event)" style="height: 850px;"> -->
-	<div id="map"></div>
+	<div id="map" #mapDiv></div>
 </div>
 <!-- <div class="container-fluid">
 	<div class="row">

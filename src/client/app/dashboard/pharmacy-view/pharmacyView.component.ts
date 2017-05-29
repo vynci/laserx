@@ -4,8 +4,12 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { Location }               from '@angular/common';
 import { PharmacyService } from '../services/pharmacy.service';
 import { TransactionService } from '../services/transaction.service';
+import { TransactionProductService } from '../services/transaction-product.service';
 import { LocationService } from '../services/location.service';
 import { HelperService } from '../services/helper.service';
+import { PhysicianModel } from './physician-model';
+import { ProductModel } from './product-model';
+import { ProductService } from '../services/product.service';
 
 declare var pharmacyDetail: any;
 declare var google: any;
@@ -14,7 +18,7 @@ declare var google: any;
 	moduleId: module.id,
     selector: 'pharmacy-view',
     templateUrl: './pharmacy-view.component.html',
-		providers: [PharmacyService, LocationService, TransactionService, HelperService]
+		providers: [PharmacyService, LocationService, TransactionService, HelperService, TransactionProductService, ProductService]
 })
 
 export class PharmacyViewComponent implements OnInit{
@@ -35,6 +39,8 @@ export class PharmacyViewComponent implements OnInit{
 	isUpdateSuccess: boolean = false;
 	private map: any;
 	private marker:Object;
+	private physicianNameList:Array<PhysicianModel> = [];
+
 	public isAdmin:boolean = false;
 	public transactions:Array<Object> = [];
 
@@ -45,6 +51,9 @@ export class PharmacyViewComponent implements OnInit{
 	public bigTotalItems:number = 175;
 	public bigCurrentPage:number = 1;
 
+	public transactionProducts:Array<Object> = [];
+	public productNameList:Array<ProductModel> = [];
+
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
@@ -52,7 +61,9 @@ export class PharmacyViewComponent implements OnInit{
 		private _pharmacyService : PharmacyService,
 		private _locationService : LocationService,
 		private _transactionService : TransactionService,
-		private _helperService : HelperService
+		private _transactionProductService : TransactionProductService,
+		private _helperService : HelperService,
+		private _productService : ProductService
 	) {}
 
 	public getLocation(locationId:number):void {
@@ -116,9 +127,10 @@ export class PharmacyViewComponent implements OnInit{
 	};
 
 	public pageChanged(event:any):void {
+		this.transactions = [];
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], event.page)
-		.subscribe(resPharmacyData => {
-			this.transactions = resPharmacyData.result;
+		.subscribe(data => {
+			this.parseTransactions(data.result);
 		});
 	};
 
@@ -128,6 +140,20 @@ export class PharmacyViewComponent implements OnInit{
 
 	public disableEdit():void {
 		this.isEdit = false;
+	};
+
+	public getPhysicianName(id:number):string {
+		var physicianName = 'n/a';
+
+		this.physicianNameList.forEach(physician => {
+			if(physician){
+				if(id === physician.id){
+					physicianName = physician.name
+				}
+			}
+			});
+
+			return physicianName;
 	};
 
 	public formatDate(date:any, isTimeIncluded:boolean):string {
@@ -144,6 +170,83 @@ export class PharmacyViewComponent implements OnInit{
 
 	public viewTransaction(transactionId:any):void{
 		this.router.navigate(['/dashboard/transaction-view', transactionId]);
+	}
+
+	public getTransactionInfo(data:string, type:string):string {
+		var result = 'Loading...';
+
+		if(data){
+			var infoObject = JSON.parse(data);
+			if(type === 'physician'){
+				result = infoObject.physician_firstname + ' ' + infoObject.physician_middlename + ' ' + infoObject.physician_lastname;
+			}
+		}
+
+		return result;
+	}
+
+	public getProductName(id:number):string {
+		var productName = 'Loading...';
+		this.productNameList.forEach(product => {
+			if(product){
+				if(id === product.transactionProductId){
+					productName = product.name
+				}
+			}
+		});
+
+			return productName;
+	};
+
+	private parseTransactions(data:any):void{
+		data.forEach(transaction => {
+			if(transaction){
+				this._transactionProductService.getById(transaction.id)
+				.subscribe(packaging => {
+					if(packaging.result.length > 0){
+						packaging.result.forEach(item => {
+							this.transactions.push({
+								id : transaction.id,
+								dispense_date : transaction.dispense_date,
+								info : transaction.info,
+								packaging : item.packaging,
+								batch_lot_number : item.batch_lot_number,
+								instruction : item.instruction,
+								instruction_unit : item.instruction_unit,
+								expiry_date : item.expiry_date,
+								remark : item.remark
+							});
+							this._productService.getById(item.packaging.id)
+							.subscribe(packagingItem => {
+								this._productService.getDrugById(packagingItem.result[0].drug_id)
+								.subscribe(drug => {
+									this.productNameList.push({
+										id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transaction.id
+									});
+								});
+							});
+						});
+					}
+				});
+			}
+
+		});
+	}
+
+	private parseData(data:any):void{
+		data.forEach(transactionProduct => {
+			if(transactionProduct){
+				this._productService.getById(transactionProduct.packaging.id)
+				.subscribe(packaging => {
+					this._productService.getDrugById(packaging.result[0].drug_id)
+					.subscribe(drug => {
+						this.productNameList.push({
+							id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transactionProduct.id
+						});
+						});
+					});
+			}
+		});
 	}
 
 	ngOnInit(): void {
@@ -166,7 +269,7 @@ export class PharmacyViewComponent implements OnInit{
 
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1)
 			.subscribe(data => {
-					this.transactions = data.result;
+				this.parseTransactions(data.result);
 		});
 	}
 

@@ -32,7 +32,7 @@
       <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/pharmacies']">Pharmacies</a>
       <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/transactions']">Transactions</a>
       <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/dash']">Dashboard</a>
-      <ul class="nav navbar-nav top-nav action-dropdown topnav-links navbar-right pull-xs-right top-right-nav side-bar-mobile-disable">
+      <ul class="nav navbar-nav top-nav action-dropdown topnav-links navbar-right pull-xs-right top-right-nav side-bar-mobile-disable" [ngStyle]="{'background': actionBackgroundColor, 'border-color': actionBackgroundColor}">
         <li class="dropdown nav-item" dropdown>
           <a href="javascript:;" id="single-button" class="nav-link dropdown-toggle" style="color: #fff;"dropdownToggle >
             <!-- <i class="fa fa-user"> </i>  -->
@@ -40,13 +40,16 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="single-button">
             <li>
-              <a class="dropdown-item" routerLink="/dashboard/home">Licensing</a>
+              <a class="dropdown-item" routerLink="/dashboard/home/licensing">Licensing</a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/dashboard/home">Expired Meds</a>
+              <a class="dropdown-item" routerLink="/dashboard/home/expired-meds">Expired Meds</a>
             </li>
             <li>
-              <a class="dropdown-item" routerLink="/dashboard/home">Counterfeit</a>
+              <a class="dropdown-item" routerLink="/dashboard/home/counterfeit">Counterfeit</a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/dashboard/home/disaster-recovery">Disaster Recovery</a>
             </li>
             <li class="divider"></li>
             <li>
@@ -55,8 +58,9 @@
           </ul>
         </li>
       </ul>
+      <a *ngIf="actionTypeIndicator != ''" class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable btn btn-xs btn-danger" style="background: rgb(234, 68, 68); font-weight: bold !important; height: 36px; margin-right: 10px; border-radius: 3px;" [ngStyle]="{'background': actionBackgroundColor, 'border-color': actionBackgroundColor}">{{actionTypeIndicator}}</a>
       <div class="top-nav-logo" style="float: none; display: inline-block;">
-        <a routerLink="/dashboard/home">
+        <a routerLink="/dashboard/home/all">
           <img style="width: 70px;" src="assets/img/logo.png">
         </a>
       </div>

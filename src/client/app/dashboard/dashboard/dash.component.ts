@@ -28,7 +28,7 @@ export class DashComponent implements OnInit {
 	public currentPage:number = 4;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 175;
+	public bigTotalItems:number = 9960;
 	public bigCurrentPage:number = 1;
 
 	public setPage(pageNo:number):void {
@@ -190,7 +190,7 @@ export class DashComponent implements OnInit {
 		});
 
 		this._pharmacyService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
+		.subscribe(resPharmacyData => this.bigTotalItems = 9960);
 
 		this._helperService.getTransactionCountPerPharmacy(43558)
 			.subscribe(data => {

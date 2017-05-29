@@ -20,6 +20,24 @@ export class ProductService {
 			.map((response: Response) => response.json());
 	}
 
+	getDrugById(id: number){
+		let search = new URLSearchParams('where={"id":{"eq":' + id + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+		let url = this.endpoint + 'classes/drug';
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
+	getGenericById(id: number){
+		let search = new URLSearchParams('where={"id":{"eq":' + id + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+		let url = this.endpoint + 'classes/generic';
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
 	getById(id: number){
 		let search = new URLSearchParams('where={"id":{"eq":' + id + '}}');
 		let options = new RequestOptions({ headers: this.headers, search: search});

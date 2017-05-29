@@ -4,12 +4,15 @@
 
 	<div class="card card-block card-no-top-padding">
 		<div class="row">
-			<div class="col-xl-12 no-padding">
+			<div class="col-xl-8 no-padding">
 				<div class="page-header-section">
 					<h2>
 						<b>{{pharmacyName || 'Loading...'}}</b>
 					</h2>
 				</div>
+			</div>
+			<div class="col-xl-4" style="text-align: right; padding-top: 18px;">
+				<button class="btn btn-sm btn-secondary" (click)="goBack()"><i class="fa fa-fw fa-chevron-left"></i> Back</button>
 			</div>
 		</div>
 	</div>
@@ -55,8 +58,16 @@
 									<td>{{getTransactionInfo(transactionDetail.info, 'physician')}}</td>
 								</tr>
 								<tr>
-									<th scope="row">License Number</th>
+									<th scope="row">Doctor License Number</th>
 									<td>{{transactionDetail.physician_license_number}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Pharmacist Name</th>
+									<td>{{getTransactionInfo(transactionDetail.info, 'pharmacist')}}</td>
+								</tr>
+								<tr>
+									<th scope="row">Pharmacist License Number</th>
+									<td>{{transactionDetail.pharmacist_license_number}}</td>
 								</tr>
 							</tbody>
 						</table>
@@ -91,12 +102,12 @@
 								<tbody>
 									<tr *ngFor="let transactionProduct of transactionProducts">
 										<th scope="row">{{transactionProduct.id || 'n/a'}}</th>
-										<td>{{transactionProduct.packaging  || 'n/a'}}</td>
+										<td>{{getProductName(transactionProduct.id) || 'n/a'}}</td>
 										<td>{{transactionProduct.quantity_dispensed  || 'n/a'}} {{transactionProduct.unit_dispensed  || 'n/a'}}</td>
 										<td>{{transactionProduct.quantity_prescribed}} {{transactionProduct.unit_prescribed  || 'n/a'}}</td>
-										<td>{{transactionProduct.instruction}}x {{transactionProduct.instruction_unit}}</td>
+										<td>{{transactionProduct.instruction}}x a {{transactionProduct.instruction_unit}}</td>
 										<td>{{transactionProduct.batch_lot_number  || 'n/a'}}</td>
-										<td>{{transactionProduct.expiry_date  || 'n/a'}}</td>
+										<td>{{formatDate(transactionProduct.expiry_date, false) || 'n/a'}}</td>
 										<td>{{transactionProduct.remark  || 'n/a'}}</td>
 									</tr>
 								</tbody>
