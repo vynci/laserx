@@ -3,6 +3,11 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { HelperService } from '../services/helper.service';
 import { PharmacyService } from '../services/pharmacy.service';
 
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/observable/fromEvent';
+
 @Component({
 	moduleId: module.id,
 	selector: 'dash-cmp',
@@ -18,6 +23,7 @@ export class DashComponent implements OnInit {
 	public isLoading:boolean = false;
 
 	search        = '';
+	searchControl = new FormControl();
 	constructor(
 		private router: Router,
 		private _helperService : HelperService,
@@ -205,5 +211,14 @@ export class DashComponent implements OnInit {
 			tmp.splice(10)
 			this.transactions = tmp;*/
 		});
+		
+		this.searchControl.valueChanges
+		.debounceTime(250)
+		.subscribe(newValue => {
+			this.search = newValue;
+			this.currentPage = 1;
+			this._pharmacyService.find(this.search, this.currentPage, null)
+			.subscribe(data => this.transactions = data.result);
+		});		
 	}
 }

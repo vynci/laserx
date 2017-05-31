@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { DashComponent } from './dash.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
   AlertModule,
@@ -26,6 +26,7 @@ import {
       ButtonsModule,
       DropdownModule,
       PaginationModule,
+      ReactiveFormsModule,
       ProgressbarModule,
       RatingModule,
       TabsModule,

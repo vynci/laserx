@@ -2,6 +2,8 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { PharmacyService } from '../services/pharmacy.service';
 import { LocationService } from '../services/location.service';
+import { HelperService } from '../services/helper.service';
+import { OwnerModel } from './owner-model';
 
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
@@ -14,7 +16,7 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 	moduleId: module.id,
     selector: 'blank-page',
     templateUrl: './blank-page.component.html',
-		providers: [PharmacyService, LocationService]
+		providers: [PharmacyService, LocationService, HelperService]
 })
 
 export class BlankPageComponent {
@@ -28,7 +30,8 @@ export class BlankPageComponent {
 	constructor(
 		private router: Router,
 		private _pharmacyService : PharmacyService,
-		private _locationService : LocationService
+		private _locationService : LocationService,
+		private _helperService : HelperService
 	){}
 
 	public selectedFilterValue:string = 'All Pharmacies';
@@ -42,10 +45,11 @@ export class BlankPageComponent {
 	public currentPage:number = 1;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 9960;
+	public bigTotalItems:number = 103;
 	public bigCurrentPage:number = 1;
 
 	private isLicenseExpired:boolean = false;
+	private ownerInfoList:Array<OwnerModel> = [];
 
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
@@ -76,8 +80,38 @@ export class BlankPageComponent {
 	};
 
 	public viewPharmacy(pharmacyId:any):void{
-		console.log(pharmacyId);
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
+	}
+
+	public getOwnerInfo(id:number, type:string):string {
+		var pharmacyName = 'n/a';
+		this.ownerInfoList.forEach(pharmacy => {
+			if(pharmacy){
+				if(id === pharmacy.id){
+					pharmacyName = pharmacy[type];
+				}
+			}
+		});
+
+		return pharmacyName;
+	};
+
+	private parseData(data:any):void{
+		data.forEach(pharmacy => {
+			this._helperService.getUserByOrganizationId(pharmacy.id)
+			.subscribe(owner => {
+				if(owner.result.length > 0){
+					this.ownerInfoList.push(
+						{
+							id: pharmacy.id, 
+							name: owner.result[0].first_name + ' ' + owner.result[0].middle_name +' ' + owner.result[0].last_name, 
+							email: owner.result[0].email,
+							mobile : owner.result[0].mobile 
+						}
+					);					
+				}
+			});
+		});
 	}
 
 	ngOnInit(): void {
@@ -91,6 +125,7 @@ export class BlankPageComponent {
 		.subscribe(resPharmacyData => {
 			this.isLoading = false;
 			this.pharmacies = resPharmacyData.result
+			this.parseData(this.pharmacies);
 		});
 
 		/*this._pharmacyService.getCount()

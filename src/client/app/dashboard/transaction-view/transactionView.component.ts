@@ -43,7 +43,7 @@ export class TransactionViewComponent {
 	};
 
 	public pageChanged(event:any):void {
-		this._transactionService.getByPage(event.itemsPerPage, event.page, this.sortType, null)
+		this._transactionService.getByPage(event.itemsPerPage, event.page, this.sortType, null, '', null)
 		.subscribe(data => this.transactionProducts = data.result);
 	};
 

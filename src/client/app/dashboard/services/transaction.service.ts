@@ -47,23 +47,52 @@ export class TransactionService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPage(limit: number, page: number, sortType:string, dateFilter: any){
+	find(searchString: string, page: number){
+		let search = new URLSearchParams();
+		let skip = (page - 1) * 10;
+		let searchParams = {};
+
+		searchParams = {
+			'id' : {
+				has : searchString
+			}
+		}
+
+		search.append('where', JSON.stringify(searchParams));
+		search.append('skip', skip.toString());
+		search.append('limit', '10');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(this.url, options)
+		.map((response: Response) => response.json());
+	}
+
+	getByPage(limit: number, page: number, sortType:string, dateFilter: any, searchString: string, keySearch: string){
 		let fromDate = new Date(2000,1,1);
 		let toDate = new Date();
+		toDate.setDate(toDate.getDate() + 2); 
 
 		if(dateFilter){
 			fromDate = new Date(dateFilter.from.year, dateFilter.from.month, dateFilter.from.day);
-			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 1);
+			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 2);
 		}
 
 		let skip = (page - 1) * limit;
 		let search = new URLSearchParams('skip=' + skip);
 
-		let searchParams = {
+		if(!keySearch){
+			keySearch = 'id';
+		}
+
+		let searchParams = {			
 			'dispense_date' : {
 				gte : fromDate.toISOString(),
 				lte : toDate.toISOString()
 			}
+		};
+
+		searchParams[keySearch] = {
+				has : searchString
 		};
 
 		search.append('where', JSON.stringify(searchParams));

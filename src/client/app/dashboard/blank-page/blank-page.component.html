@@ -50,10 +50,10 @@
 						<tbody>
 							<tr *ngFor="let pharmacy of pharmacies">
 								<td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(pharmacy.id)">{{pharmacy.organization_chain}} {{pharmacy.organization_branch}}</a></td>
-								<td>{{pharmacy.organization_ownership || 'n/a'}}</td>
+								<td>{{getOwnerInfo(pharmacy.id, 'name') || 'n/a'}}</td>
 								<td>Metro Manila</td>
-								<td>{{pharmacy.email || 'n/a'}}</td>
-								<td>{{pharmacy.mobile || 'n/a'}}</td>
+								<td>{{getOwnerInfo(pharmacy.id, 'email') || 'n/a'}}</td>
+								<td>{{getOwnerInfo(pharmacy.id, 'mobile') || 'n/a'}}</td>
 								<td *ngIf="isAdmin">
 									<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
 								</td>
@@ -73,7 +73,7 @@
 
 				<div class="row">
 					<div class="col-lg-6">
-						<p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of 9960 entries</p>
+						<p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of 102 entries</p>
 					</div>
 					<div class="col-lg-6" style="text-align: right;">
 						<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"

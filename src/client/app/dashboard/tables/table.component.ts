@@ -8,6 +8,11 @@ import { PhysicianModel } from './physician-model';
 
 import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/observable/fromEvent';
+
 @Component({
 	moduleId: module.id,
 	selector: 'tables-cmp',
@@ -16,6 +21,44 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 })
 
 export class TableComponent {
+
+	public pharmacySearchNameList:Array<PharmacyModel> = [
+		{
+			id: 43558,
+			name: 'mercury drug test'
+		},
+		{
+			id: 43559,
+			name: 'sand 1 sand 2'
+		},
+		{
+			id: 43560,
+			name: 'test test'
+		},
+		{
+			id: 47787,
+			name: 'dj chad pharmacy'
+		},
+		{
+			id: 47790,
+			name: 'gundam heavy arms'
+		},
+		{
+			id: 47791,
+			name: '2k pharmaceutical (pharmacy)'
+		},
+		{
+			id: 47793,
+			name: '117 drugstore'
+		},
+		{
+			id: 47794,
+			name: '153 generic pharmacy'
+		}											
+	];
+
+	public search:string        = '';
+	searchControl = new FormControl();
 
 	private pharmacyNameList:Array<PharmacyModel> = [];
 	private physicianNameList:Array<PhysicianModel> = [];
@@ -70,6 +113,13 @@ export class TableComponent {
 		}
 	}
 
+	private contains(data:string, subData:string):boolean{
+		var string = data;
+		var substring = subData;
+
+		return string.indexOf(substring) !== -1;
+	}
+
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
 	};
@@ -119,7 +169,7 @@ export class TableComponent {
 		this.filterDateString = (this.filterDate.from.month + 1) + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year;
 		this.filterDateString = this.filterDateString + ' - ' + (this.filterDate.to.month + 1) + '/' + this.filterDate.to.day + '/' + this.filterDate.to.year;
 
-		this._transactionService.getByPage(10, this.currentPage, this.sortType, this.filterDate)
+		this._transactionService.getByPage(10, this.currentPage, this.sortType, this.filterDate, this.search, null)
 		.subscribe(data => {
 			this.transactions = data.result
 			this.parseData(this.transactions);
@@ -171,7 +221,7 @@ export class TableComponent {
 			this.sortType = '"' + type + '"' + ':' + '+1';
 		}
 
-		this._transactionService.getByPage(10, this.currentPage, this.sortType, this.filterDate)
+		this._transactionService.getByPage(10, this.currentPage, this.sortType, this.filterDate, this.search, null)
 		.subscribe(resPharmacyData => {
 			this.transactions = resPharmacyData.result
 			this.parseData(this.transactions);
@@ -228,7 +278,7 @@ export class TableComponent {
 	public pageChanged(event:any):void {
 		this.pharmacyNameList = [];
 
-		this._transactionService.getByPage(this.pageLimit, event.page, this.sortType, this.filterDate)
+		this._transactionService.getByPage(this.pageLimit, event.page, this.sortType, this.filterDate, this.search, null)
 		.subscribe(resPharmacyData => {
 			this.transactions = resPharmacyData.result
 			this.parseData(this.transactions);
@@ -245,7 +295,7 @@ export class TableComponent {
 			this.isAdmin = true;
 		}
 
-		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate)
+		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)
 		.subscribe(data => {
 			this.isLoading = false;
 			this.transactions = data.result;
@@ -256,6 +306,46 @@ export class TableComponent {
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);
 
 		this.generateDays();
+
+		this.searchControl.valueChanges
+		.debounceTime(250)
+		.subscribe(newValue => {
+			this.search = newValue;
+			this.currentPage = 1;
+			this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)
+			.subscribe(data => {
+				this.transactions = data.result;
+				if(this.transactions.length > 0){
+					this.parseData(this.transactions);
+				}else{
+					let searchTmp = [];
+					searchTmp = this.search.split(' ');
+
+					this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, searchTmp[0], 'info')
+					.subscribe(data => {
+						this.transactions = data.result;
+						if(this.transactions.length > 0){
+							this.parseData(this.transactions);
+						}else{
+							this.pharmacySearchNameList.forEach(pharmacy => {
+								if(pharmacy){
+									this.search = this.search.toLowerCase();
+									if(this.contains(pharmacy.name, this.search)){
+										this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.id.toString(), 'pharmacy.id')
+										.subscribe(data => {
+											this.transactions = data.result;
+											this.parseData(this.transactions);
+										});										
+									}
+								}
+							});									
+						}
+						
+					});			
+				}
+				
+			});			
+		});		
 	}
 
 }
