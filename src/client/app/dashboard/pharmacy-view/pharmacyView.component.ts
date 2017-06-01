@@ -54,6 +54,8 @@ export class PharmacyViewComponent implements OnInit{
 	public transactionProducts:Array<Object> = [];
 	public productNameList:Array<ProductModel> = [];
 
+	public transactionModalInfo:Object;
+
 	constructor(
 		private route: ActivatedRoute,
 		private router: Router,
@@ -120,6 +122,11 @@ export class PharmacyViewComponent implements OnInit{
 				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_blue.png'
 			});
 		});
+	};
+
+	public setModalValues(data:any):void {
+		console.log(data);
+		this.transactionModalInfo = data;
 	};
 
 	public setPage(pageNo:number):void {
@@ -209,6 +216,10 @@ export class PharmacyViewComponent implements OnInit{
 								id : transaction.id,
 								dispense_date : transaction.dispense_date,
 								info : transaction.info,
+								prescription_image_link : transaction.prescription_image_link,
+								physician_license_number : transaction.physician_license_number,
+								quantity_dispensed : item.quantity_dispensed,
+								quantity_prescribed : item.quantity_prescribed,
 								packaging : item.packaging,
 								batch_lot_number : item.batch_lot_number,
 								instruction : item.instruction,
@@ -216,15 +227,28 @@ export class PharmacyViewComponent implements OnInit{
 								expiry_date : item.expiry_date,
 								remark : item.remark
 							});
-							this._productService.getById(item.packaging.id)
-							.subscribe(packagingItem => {
-								this._productService.getDrugById(packagingItem.result[0].drug_id)
-								.subscribe(drug => {
-									this.productNameList.push({
-										id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transaction.id
+							if(item.packaging){
+								this._productService.getById(item.packaging.id)
+								.subscribe(packagingItem => {
+									this._productService.getDrugById(packagingItem.result[0].drug_id)
+									.subscribe(drug => {
+										this._productService.getGenericById(packagingItem.result[0].drug_id)
+										.subscribe(generic => {
+											var divider = ' '
+											if(drug.result[0].brand_name){
+												divider = ' - '
+											}
+											this.productNameList.push(
+												{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transaction.id}
+											);
+										});
 									});
 								});
-							});
+							}else{
+								this.productNameList.push(
+									{id: null, name: 'Unverified', transactionProductId: transaction.id}
+								);
+							}
 						});
 					}
 				});

@@ -136,7 +136,7 @@
 	</div>
 
 	<div class="row">
-		<div class="col-lg-6">
+		<div class="col-lg-12">
 			<div class="card">
 				<div class="card-header card-default">
 					<h5>Expired Medicines</h5>
@@ -149,7 +149,7 @@
 								<thead>
 									<tr>
 										<th>ID</th>
-										<th>Dispensed Date</th>
+										<th>Date</th>
 										<th>Product</th>
 										<th>LN/BN</th>
 										<th>Expiry Date</th>
@@ -167,7 +167,7 @@
 									</tr>
 								</tbody>
 							</table>
-							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions..</p>
+							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions.</p>
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="loader" *ngIf="isLoading">
@@ -189,61 +189,6 @@
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-6">
-			<div class="card">
-				<div class="card-header card-default">
-					<h5>Counterfeit</h5>
-				</div>
-				<div class="card-block">
-					<div class="table-responsive">
-						<div class="table-responsive">
-							<table class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<th>ID</th>
-										<th>Dispensed Date</th>
-										<th>Product</th>
-										<th>LN/BN</th>
-										<th>Expiry Date</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr *ngFor="let transaction of transactions; let i=index">
-										<template [ngIf]="i<3">
-											<th scope="row">{{transaction.id}}</th>
-											<td>{{formatDate(transaction.dispense_date, true)}}</td>
-											<td>{{getProductName(transaction.id) || 'n/a'}}</td>
-											<td>{{transaction.batch_lot_number}}</td>
-											<td>{{formatDate(transaction.expiry_date, false)}}</td>
-										</template>
-									</tr>
-								</tbody>
-							</table>
-							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions..</p>
-							<div class="row">
-								<div class="col-lg-12">
-									<div class="loader" *ngIf="isLoading">
-										<div class="bounce1"></div>
-										<div class="bounce2"></div>
-										<div class="bounce3"></div>
-									</div>
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-lg-6">
-									<p *ngIf="transactions.length != 0" style="margin-top: 1rem; margin-bottom: 1rem;">Showing 1 to 3 of 3 entries</p>
-								</div>
-								<div class="col-lg-6" style="text-align: right;">
-									<!-- <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
-									[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination> -->
-								</div>
-							</div>
-			</div>
-		</div>
 				</div>
 			</div>
 		</div>
@@ -303,14 +248,14 @@
 											<td>{{transaction.instruction}}x {{transaction.instruction_unit}}</td>
 											<td>{{transaction.remark || 'n/a'}}</td>
 											<td>
-												<button class="btn btn-default btn-sm" (click)="transactionModal.show()"><i class="fa fa-fw fa-eye"></i></button>
+												<button class="btn btn-default btn-sm" (click)="setModalValues(transaction); transactionModal.show();"><i class="fa fa-fw fa-eye"></i></button>
 												<button class="btn btn-danger btn-sm" (click)="lgModal.show()" *ngIf="isAdmin"><i class="fa fa-fw fa-times"></i></button>
 											</td>
 										</template>
 									</tr>
 								</tbody>
 							</table>
-							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions..</p>
+							<p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions.</p>
 							<div class="row">
 								<div class="col-lg-12">
 									<div class="loader" *ngIf="isLoading">
@@ -321,9 +266,9 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row" *ngIf="transactions.length != 0">
 								<div class="col-lg-6">
-									<p *ngIf="transactions.length != 0" style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of {{bigTotalItems}} entries</p>
+									<p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of {{bigTotalItems}} entries</p>
 								</div>
 								<div class="col-lg-6" style="text-align: right;">
 									<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
@@ -350,30 +295,32 @@
 			<div class="modal-body">
 				<div class="row">
 					<div class="col-lg-8" style="text-align:center;">
-						<img class="modal-image-mobile" src="https://snaprx.s3.amazonaws.com/2015081802375355d29a818bb7b_21_20158181031m.jpg" alt="">
+						<img class="modal-image-mobile" [src]="transactionModalInfo?.prescription_image_link" alt="">
 					</div>
 					<div class="col-lg-4">
 						<div style="border-bottom: 1px solid white; padding-bottom: 10px; margin-bottom: 15px;">
 							<h5><b style="color: #22ba22;">Physician Details</b></h5>
 							<h6><b style="color: #a0ab42;">Name</b></h6>
-							<span>Test Test</span><br><br>
+							<span>{{getTransactionInfo(transactionModalInfo?.info, 'physician')}}</span><br><br>
 							<h6><b style="color: #a0ab42;">License No.</b></h6>
-							<span>27192</span>
+							<span>{{transactionModalInfo?.physician_license_number}}</span>
 						</div>
 						<div>
 							<h5><b style="color: #22ba22;">Product Details</b></h5>
 							<h6><b style="color: #a0ab42;">Product</b></h6>
-							<span>Test Test</span><br><br>
+							<span>{{getProductName(transactionModalInfo?.id) || 'n/a'}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Instruction</b></h6>
-							<span>4x a DAY</span><br><br>
-							<h6><b style="color: #a0ab42;">Quantity</b></h6>
-							<span>3 Tablets</span><br><br>
+							<span>{{transactionModalInfo?.instruction}}x {{transactionModalInfo?.instruction_unit}}</span><br><br>
+							<h6><b style="color: #a0ab42;">Quantity Dispensed</b></h6>
+							<span>{{transactionModalInfo?.quantity_dispensed}}</span><br><br>
+							<h6><b style="color: #a0ab42;">Quantity Prescribed</b></h6>
+							<span>{{transactionModalInfo?.quantity_prescribed}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Batch Lot Number</b></h6>
-							<span>M823574</span><br><br>
+							<span>{{transactionModalInfo?.batch_lot_number}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Expiry Date</b></h6>
-							<span>2021-08-31</span><br><br>
+							<span>{{formatDate(transactionModalInfo?.expiry_date, false)}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Remarks</b></h6>
-							<span>Partially Filled</span>
+							<span>{{transactionModalInfo?.remark || 'n/a'}}</span>
 						</div>
 					</div>
 				</div>

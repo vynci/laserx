@@ -18,19 +18,21 @@
         <div class="col-lg-12">
           <div class="card card-block">
             <div class="row">
-              <div class="col-lg-3"></div>
-              <div class="col-lg-3"></div>
+              <div class="col-lg-4"></div>
               <div class="col-lg-3">
                 <div class="form-group input-group">
                   <span class="input-group-btn"><button class="btn btn-secondary" type="button" (click)="dateModal.show()"><i class="fa fa-calendar"></i></button></span>
                   <input type="text" class="form-control" placeholder="Filter By Date.." [(ngModel)]="filterDateString" [readonly]="true">
                 </div>
               </div>
-              <div class="col-lg-3" style="text-align: right;">
+              <div class="col-lg-3">
                 <div class="form-group">
                   <input type="text" class="form-control" type=text [value]="search" [formControl]="searchControl" placeholder="Search...">
                   <!-- <span class="input-group-btn"><button class="btn btn-secondary" type="button"><i class="fa fa-search"></i></button></span> -->
                 </div>
+              </div>
+              <div class="col-lg-2" style="text-align: right;">
+                <button class="btn btn-default btn-sm" (click)="downloadCSV()">Download CSV</button>
               </div>
             </div>
 
@@ -39,7 +41,7 @@
                 <thead>
                   <tr>
                     <th (click)="sortList('id')">ID</th>
-                    <th (click)="sortList('dispense_date')">Dispensed Date</th>
+                    <th (click)="sortList('dispense_date')">Date</th>
                     <th (click)="sortList('organization_branch')">Pharmacy Name</th>
                     <th (click)="sortList('dispense_date')">Doctor</th>
                     <th (click)="sortList('dispense_date')">Pharmacist</th>

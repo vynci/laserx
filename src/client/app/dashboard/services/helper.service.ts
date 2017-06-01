@@ -86,6 +86,13 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
+	getAllPrescription(){
+		let url = this.endpoint + 'functions/get-all-prescription';
+
+		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
 	getPharmacyCountPerProvince(){
 		let url = this.endpoint + 'functions/get-pharmacy-count-per-province';
 

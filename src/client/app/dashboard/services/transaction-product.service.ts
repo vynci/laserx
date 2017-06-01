@@ -26,6 +26,16 @@ export class TransactionProductService {
 		.map((response: Response) => response.json());
 	}
 
+	getAll(){
+		let search = new URLSearchParams();
+		search.append('limit', '10000');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+
+		return this.http.get(this.url, options)
+		.map((response: Response) => response.json());
+	}
+
 	getByPage(limit: number, page: number){
 		let skip = (page - 1) * limit;
 

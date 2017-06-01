@@ -575,6 +575,11 @@ export class HomeComponent implements OnInit {
 
 
 	public styleExp:string = (window.innerHeight - 50) + 'px';
+	public isDropDown:boolean = false;
+	public isListProduct:boolean = false;
+
+	public placeHolderType:string = 'Pharmacy or Province';
+
 	private subscription;
 	private actionType:string = 'all';
 
@@ -588,6 +593,7 @@ export class HomeComponent implements OnInit {
 				let actions:Array<string> = action.split('/');
 				action = actions[3];
 
+				this.isDropDown = false;
 				this.actionType = action;
 				this.deleteMarkers();
 				this.initiateMarkers();
@@ -597,6 +603,16 @@ export class HomeComponent implements OnInit {
 
 	public viewPharmacies():void{
 		this.router.navigate(['/dashboard/pharmacies']);
+	}
+
+	public showDropDown():void{
+		this.isDropDown = true;
+		console.log(this.actionType);
+		if(this.actionType === 'licensing' || this.actionType === 'all'){
+			this.isListProduct = false;
+		}else{
+			this.isListProduct = true;
+		}
 	}
 
 	private markers:Array<any> = [];
@@ -658,7 +674,7 @@ export class HomeComponent implements OnInit {
 	private map:any;
 
 	public viewPharmacy():void{
-		this.router.navigate(['/dashboard/pharmacy-view', 45360]);
+		this.router.navigate(['/dashboard/pharmacy-view', 47790]);
 	}
 
 	private initiateMarkers():void{
@@ -666,19 +682,24 @@ export class HomeComponent implements OnInit {
 		var tmp = 0;
 
 		if(this.actionType === 'expired-meds'){
+			this.placeHolderType = 'Product Name';
 			pinColor = 'spin_blue.png';
 			tmp = 10;
 		}else if(this.actionType === 'counterfeit'){
+			this.placeHolderType = 'Batch/Lot Number';
 			pinColor = 'spin_darkblue.png';
 			tmp = 38;
 		}else if(this.actionType === 'disaster-recovery'){
+			this.placeHolderType = 'Product Name';
 			pinColor = 'spin_green.png';
 			tmp = 0;
 		}else if(this.actionType === 'licensing'){
+			this.placeHolderType = 'Pharmacy or Province';
 			pinColor = 'spin_red.png';
 			tmp = 45;
 		}else{
-			pinColor = 'spin_blue.png';
+			this.placeHolderType = 'Pharmacy or Province';
+			pinColor = 'spin_green.png';
 			tmp = 0;
 		}
 

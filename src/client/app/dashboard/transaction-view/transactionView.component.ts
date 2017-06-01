@@ -86,6 +86,7 @@ export class TransactionViewComponent {
 
 	public getProductName(id:number):string {
 		var productName = 'Loading...';
+
 		this.productNameList.forEach(product => {
 			if(product){
 				if(id === product.transactionProductId){
@@ -99,16 +100,27 @@ export class TransactionViewComponent {
 
 	private parseData(data:any):void{
 		data.forEach(transactionProduct => {
-			if(transactionProduct){
+			if(transactionProduct.packaging){
 				this._productService.getById(transactionProduct.packaging.id)
 				.subscribe(packaging => {
 					this._productService.getDrugById(packaging.result[0].drug_id)
 					.subscribe(drug => {
-						this.productNameList.push(
-							{id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transactionProduct.id}
-						);
+						this._productService.getGenericById(packaging.result[0].drug_id)
+						.subscribe(generic => {
+							var divider = ' '
+							if(drug.result[0].brand_name){
+								divider = ' - '
+							}
+							this.productNameList.push(
+								{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transactionProduct.id}
+							);
+						});
 					});
 				});
+			}else{
+				this.productNameList.push(
+					{id: null, name: 'Unverified', transactionProductId: transactionProduct.id}
+				);
 			}
 		});
 	}

@@ -1,9 +1,13 @@
 import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TransactionService } from '../services/transaction.service';
+import { TransactionProductService } from '../services/transaction-product.service';
+import { ProductService } from '../services/product.service';
 import { HelperService } from '../services/helper.service';
 import { PharmacyService } from '../services/pharmacy.service';
+import { JSONToCSV } from '../services/jsonToCSV.service';
 import { PharmacyModel } from './pharmacy-model';
+import { PharmacySearchModel } from './pharmacy-search-model';
 import { PhysicianModel } from './physician-model';
 
 import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
@@ -17,45 +21,10 @@ import 'rxjs/add/observable/fromEvent';
 	moduleId: module.id,
 	selector: 'tables-cmp',
 	templateUrl: 'tables.component.html',
-	providers: [TransactionService, PharmacyService, HelperService]
+	providers: [TransactionService, PharmacyService, HelperService, JSONToCSV, TransactionProductService, ProductService]
 })
 
 export class TableComponent {
-
-	public pharmacySearchNameList:Array<PharmacyModel> = [
-		{
-			id: 43558,
-			name: 'mercury drug test'
-		},
-		{
-			id: 43559,
-			name: 'sand 1 sand 2'
-		},
-		{
-			id: 43560,
-			name: 'test test'
-		},
-		{
-			id: 47787,
-			name: 'dj chad pharmacy'
-		},
-		{
-			id: 47790,
-			name: 'gundam heavy arms'
-		},
-		{
-			id: 47791,
-			name: '2k pharmaceutical (pharmacy)'
-		},
-		{
-			id: 47793,
-			name: '117 drugstore'
-		},
-		{
-			id: 47794,
-			name: '153 generic pharmacy'
-		}											
-	];
 
 	public search:string        = '';
 	searchControl = new FormControl();
@@ -75,7 +44,10 @@ export class TableComponent {
 		private router: Router,
 		private _transactionService : TransactionService,
 		private _pharmacyService : PharmacyService,
-		private _helperService : HelperService
+		private _helperService : HelperService,
+		private _transactionProductService : TransactionProductService,
+		private _productService : ProductService,
+		private _jsonToCSVService : JSONToCSV
 	){}
 
 	public pageLimit:number = 10;
@@ -84,6 +56,8 @@ export class TableComponent {
 	public maxSize:number = 5;
 	public bigTotalItems:number = 1000;
 	public bigCurrentPage:number = 1;
+
+	public pharmacySearchNameList:Array<PharmacySearchModel> = []
 
 	public filterDateString:string = null;
 	public filterDate:any = {
@@ -259,7 +233,25 @@ export class TableComponent {
 							{id: physician.result.id, name: physician.result.first_name + ' ' + physician.result.last_name}
 					);
 				});
-				}
+			}
+		});
+	}
+
+	private processCSV(data:any):void{
+		let csvData:Array<Object> = [];
+		console.log(data);
+		data.forEach(object => {
+			console.log(object);
+			if(object.prescription){
+				this._transactionService.getById(object.prescription.id)
+				.subscribe(prescription => {
+					/*var doctorName = prescription*/
+					if(prescription){
+						console.log(prescription);
+					}
+				});
+			}
+
 		});
 	}
 
@@ -289,6 +281,14 @@ export class TableComponent {
 		this.router.navigate(['/dashboard/transaction-view', transactionId]);
 	}
 
+	public downloadCSV():void{
+		this._helperService.getAllPrescription()
+		.subscribe(data => {
+			console.log(data);
+			this._jsonToCSVService.Convert(data.result, 'filename123.csv');
+		});
+	}
+
 	ngOnInit(): void {
 		this.isLoading = true;
 		if (localStorage.getItem('roleId') === 'admin') {
@@ -304,6 +304,11 @@ export class TableComponent {
 
 		this._transactionService.getCount()
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);
+
+		this._helperService.getAllPharmacyLocation()
+		.subscribe(data => {
+			this.pharmacySearchNameList = data.result;
+		});
 
 		this.generateDays();
 
@@ -329,23 +334,22 @@ export class TableComponent {
 						}else{
 							this.pharmacySearchNameList.forEach(pharmacy => {
 								if(pharmacy){
-									this.search = this.search.toLowerCase();
-									if(this.contains(pharmacy.name, this.search)){
-										this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.id.toString(), 'pharmacy.id')
+									if(this.contains(pharmacy.pharmacy_name.toLowerCase(), this.search.toLowerCase())){
+										this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id')
 										.subscribe(data => {
 											this.transactions = data.result;
 											this.parseData(this.transactions);
-										});										
+										});
 									}
 								}
-							});									
+							});
 						}
-						
-					});			
+
+					});
 				}
-				
-			});			
-		});		
+
+			});
+		});
 	}
 
 }

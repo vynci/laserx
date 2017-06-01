@@ -34,7 +34,7 @@ export class DashComponent implements OnInit {
 	public currentPage:number = 4;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 9960;
+	public bigTotalItems:number = 102;
 	public bigCurrentPage:number = 1;
 
 	public setPage(pageNo:number):void {
@@ -211,7 +211,7 @@ export class DashComponent implements OnInit {
 			tmp.splice(10)
 			this.transactions = tmp;*/
 		});
-		
+
 		this.searchControl.valueChanges
 		.debounceTime(250)
 		.subscribe(newValue => {
@@ -219,6 +219,6 @@ export class DashComponent implements OnInit {
 			this.currentPage = 1;
 			this._pharmacyService.find(this.search, this.currentPage, null)
 			.subscribe(data => this.transactions = data.result);
-		});		
+		});
 	}
 }
