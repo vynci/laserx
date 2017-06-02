@@ -50,7 +50,7 @@
 						<tbody>
 							<tr *ngFor="let pharmacy of pharmacies">
 								<td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(pharmacy.id)">{{pharmacy.organization_chain}} {{pharmacy.organization_branch}}</a></td>
-								<td>{{getOwnerInfo(pharmacy.id, 'name') || 'n/a'}}</td>
+								<td>{{pharmacy.organization_owner || 'n/a'}}</td>
 								<td>Metro Manila</td>
 								<td>{{getOwnerInfo(pharmacy.id, 'email') || 'n/a'}}</td>
 								<td>{{getOwnerInfo(pharmacy.id, 'mobile') || 'n/a'}}</td>

@@ -46,6 +46,15 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
+	getUserByName(name: string){
+		let url = this.endpoint + 'users/'
+		let search = new URLSearchParams('where={"first_name":{"has":' + name + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}	
+
 	updateUser(id: number, data: any){
 		let url = this.endpoint + 'users/' + id;
 		let headers = new Headers({
@@ -73,7 +82,7 @@ export class HelperService {
 	}
 
 	getTransactionFeed(){
-		let url = this.endpoint + 'functions/get-transaction-feed';
+		let url = this.endpoint + 'functions/get-prescription-trend';
 
 		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
 		.map((response: Response) => response.json());

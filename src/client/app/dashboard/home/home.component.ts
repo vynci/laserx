@@ -1,5 +1,14 @@
 import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute, Params } from '@angular/router';
+import { HelperService } from '../services/helper.service';
+import { PharmacySearchModel } from './pharmacy-search-model';
+import { ProductSearchModel } from './product-search-model';
+
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/observable/fromEvent';
+
 /**
 *	This class represents the lazy loaded HomeComponent.
 */
@@ -36,10 +45,35 @@ export class NotificationComponent { }
 	selector: 'home-cmp',
 	templateUrl: 'home.component.html',
 	styleUrls: ['home.css'],
+	providers: [HelperService]
 })
 
 export class HomeComponent implements OnInit {
 	@ViewChild('mapDiv') mapDiv: ElementRef;
+	public productList:Array<ProductSearchModel> = [
+		{
+			name : 'Biogesic - Paracetamol',
+			exp: 'Tue, 30 May 2017'
+		},
+		{
+			name : 'Eposino - Epoetin Alfa',
+			exp: 'Mon, 29 May 2017'
+		},
+		{
+			name : 'Ventolin - Salbulamol (As Sulfate)',
+			exp: 'Sun, 28 May 2017'
+		},
+		{
+			name : 'Enrofloxacin',
+			exp: 'Fri, 25 May 2017'
+		},
+		{
+			name : 'Tetanus Antitoxin ',
+			exp: 'Mon, 29 May 2017'
+		}
+						
+	];
+
 	pharmacies = [
 		{
 			"id": "2",
@@ -572,20 +606,23 @@ export class HomeComponent implements OnInit {
 		"countryName": "Philippines"
 		}
 ]
-
-
+	public search:string        = '';
+	searchControl = new FormControl();
+	public filterDateString:string = null;
+	public pharmacySearchNameList:Array<PharmacySearchModel> = []
 	public styleExp:string = (window.innerHeight - 50) + 'px';
 	public isDropDown:boolean = false;
 	public isListProduct:boolean = false;
 
-	public placeHolderType:string = 'Pharmacy or Province';
+	public placeHolderType:string = 'Search Pharmacy or Province';
 
 	private subscription;
-	private actionType:string = 'all';
+	public actionType:string = 'all';
 
 	constructor(
 		private router: Router,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private _helperService : HelperService
 	) {
 		this.subscription = router.events.subscribe((val) => {
 			if(val instanceof NavigationEnd){
@@ -602,7 +639,7 @@ export class HomeComponent implements OnInit {
 	}
 
 	public viewPharmacies():void{
-		this.router.navigate(['/dashboard/pharmacies']);
+		this.router.navigate(['/dashboard/pharmacies/all']);
 	}
 
 	public showDropDown():void{
@@ -673,8 +710,16 @@ export class HomeComponent implements OnInit {
 	private marker:any;
 	private map:any;
 
-	public viewPharmacy():void{
-		this.router.navigate(['/dashboard/pharmacy-view', 47790]);
+	public viewPharmacy(pharmacyId:any):void{
+		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
+	}
+
+	public getProvinceName(data:string):string{
+		var city = data.split(',');
+		let result:string;
+		result = city[city.length - 1];
+
+		return result;
 	}
 
 	private initiateMarkers():void{
@@ -682,23 +727,23 @@ export class HomeComponent implements OnInit {
 		var tmp = 0;
 
 		if(this.actionType === 'expired-meds'){
-			this.placeHolderType = 'Product Name';
+			this.placeHolderType = 'Search Product Name';
 			pinColor = 'spin_blue.png';
 			tmp = 10;
 		}else if(this.actionType === 'counterfeit'){
-			this.placeHolderType = 'Batch/Lot Number';
+			this.placeHolderType = 'Search Batch/Lot Number';
 			pinColor = 'spin_darkblue.png';
 			tmp = 38;
 		}else if(this.actionType === 'disaster-recovery'){
-			this.placeHolderType = 'Product Name';
+			this.placeHolderType = 'Search Product Name';
 			pinColor = 'spin_green.png';
 			tmp = 0;
 		}else if(this.actionType === 'licensing'){
-			this.placeHolderType = 'Pharmacy or Province';
+			this.placeHolderType = 'Search Pharmacy or Province';
 			pinColor = 'spin_red.png';
 			tmp = 45;
 		}else{
-			this.placeHolderType = 'Pharmacy or Province';
+			this.placeHolderType = 'Search Pharmacy or Province';
 			pinColor = 'spin_green.png';
 			tmp = 0;
 		}
@@ -730,10 +775,74 @@ export class HomeComponent implements OnInit {
 		}
 		this.markers = [];
 	}
+	
+	private contains(data:string, subData:string):boolean{
+		var string = data;
+		var substring = subData;
+
+		return string.indexOf(substring) !== -1;
+	}
+
+	public tmpList2:Array<PharmacySearchModel> = [];
+	public prodTmpList2:Array<ProductSearchModel> = [];
+
+	private filterPharmacies(data:string):void{
+		let tmpList:Array<PharmacySearchModel> = [];
+
+		if(this.tmpList2.length > 0){
+			this.pharmacySearchNameList = this.tmpList2;
+		}
+								
+		this.pharmacySearchNameList.forEach(pharmacy => {
+			if(this.contains(pharmacy.pharmacy_name.toLowerCase(), data.toLowerCase())){
+				tmpList.push(pharmacy);
+			}
+		});
+
+		this.tmpList2 = this.pharmacySearchNameList;
+		this.pharmacySearchNameList = tmpList;
+	}
+
+	private filterProducts(data:string):void{
+		let tmpList:Array<ProductSearchModel> = [];
+
+		if(this.prodTmpList2.length > 0){
+			this.productList = this.prodTmpList2;
+		}
+								
+		this.productList.forEach(product => {
+			if(this.contains(product.name.toLowerCase(), data.toLowerCase())){
+				tmpList.push(product);
+			}
+		});
+
+		this.prodTmpList2 = this.productList;
+		this.productList = tmpList;
+	}	
 
 	ngOnInit(){
-		console.log(this.route.snapshot.params['action']);
+		
 		this.actionType = this.route.snapshot.params['action'];
+		this._helperService.getAllPharmacyLocation()
+		.subscribe(data => {
+			this.pharmacySearchNameList = data.result;
+		});
+
+		this.searchControl.valueChanges
+		.debounceTime(250)
+		.subscribe(newValue => {
+			if(this.actionType === 'expired-meds'){
+				this.filterProducts(newValue);
+			}else if(this.actionType === 'counterfeit'){
+
+			}else if(this.actionType === 'disaster-recovery'){
+				this.filterProducts(newValue);
+			}else if(this.actionType === 'licensing'){
+				this.filterPharmacies(newValue);
+			}else{
+				this.filterPharmacies(newValue);
+			}						
+		});				
 	}
 
 	ngOnDestroy(){

@@ -331,7 +331,7 @@ export class TableComponent {
 						this.transactions = data.result;
 						if(this.transactions.length > 0){
 							this.parseData(this.transactions);
-						}else{
+						} else {
 							this.pharmacySearchNameList.forEach(pharmacy => {
 								if(pharmacy){
 									if(this.contains(pharmacy.pharmacy_name.toLowerCase(), this.search.toLowerCase())){

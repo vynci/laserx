@@ -38,7 +38,76 @@ export class BlankPageComponent {
 
 	public filters:Array<string> = [
 		'All Pharmacies', 'Expired License',
-		'Expired Medicines', 'Counterfeit',
+		'Expired Medicines'
+	];
+
+	private ownerListSearchList:Array<OwnerModel> = [
+		{
+			name : 'Test D N',
+			email : 'testd@gmail.com',
+			id : 43558,
+			mobile : null
+		},
+		{
+			name : 'Test N K',
+			email : 'test2@gmail.com',
+			id : 43560,
+			mobile : null			
+		},
+		{
+			name : 'tedkks hdhd kdjd',
+			email : 'test3@gmail.com',
+			id : 43561,
+			mobile : null			
+		},
+		{
+			name : 'Pharmacy Chain Pharmacy Branch',
+			email : 'pormento@mclinica.com',
+			id : 47787,
+			mobile : null
+		},
+		{
+			name : 'GUNDAM HEAVY ARMS',
+			email : 'abc789@gmail.com',
+			id : 47790,
+			mobile : null			
+		},
+		{
+			name : '2K PHARMACEUTICAL (PHARMACY)',
+			email : '456@gmail.com',
+			id : 47791,
+			mobile : null			
+		},
+		{
+			name : '117 DRUGSTORE',
+			email : 'test9@gmail.com',
+			id : 47792,
+			mobile : null
+		},
+		{
+			name : '153 GENERIC PHARMACY',
+			email : 'test11@gmail.com',
+			id : 47794,
+			mobile : null			
+		},
+		{
+			name : '100 GENERIC PHARMACY',
+			email : 'pb@gmail.com',
+			id : 47795,
+			mobile : null			
+		},
+		{
+			name : 'PB PHARMACY',
+			email : 'elizaga@mclinica.com',
+			id : 47796,
+			mobile : null			
+		},
+		{
+			name : 'ANORLONDO',
+			email : 'abcd000@gmail.com',
+			id : 47797,
+			mobile : null			
+		}											
 	];
 
 	public totalItems:number = 64;
@@ -69,14 +138,20 @@ export class BlankPageComponent {
 			this.search = '';
 			this.isLicenseExpired = false;
 		}
-		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired)
-		.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
+		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
+		.subscribe(resPharmacyData =>{
+			this.pharmacies = resPharmacyData.result
+			this.parseData(this.pharmacies);			
+		});
 	};
 
 	public pageChanged(event:any):void {
 		this.currentPage = event.page;
-		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired)
-		.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
+		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
+		.subscribe(resPharmacyData => {
+			this.pharmacies = resPharmacyData.result
+			this.parseData(this.pharmacies);
+		});
 	};
 
 	public viewPharmacy(pharmacyId:any):void{
@@ -96,7 +171,15 @@ export class BlankPageComponent {
 		return pharmacyName;
 	};
 
+	private contains(data:string, subData:string):boolean{
+		var string = data;
+		var substring = subData;
+
+		return string.indexOf(substring) !== -1;
+	}	
+
 	private parseData(data:any):void{
+		this.ownerInfoList = [];
 		data.forEach(pharmacy => {
 			this._helperService.getUserByOrganizationId(pharmacy.id)
 			.subscribe(owner => {
@@ -136,8 +219,31 @@ export class BlankPageComponent {
 		.subscribe(newValue => {
 			this.search = newValue;
 			this.currentPage = 1;
-			this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired)
-			.subscribe(resPharmacyData => this.pharmacies = resPharmacyData.result);
+			this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
+			.subscribe(resPharmacyData => {
+				if(resPharmacyData.result.length > 0){
+					this.pharmacies = resPharmacyData.result
+					this.parseData(this.pharmacies);	
+				}else{
+					this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_owner')
+					.subscribe(resPharmacyData => {						
+						if(resPharmacyData.result.length > 0){
+							this.pharmacies = resPharmacyData.result
+							this.parseData(this.pharmacies);	
+						}else{
+							this.ownerListSearchList.forEach(data =>{
+								if(this.contains(data.email.toLowerCase(), this.search.toLowerCase())){
+									this._pharmacyService.getById(data.id)
+									.subscribe(data => {
+										this.pharmacies = data.result
+										this.parseData(this.pharmacies);										
+									});									
+								}
+							});	
+						}
+					});					
+				}
+			});
 		});
 	}
 

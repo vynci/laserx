@@ -1,29 +1,38 @@
 <div id="pac-input" class="form-group input-group map-search-bar">
-	<input  class="controls form-control" type="text" style="border-radius: 0px !important;" placeholder="{{placeHolderType}}" (click)="showDropDown()">
+	<input  class="controls form-control" type="text" style="border-radius: 0px !important;" placeholder="{{placeHolderType}}" (click)="showDropDown()" [value]="search" [formControl]="searchControl">
 	<span class="input-group-btn"><button class="btn btn-primary" type="button" style="border-radius: 0px !important;"><i class="fa fa-search"></i></button></span>
 	<br>
-	<div *ngIf="isDropDown" style="position: fixed; width: 350px; height: 275px; background: white; left: 30px;">
-		<div *ngFor="let pharmacy of pharmacies | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacy()">
-			<div class="row">
-				<div class="col-lg-8">
-					<div *ngIf="!isListProduct">
-						<span><b><a>{{pharmacy.name}}</a></b></span><br>
-						<span>{{pharmacy.provinceName}}</span>
+	<div *ngIf="isDropDown && actionType !== 'counterfeit'" style="position: fixed; width: 350px; height: 275px; background: white; left: 30px;">
+		<div *ngIf="!isListProduct" >
+			<div *ngFor="let pharmacy of pharmacySearchNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacy(pharmacy.pharmacy_id)">
+				<div class="row">
+					<div class="col-lg-8">
+						<div>
+							<span><b><a>{{pharmacy.pharmacy_name}}</a></b></span><br>
+							<span>{{getProvinceName(pharmacy.address)}}</span>
+						</div>
 					</div>
-					<div *ngIf="isListProduct">
-						<span><b><a>{{'Product Name'}}</a></b></span><br>
-						<span>{{'Product Info'}}</span>
+					<div class="col-lg-4" style="padding-left: 75px;">
+						<i class="fa fa-map-marker" style="font-size: 22px; color: #888;"></i>
 					</div>
-
-
-
-				</div>
-				<div class="col-lg-4" style="padding-left: 75px;">
-					<i *ngIf="!isListProduct" class="fa fa-map-marker" style="font-size: 22px; color: #888;"></i>
 				</div>
 			</div>
 		</div>
-		<div style="padding: 10px 10px; cursor: pointer; text-align: center;" (click)="viewPharmacies()">
+		<div *ngIf="isListProduct">
+			<div *ngFor="let product of productList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
+				<div class="row">
+					<div class="col-lg-8">
+						<div>
+							<span><b><a>{{product.name}}</a></b></span><br>
+							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{product.exp}}</span>							
+							<span *ngIf="actionType === 'disaster-recovery'">Metro Manila</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div *ngIf="!isListProduct" style="padding: 10px 10px; cursor: pointer; text-align: center;" (click)="viewPharmacies()">
 			<a>View More</a>
 		</div>
 	</div>

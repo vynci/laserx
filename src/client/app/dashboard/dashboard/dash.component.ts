@@ -19,6 +19,7 @@ export class DashComponent implements OnInit {
 
 	public transactionFeed:Array<Object> = [];
 	public transactions:Array<Object> = [];
+	public transactionTrend:any = {};
 	public pharmacies:Array<Object> = [];
 	public isLoading:boolean = false;
 
@@ -34,7 +35,7 @@ export class DashComponent implements OnInit {
 	public currentPage:number = 4;
 
 	public maxSize:number = 5;
-	public bigTotalItems:number = 102;
+	public bigTotalItems:number = 109;
 	public bigCurrentPage:number = 1;
 
 	public setPage(pageNo:number):void {
@@ -43,7 +44,7 @@ export class DashComponent implements OnInit {
 
 	public pageChanged(event:any):void {
 		this.currentPage = event.page;
-		this._pharmacyService.find(this.search, this.currentPage, false)
+		this._pharmacyService.find(this.search, this.currentPage, false, 'organization_branch')
 		.subscribe(resPharmacyData => this.transactions = resPharmacyData.result);
 	};
 
@@ -142,10 +143,26 @@ export class DashComponent implements OnInit {
 			},
 			series: [{
 				name: 'Current Week',
-					data: [86, 21, 56, 64, 53, 132, 12]
+					data: [
+						this.transactionTrend.current[0].total_prescription || 0, 
+						this.transactionTrend.current[1].total_prescription || 0, 
+						this.transactionTrend.current[2].total_prescription || 0,
+						this.transactionTrend.current[3].total_prescription || 0, 
+						this.transactionTrend.current[4].total_prescription || 0, 
+						this.transactionTrend.current[5].total_prescription || 0, 
+						this.transactionTrend.current[6].total_prescription || 0
+					]
 				}, {
 					name: 'Previous Week',
-					data: [31, 65, 11, 107, 89, 108, 205]
+					data: [
+						this.transactionTrend.previous[0].total_prescription || 0, 
+						this.transactionTrend.previous[1].total_prescription || 0, 
+						this.transactionTrend.previous[2].total_prescription || 0,
+						this.transactionTrend.previous[3].total_prescription || 0, 
+						this.transactionTrend.previous[4].total_prescription || 0, 
+						this.transactionTrend.previous[5].total_prescription || 0, 
+						this.transactionTrend.previous[6].total_prescription || 0						
+					]
 			}]
 		});
 	};
@@ -183,11 +200,10 @@ export class DashComponent implements OnInit {
 			});
 
 		this._helperService.getTransactionFeed()
-			.subscribe(data => {
-				var tmp = data.result;
-				tmp.splice(7);
-				this.transactionFeed = tmp;
-			});
+		.subscribe(data => {
+			console.log(data);
+			this.transactionTrend = data.result;
+		});
 
 		this._pharmacyService.getAll()
 		.subscribe(data => {
@@ -195,8 +211,8 @@ export class DashComponent implements OnInit {
 			this.isLoading = false;
 		});
 
-		this._pharmacyService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = 9960);
+		// this._pharmacyService.getCount()
+		// .subscribe(resPharmacyData => this.bigTotalItems = 9960);
 
 		this._helperService.getTransactionCountPerPharmacy(43558)
 			.subscribe(data => {
@@ -217,7 +233,7 @@ export class DashComponent implements OnInit {
 		.subscribe(newValue => {
 			this.search = newValue;
 			this.currentPage = 1;
-			this._pharmacyService.find(this.search, this.currentPage, null)
+			this._pharmacyService.find(this.search, this.currentPage, null, 'organization_branch')
 			.subscribe(data => this.transactions = data.result);
 		});
 	}

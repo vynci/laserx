@@ -28,7 +28,7 @@ export class TransactionProductService {
 
 	getAll(){
 		let search = new URLSearchParams();
-		search.append('limit', '10000');
+		search.append('limit', '50');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 
