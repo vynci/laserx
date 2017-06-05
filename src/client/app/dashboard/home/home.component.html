@@ -2,7 +2,7 @@
 	<input  class="controls form-control" type="text" style="border-radius: 0px !important;" placeholder="{{placeHolderType}}" (click)="showDropDown()" [value]="search" [formControl]="searchControl">
 	<span class="input-group-btn"><button class="btn btn-primary" type="button" style="border-radius: 0px !important;"><i class="fa fa-search"></i></button></span>
 	<br>
-	<div *ngIf="isDropDown && actionType !== 'counterfeit'" style="position: fixed; width: 350px; height: 275px; background: white; left: 30px;">
+	<div *ngIf="isDropDown && actionType !== 'counterfeit'" style="position: fixed; width: 350px; background: white; left: 30px;">
 		<div *ngIf="!isListProduct" >
 			<div *ngFor="let pharmacy of pharmacySearchNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacy(pharmacy.pharmacy_id)">
 				<div class="row">
@@ -19,22 +19,23 @@
 			</div>
 		</div>
 		<div *ngIf="isListProduct">
-			<div *ngFor="let product of productList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
+			<div *ngFor="let product of productNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
 				<div class="row">
 					<div class="col-lg-8">
 						<div>
-							<span><b><a>{{product.name}}</a></b></span><br>
-							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{product.exp}}</span>							
+							<span><b><a>{{product.name}}; {{product.package_form}}; {{product.fda_packaging}}</a></b></span><br>
+							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{formatDate(product.expiry_date, false)}}</span>
 							<span *ngIf="actionType === 'disaster-recovery'">Metro Manila</span>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		
-		<div *ngIf="!isListProduct" style="padding: 10px 10px; cursor: pointer; text-align: center;" (click)="viewPharmacies()">
+
+		<div *ngIf="actionType !== 'disaster-recovery' && actionType !== 'counterfeit'" style="padding: 10px 10px; cursor: pointer; text-align: center;" (click)="viewMoreItems()">
 			<a>View More</a>
 		</div>
+
 	</div>
 </div>
 

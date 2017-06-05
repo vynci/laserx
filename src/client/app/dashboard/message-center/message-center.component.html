@@ -13,7 +13,7 @@
 							</h2>
 						</div>
 						<div class="col-lg-4" style="text-align: right;">
-							<a class="btn btn-warning" (click)="login()"> <i class="fa fa-envelope"></i> Send Message </a>
+							<a class="btn btn-warning" (click)="sendMessageModal.show()"> <i class="fa fa-envelope"></i> Send Message </a>
 						</div>
 					</div>
 				</div>
@@ -48,7 +48,7 @@
 						</thead>
 						<tbody>
 							<tr *ngFor="let message of messages">
-								<th scope="row"><a style="cursor: pointer;">{{message.created_at}}</a></th>
+								<td>{{formatDate(message.created_at, false)}}</td>
 								<td>{{message.type}}</td>
 								<td>{{message.title}}</td>
 								<td>{{message.message}}</td>
@@ -70,13 +70,47 @@
 
 				<div class="row">
 					<div class="col-lg-6">
-						<!-- <pre class="card card-block card-header">Page: {{bigCurrentPage}} / {{numPages}}</pre> -->
+						<p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of {{bigTotalItems}} entries</p>
 					</div>
 					<div class="col-lg-6" style="text-align: right;">
 						<pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
 						[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination>
 					</div>
 				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div bsModal #sendMessageModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header" style="background: #007402; color: white;">
+				<button type="button" class="close" (click)="sendMessageModal.hide()" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<h5 class="modal-title">Send Message</h5>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for=""><b>To:</b></label>
+					<select class="form-control" placeholder="Select Type" [(ngModel)]="messageTo">
+						<option value="Recall">Recall</option>
+						<option value="Regular Message">Regular Message</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for=""><b>Title</b></label>
+					<input type="text" class="form-control" placeholder="Title" [(ngModel)]="messageTitle">
+				</div>
+				<div class="form-group">
+					<label for=""><b>Message</b></label>
+					<textarea rows="4" class="form-control" placeholder="Message" [(ngModel)]="messageContent"></textarea>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" (click)="sendMessage(); sendMessageModal.hide();">Send</button>
+				<button type="button" class="btn btn-secondary" (click)="sendMessageModal.hide()">Close</button>
 			</div>
 		</div>
 	</div>

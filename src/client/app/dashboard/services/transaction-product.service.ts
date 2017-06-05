@@ -26,12 +26,32 @@ export class TransactionProductService {
 		.map((response: Response) => response.json());
 	}
 
-	getAll(){
+	getExpiredProducts(){
 		let search = new URLSearchParams();
-		search.append('limit', '50');
+		let toDate = new Date();
+
+		let searchParams = {
+			'expiry_date' : {
+				lte : toDate
+			}
+		}
+
+		search.append('where', JSON.stringify(searchParams));
+
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
+		return this.http.get(this.url, options)
+		.map((response: Response) => response.json());
+	}
 
+	getAll(limit: number, page: number){
+		let skip = (page - 1) * limit;
+		let search = new URLSearchParams('skip=' + skip);
+
+		search.append('limit', limit.toString());
+		search.append('sort', '[{"created_at":-1}]');
+
+		let options = new RequestOptions({ headers: this.headers, search: search});
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
 	}

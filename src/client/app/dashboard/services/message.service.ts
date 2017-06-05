@@ -41,11 +41,17 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
+	sendMessage(messageTo:string, messageTitle:string, messageContent:string){
+		let body = {'type' : messageTo, 'title': messageTitle, 'message': messageContent, 'user_id': parseInt(localStorage.getItem('currentUser'))};
+
+		return this.http.post(this.url, JSON.stringify(body), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
-		let options = new RequestOptions({ headers: this.headers, body: {'table_name' : 'pharmacy'}});
 
-		return this.http.post(url, JSON.stringify({table_name: 'pharmacy'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'notification_message'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

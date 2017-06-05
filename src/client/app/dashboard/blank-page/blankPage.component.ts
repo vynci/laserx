@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute, Params } from '@angular/router';
 import { PharmacyService } from '../services/pharmacy.service';
 import { LocationService } from '../services/location.service';
 import { HelperService } from '../services/helper.service';
@@ -23,12 +23,14 @@ export class BlankPageComponent {
 	public pharmacies:Array<Object> = [];
 	public isAdmin:boolean = false;
 	public isLoading:boolean = false;
+	public filterType:string = 'all';
 
 	search        = '';
 	searchControl = new FormControl();
 
 	constructor(
 		private router: Router,
+		private route: ActivatedRoute,
 		private _pharmacyService : PharmacyService,
 		private _locationService : LocationService,
 		private _helperService : HelperService
@@ -52,13 +54,13 @@ export class BlankPageComponent {
 			name : 'Test N K',
 			email : 'test2@gmail.com',
 			id : 43560,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : 'tedkks hdhd kdjd',
 			email : 'test3@gmail.com',
 			id : 43561,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : 'Pharmacy Chain Pharmacy Branch',
@@ -70,13 +72,13 @@ export class BlankPageComponent {
 			name : 'GUNDAM HEAVY ARMS',
 			email : 'abc789@gmail.com',
 			id : 47790,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : '2K PHARMACEUTICAL (PHARMACY)',
 			email : '456@gmail.com',
 			id : 47791,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : '117 DRUGSTORE',
@@ -88,26 +90,26 @@ export class BlankPageComponent {
 			name : '153 GENERIC PHARMACY',
 			email : 'test11@gmail.com',
 			id : 47794,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : '100 GENERIC PHARMACY',
 			email : 'pb@gmail.com',
 			id : 47795,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : 'PB PHARMACY',
 			email : 'elizaga@mclinica.com',
 			id : 47796,
-			mobile : null			
+			mobile : null
 		},
 		{
 			name : 'ANORLONDO',
 			email : 'abcd000@gmail.com',
 			id : 47797,
-			mobile : null			
-		}											
+			mobile : null
+		}
 	];
 
 	public totalItems:number = 64;
@@ -140,8 +142,9 @@ export class BlankPageComponent {
 		}
 		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
 		.subscribe(resPharmacyData =>{
+			this.isLoading = false;
 			this.pharmacies = resPharmacyData.result
-			this.parseData(this.pharmacies);			
+			this.parseData(this.pharmacies);
 		});
 	};
 
@@ -176,7 +179,7 @@ export class BlankPageComponent {
 		var substring = subData;
 
 		return string.indexOf(substring) !== -1;
-	}	
+	}
 
 	private parseData(data:any):void{
 		this.ownerInfoList = [];
@@ -186,12 +189,12 @@ export class BlankPageComponent {
 				if(owner.result.length > 0){
 					this.ownerInfoList.push(
 						{
-							id: pharmacy.id, 
-							name: owner.result[0].first_name + ' ' + owner.result[0].middle_name +' ' + owner.result[0].last_name, 
+							id: pharmacy.id,
+							name: owner.result[0].first_name + ' ' + owner.result[0].middle_name + ' ' + owner.result[0].last_name,
 							email: owner.result[0].email,
-							mobile : owner.result[0].mobile 
+							mobile : owner.result[0].mobile
 						}
-					);					
+					);
 				}
 			});
 		});
@@ -199,17 +202,19 @@ export class BlankPageComponent {
 
 	ngOnInit(): void {
 		this.isLoading = true;
+		this.filterType = this.route.snapshot.params['filter'];
 
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 
-		this._pharmacyService.getAll()
-		.subscribe(resPharmacyData => {
-			this.isLoading = false;
-			this.pharmacies = resPharmacyData.result
-			this.parseData(this.pharmacies);
-		});
+		if(this.filterType === 'expired-license'){
+			this.selectedFilterValue = 'Expired License';
+		}else{
+			this.selectedFilterValue = 'All Pharmacies';
+		}
+
+		this.filter();
 
 		/*this._pharmacyService.getCount()
 		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
@@ -223,25 +228,25 @@ export class BlankPageComponent {
 			.subscribe(resPharmacyData => {
 				if(resPharmacyData.result.length > 0){
 					this.pharmacies = resPharmacyData.result
-					this.parseData(this.pharmacies);	
+					this.parseData(this.pharmacies);
 				}else{
 					this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_owner')
-					.subscribe(resPharmacyData => {						
+					.subscribe(resPharmacyData => {
 						if(resPharmacyData.result.length > 0){
 							this.pharmacies = resPharmacyData.result
-							this.parseData(this.pharmacies);	
+							this.parseData(this.pharmacies);
 						}else{
 							this.ownerListSearchList.forEach(data =>{
 								if(this.contains(data.email.toLowerCase(), this.search.toLowerCase())){
 									this._pharmacyService.getById(data.id)
 									.subscribe(data => {
 										this.pharmacies = data.result
-										this.parseData(this.pharmacies);										
-									});									
+										this.parseData(this.pharmacies);
+									});
 								}
-							});	
+							});
 						}
-					});					
+					});
 				}
 			});
 		});

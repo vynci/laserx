@@ -53,7 +53,7 @@ export class HelperService {
 
 		return this.http.get(url, options)
 		.map((response: Response) => response.json());
-	}	
+	}
 
 	updateUser(id: number, data: any){
 		let url = this.endpoint + 'users/' + id;
@@ -81,7 +81,7 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
-	getTransactionFeed(){
+	getTransactionTrend(){
 		let url = this.endpoint + 'functions/get-prescription-trend';
 
 		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
@@ -90,6 +90,20 @@ export class HelperService {
 
 	getAllPharmacyLocation(){
 		let url = this.endpoint + 'functions/get-all-pharmacy-location';
+
+		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
+	getAllExpiredPharmacyLocation(){
+		let url = this.endpoint + 'functions/get-all-expired-pharmacy-location';
+
+		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
+	getAllExpiredMedicineLocation(){
+		let url = this.endpoint + 'functions/get-all-expired-medicine-location';
 
 		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
 		.map((response: Response) => response.json());

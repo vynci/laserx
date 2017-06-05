@@ -35,7 +35,7 @@
                     <tr>
                       <th>Pharmacy</th>
                       <th>Mobile Number</th>
-                      <th>Prescription</th>
+                      <th>Prescriptions</th>
                       <th>Last Transaction</th>
                     </tr>
                   </thead>
@@ -43,8 +43,8 @@
                     <tr *ngFor="let transaction of transactions">
                       <td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(transaction.id)">{{transaction.organization_branch}}</a></td>
                       <td>{{transaction.mobile || 'n/a'}}</td>
-                      <td>{{transaction.total_prescription || 'n/a'}}</td>
-                      <td>{{transaction.total_prescription || 'n/a'}}</td>
+                      <td>{{getPrescriptionNumber(transaction.id) || 'n/a'}}</td>
+                      <td>{{getLastTransactionDate(transaction.id) || 'n/a'}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -79,22 +79,22 @@
           <div class="card-header card-default">
             <h5>Transaction Feed</h5>
           </div>
-          <div class="card-block">
+          <div class="card-block" style="padding-bottom: 8px;">
             <div class="table-responsive">
               <table class="table table-bordered">
                 <tbody>
                   <tr>
                     <th scope="row">Total Prescriptions</th>
-                    <td>n/a</td>
+                    <td>{{transactionCount}}</td>
                   </tr>
                 </tbody>
               </table>
               <div *ngFor="let transaction of transactionFeed" style="padding: 15px 15px;">
-                <span><em>{{transaction.created_at}}</em></span><br>
-                <span>{{transaction.pharmacy_name}}</span><br>
-                <span><b>{{transaction.product_name}}</b></span>
+                <span><em>{{formatDate(transaction.created_at, true)}}</em></span><br>
+                <span>{{getPharmacyName(transaction?.prescription) || 'n/a'}}</span><br>
+                <span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"><b>{{getProductName(transaction?.packaging) || 'n/a'}}</b></span>
               </div>
-              <p style="text-align: center;">Empty List.</p>
+              <p *ngIf="transactionFeed.length == 0" style="text-align: center;">Empty List.</p>
             </div>
           </div>
         </div>
