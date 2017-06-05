@@ -216,8 +216,8 @@ export class PharmaciesComponent {
 
 		this.filter();
 
-		/*this._pharmacyService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);*/
+		this._pharmacyService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
 
 		this.searchControl.valueChanges
 		.debounceTime(250)

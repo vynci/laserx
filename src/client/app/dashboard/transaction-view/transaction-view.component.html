@@ -102,7 +102,7 @@
 								<tbody>
 									<tr *ngFor="let transactionProduct of transactionProducts">
 										<th scope="row">{{transactionProduct.id || 'n/a'}}</th>
-										<td>{{getProductName(transactionProduct.id) || 'n/a'}}</td>
+										<td [ngStyle]="isProductUnverified(transactionProduct.id)">{{getProductName(transactionProduct.id) || 'n/a'}}</td>
 										<td>{{transactionProduct.quantity_dispensed  || 'n/a'}} {{transactionProduct.unit_dispensed  || 'n/a'}}</td>
 										<td>{{transactionProduct.quantity_prescribed}} {{transactionProduct.unit_prescribed  || 'n/a'}}</td>
 										<td>{{transactionProduct.instruction}}x a {{transactionProduct.instruction_unit}}</td>

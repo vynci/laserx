@@ -75,7 +75,7 @@ export class PharmacyService {
 
 		searchParams[keySearch] = {
 			has : searchString
-		};		
+		};
 
 		search.append('where', JSON.stringify(searchParams));
 		search.append('skip', skip.toString());
@@ -89,7 +89,7 @@ export class PharmacyService {
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
 
-		return this.http.post(url, JSON.stringify({table_name: 'organization'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'organization', filter_type: 'pharmacy', filter: 'pharmacy'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

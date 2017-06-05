@@ -2,14 +2,14 @@
 	<input  class="controls form-control" type="text" style="border-radius: 0px !important;" placeholder="{{placeHolderType}}" (click)="showDropDown()" [value]="search" [formControl]="searchControl">
 	<span class="input-group-btn"><button class="btn btn-primary" type="button" style="border-radius: 0px !important;"><i class="fa fa-search"></i></button></span>
 	<br>
-	<div *ngIf="isDropDown && actionType !== 'counterfeit'" style="position: fixed; width: 350px; background: white; left: 30px;">
+	<div *ngIf="isDropDown" style="position: fixed; width: 350px; background: white; left: 30px;">
 		<div *ngIf="!isListProduct" >
 			<div *ngFor="let pharmacy of pharmacySearchNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacy(pharmacy.pharmacy_id)">
 				<div class="row">
 					<div class="col-lg-8">
 						<div>
 							<span><b><a>{{pharmacy.pharmacy_name}}</a></b></span><br>
-							<span>{{getProvinceName(pharmacy.address)}}</span>
+							<span>{{pharmacy.region_name}}</span>
 						</div>
 					</div>
 					<div class="col-lg-4" style="padding-left: 75px;">
@@ -25,7 +25,9 @@
 						<div>
 							<span><b><a>{{product.name}}; {{product.package_form}}; {{product.fda_packaging}}</a></b></span><br>
 							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{formatDate(product.expiry_date, false)}}</span>
-							<span *ngIf="actionType === 'disaster-recovery'">Metro Manila</span>
+							<span *ngIf="actionType === 'disaster-recovery'">{{product.organization_branch}}<br></span>
+							<span *ngIf="actionType === 'disaster-recovery'">Transaction Date: {{formatDate(product.expiry_date, false)}}</span>
+							<span *ngIf="actionType === 'counterfeit'">BATCH LOT NO: {{product.batch_lot_number}}</span>
 						</div>
 					</div>
 				</div>

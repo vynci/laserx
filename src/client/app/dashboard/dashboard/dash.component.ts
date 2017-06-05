@@ -303,6 +303,8 @@ export class DashComponent implements OnInit {
 				if(product){
 					if(data.id === product.prescription_packaging_id){
 						productName = product.name
+					}else{
+						productName = 'n/a';
 					}
 				}
 			});
@@ -318,6 +320,8 @@ export class DashComponent implements OnInit {
 				if(pharmacy){
 					if(data.id === pharmacy.prescription_packaging_id){
 						pharmacyName = pharmacy.name
+					}else{
+						pharmacyName = 'n/a'
 					}
 			}
 			});
@@ -369,6 +373,9 @@ export class DashComponent implements OnInit {
 			this.transactionFeed = data.result;
 			this.parseTransactionFeedData(data.result);
 		});
+
+		this._pharmacyService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
 
 		this.intervalProcess = setInterval(() => {
 

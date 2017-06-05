@@ -205,6 +205,25 @@ export class PharmacyViewComponent implements OnInit{
 			return productName;
 	};
 
+	public isProductUnverified(id:number):any {
+		var style = {};
+
+		this.productNameList.forEach(product => {
+			if(product){
+				if(id === product.transactionProductId){
+					if(product.id === null){
+						style = {
+							'background' : '#EA4444',
+							'color' : 'white'
+						}
+					}
+				}
+			}
+		});
+
+		return style;
+	};
+
 	private parseTransactions(data:any):void{
 		data.forEach(transaction => {
 			if(transaction){
@@ -230,19 +249,26 @@ export class PharmacyViewComponent implements OnInit{
 							if(item.packaging){
 								this._productService.getById(item.packaging.id)
 								.subscribe(packagingItem => {
-									this._productService.getDrugById(packagingItem.result[0].drug_id)
-									.subscribe(drug => {
-										this._productService.getGenericById(packagingItem.result[0].drug_id)
-										.subscribe(generic => {
-											var divider = ' '
-											if(drug.result[0].brand_name){
-												divider = ' - '
-											}
-											this.productNameList.push(
-												{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transaction.id}
-											);
+									if(packagingItem.result[0].drug_id){
+										this._productService.getDrugById(packagingItem.result[0].drug_id)
+										.subscribe(drug => {
+											this._productService.getGenericById(packagingItem.result[0].drug_id)
+											.subscribe(generic => {
+												var divider = ' '
+												if(drug.result[0].brand_name){
+													divider = ' - '
+												}
+												this.productNameList.push(
+													{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transaction.id}
+												);
+											});
 										});
-									});
+									}else{
+										this.productNameList.push(
+											{id: null, name: '(Unverified) ' + packagingItem.result[0].unverified_product || '', transactionProductId: transaction.id}
+										);
+									}
+
 								});
 							}else{
 								this.productNameList.push(

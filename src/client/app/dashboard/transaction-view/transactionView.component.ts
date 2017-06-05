@@ -84,6 +84,25 @@ export class TransactionViewComponent {
 		return result;
 	}
 
+	public isProductUnverified(id:number):any {
+		var style = {};
+
+		this.productNameList.forEach(product => {
+			if(product){
+				if(id === product.transactionProductId){
+					if(product.id === null){
+						style = {
+							'background' : '#EA4444',
+							'color' : 'white'
+						}
+					}
+				}
+			}
+		});
+
+		return style;
+	};
+
 	public getProductName(id:number):string {
 		var productName = 'Loading...';
 
@@ -103,24 +122,27 @@ export class TransactionViewComponent {
 			if(transactionProduct.packaging){
 				this._productService.getById(transactionProduct.packaging.id)
 				.subscribe(packaging => {
-					this._productService.getDrugById(packaging.result[0].drug_id)
-					.subscribe(drug => {
-						this._productService.getGenericById(packaging.result[0].drug_id)
-						.subscribe(generic => {
-							var divider = ' '
-							if(drug.result[0].brand_name){
-								divider = ' - '
-							}
-							this.productNameList.push(
-								{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transactionProduct.id}
-							);
+					if(packaging.result[0].drug_id){
+						this._productService.getDrugById(packaging.result[0].drug_id)
+						.subscribe(drug => {
+							this._productService.getGenericById(packaging.result[0].drug_id)
+							.subscribe(generic => {
+								var divider = ' '
+								if(drug.result[0].brand_name){
+									divider = ' - '
+								}
+								this.productNameList.push(
+									{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transactionProduct.id}
+								);
+							});
 						});
-					});
+					}else{
+						this.productNameList.push(
+							{id: null, name:'(Unverified) ' + packaging.result[0].unverified_product, transactionProductId: transactionProduct.id}
+						);
+					}
+
 				});
-			}else{
-				this.productNameList.push(
-					{id: null, name: 'Unverified', transactionProductId: transactionProduct.id}
-				);
 			}
 		});
 	}

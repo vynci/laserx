@@ -109,10 +109,10 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
-	getAllPrescription(){
+	getAllPrescription(limit:number){
 		let url = this.endpoint + 'functions/get-all-prescription';
 
-		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({limit: limit}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

@@ -282,7 +282,7 @@ export class TransactionsComponent {
 	}
 
 	public downloadCSV():void{
-		this._helperService.getAllPrescription()
+		this._helperService.getAllPrescription(100000)
 		.subscribe(data => {
 			console.log(data);
 			this._jsonToCSVService.Convert(data.result, 'filename123.csv');

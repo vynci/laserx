@@ -160,7 +160,7 @@
 										<template [ngIf]="i<3">
 											<th scope="row">{{transaction.id}}</th>
 											<td>{{formatDate(transaction.dispense_date, true)}}</td>
-											<td>{{getProductName(transaction.id) || 'n/a'}}</td>
+											<td [ngStyle]="isProductUnverified(transaction.id)">{{getProductName(transaction.id) || 'n/a'}}</td>
 											<td>{{transaction.batch_lot_number}}</td>
 											<td>{{formatDate(transaction.expiry_date, false)}}</td>
 										</template>
@@ -242,7 +242,7 @@
 											<th scope="row">{{transaction.id}}</th>
 											<td>{{formatDate(transaction.dispense_date, true)}}</td>
 											<td>{{getTransactionInfo(transaction.info, 'physician')}}</td>
-											<td>{{getProductName(transaction.id) || 'n/a'}}</td>
+											<td [ngStyle]="isProductUnverified(transaction.id)">{{getProductName(transaction.id) || 'n/a'}}</td>
 											<td>{{transaction.batch_lot_number}}</td>
 											<td>{{formatDate(transaction.expiry_date, false)}}</td>
 											<td>{{transaction.instruction}}x {{transaction.instruction_unit}}</td>

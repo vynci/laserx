@@ -26,6 +26,15 @@ export class TransactionProductService {
 		.map((response: Response) => response.json());
 	}
 
+	getByPackagingId(id: number){
+		let search = new URLSearchParams('where={"packaging_id":{"eq":' + id + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+
+		return this.http.get(this.url, options)
+		.map((response: Response) => response.json());
+	}
+
 	getExpiredProducts(){
 		let search = new URLSearchParams();
 		let toDate = new Date();
@@ -40,6 +49,24 @@ export class TransactionProductService {
 
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
+		return this.http.get(this.url, options)
+		.map((response: Response) => response.json());
+	}
+
+	findByBatchLotNumber(filter:string){
+		let search = new URLSearchParams();
+		let searchParams = {};
+
+		search.append('limit', "5");
+		search.append('sort', '[{"created_at":-1}]');
+		searchParams = {
+			'batch_lot_number' : {
+				has : filter
+			}
+		}
+		search.append('where', JSON.stringify(searchParams));
+
+		let options = new RequestOptions({ headers: this.headers, search: search});
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
 	}

@@ -4,6 +4,13 @@ import { Injectable }    from '@angular/core';
 
 export class JSONToCSV {
 
+	private contains(data:string, subData:string):boolean{
+		var string = data;
+		var substring = subData;
+
+		return string.indexOf(substring) !== -1;
+	}
+
 	private AddValue(Row: string, Value: string) {
 		let Comma: string = ',';
 		if (Row === '')
@@ -26,6 +33,11 @@ export class JSONToCSV {
 			if(tmp === '' || tmp === null){
 				tmp = 'n/a';
 			}
+
+			if(this.contains(tmp.toString(), ';')){
+				tmp = tmp.replace(/;/g, "-");
+			}
+
 			Row = this.AddValue(Row, tmp);
 		}
 		return Row + '\r\n';
