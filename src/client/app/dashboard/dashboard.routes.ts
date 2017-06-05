@@ -1,14 +1,14 @@
 import { Route } from '@angular/router';
 
 import { HomeRoutes } from './home/index';
-import { BlankPageRoutes } from './blank-page/index';
+import { PharmaciesRoutes } from './pharmacies/index';
 import { TransactionViewRoutes } from './transaction-view/index';
 import { PharmacyViewRoutes } from './pharmacy-view/index';
 import { ProductViewRoutes } from './product-view/index';
 import { UserViewRoutes } from './user-view/index';
 import { CountryViewRoutes } from './country-view/index';
 import { ProvinceViewRoutes } from './province-view/index';
-import { TableRoutes } from './tables/index';
+import { TransactionsRoutes } from './transactions/index';
 import { DashRoutes } from './dashboard/index';
 import { MessageCenterRoutes } from './message-center/index';
 import { ProductsRoutes } from './products/index';
@@ -28,9 +28,9 @@ export const DashboardRoutes: Route[] = [
     	path: 'dashboard',
     	component: DashboardComponent,
     	children: [
-	    	...HomeRoutes,
-        ...TableRoutes,
-	    	...BlankPageRoutes,
+	    ...HomeRoutes,
+        ...TransactionsRoutes,
+	    ...PharmaciesRoutes,
         ...TransactionViewRoutes,
         ...PharmacyViewRoutes,
         ...DashRoutes,

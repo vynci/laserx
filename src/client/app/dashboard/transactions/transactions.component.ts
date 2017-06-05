@@ -20,11 +20,11 @@ import 'rxjs/add/observable/fromEvent';
 @Component({
 	moduleId: module.id,
 	selector: 'tables-cmp',
-	templateUrl: 'tables.component.html',
+	templateUrl: 'transactions.component.html',
 	providers: [TransactionService, PharmacyService, HelperService, JSONToCSV, TransactionProductService, ProductService]
 })
 
-export class TableComponent {
+export class TransactionsComponent {
 
 	public search:string        = '';
 	searchControl = new FormControl();

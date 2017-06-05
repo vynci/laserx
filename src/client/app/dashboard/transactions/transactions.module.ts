@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-
-import { BlankPageComponent } from './blankPage.component';
+import { TransactionsComponent } from './transactions.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {
   AlertModule,
@@ -16,26 +15,27 @@ import {
   TooltipModule,
   ModalModule,
   TypeaheadModule
-} from 'ng2-bootstrap/ng2-bootstrap';
+  } from 'ng2-bootstrap/ng2-bootstrap';
 
 @NgModule({
     imports: [
       RouterModule,
       FormsModule,
-      ReactiveFormsModule,
       CommonModule,
       AlertModule,
       ButtonsModule,
       DropdownModule,
       PaginationModule,
+      ReactiveFormsModule,
       ProgressbarModule,
       RatingModule,
+      TabsModule,
       TooltipModule,
       ModalModule,
       TypeaheadModule
     ],
-    declarations: [BlankPageComponent],
-    exports: [BlankPageComponent]
+    declarations: [TransactionsComponent],
+    exports: [TransactionsComponent]
 })
 
-export class BlankPageModule { }
+export class TransactionsModule { }

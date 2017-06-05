@@ -15,11 +15,11 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 @Component({
 	moduleId: module.id,
     selector: 'blank-page',
-    templateUrl: './blank-page.component.html',
+    templateUrl: './pharmacies.component.html',
 		providers: [PharmacyService, LocationService, HelperService]
 })
 
-export class BlankPageComponent {
+export class PharmaciesComponent {
 	public pharmacies:Array<Object> = [];
 	public isAdmin:boolean = false;
 	public isLoading:boolean = false;

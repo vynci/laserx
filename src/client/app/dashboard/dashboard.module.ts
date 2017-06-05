@@ -5,14 +5,14 @@ import { DropdownModule } from 'ng2-bootstrap/ng2-bootstrap';
 import { ModalModule } from 'ng2-bootstrap/ng2-bootstrap';
 
 import { HomeModule } from './home/home.module';
-import { BlankPageModule } from './blank-page/blankPage.module';
+import { PharmaciesModule } from './pharmacies/pharmacies.module';
 import { PharmacyViewModule } from './pharmacy-view/pharmacyView.module';
 import { ProductViewModule } from './product-view/productView.module';
 import { UserViewModule } from './user-view/userView.module';
 import { CountryViewModule } from './country-view/countryView.module';
 import { ProvinceViewModule } from './province-view/provinceView.module';
 import { TransactionViewModule } from './transaction-view/transactionView.module';
-import { TableModule } from './tables/table.module';
+import { TransactionsModule } from './transactions/transactions.module';
 import { DashModule } from './dashboard/dash.module';
 import { MessageCenterModule } from './message-center/message-center.module';
 import { ProductsModule } from './products/products.module';
@@ -36,8 +36,8 @@ import { AuthGuard } from '../guards/index';
       DropdownModule,
       ModalModule,
       HomeModule,
-      TableModule,
-      BlankPageModule,
+      TransactionsModule,
+      PharmaciesModule,
       PharmacyViewModule,
       ProductViewModule,
       UserViewModule,
