@@ -1,67 +1,70 @@
 <nav class="navbar navbar-dark bg-inverse navbar-fixed-top topnav">
     <div style="text-align: left;" class="collapse navbar-toggleable-xs clearfix text-center">
-      <ul class="nav navbar-nav top-nav topnav-links navbar-right pull-xs-right top-right-nav">
-        <li class="dropdown nav-item" dropdown>
-          <a href="javascript:;" id="single-button" class="nav-link dropdown-toggle" style="color: #fff;"dropdownToggle >
-            <!-- <i class="fa fa-user"> </i>  -->
-            {{username}} <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="single-button">
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/account">
-                <!-- <i class="fa fa-fw fa-gear"></i>  -->
-                Account
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="javascript:;" (click)="logout()">
-                <!-- <i class="fa fa-fw fa-power-off"></i>  -->
-                Log Out
-              </a>
-            </li>
-            <li class="divider"></li>
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/about">
-                <!-- <i class="fa fa-fw fa-question-circle"></i>  -->
-                About SnapRx
-              </a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/pharmacies/all']">Pharmacies</a>
-      <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/transactions']">Transactions</a>
-      <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/dash']">Dashboard</a>
-      <ul class="nav navbar-nav top-nav action-dropdown topnav-links navbar-right pull-xs-right top-right-nav side-bar-mobile-disable" [ngStyle]="{'background': actionBackgroundColor, 'border-color': actionBackgroundColor}">
-        <li class="dropdown nav-item" dropdown>
-          <a href="javascript:;" id="single-button" class="nav-link dropdown-toggle" style="color: #fff;"dropdownToggle >
-            <!-- <i class="fa fa-user"> </i>  -->
-            Actions <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="single-button">
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/home/licensing">Licensing</a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/home/expired-meds">Expired Meds</a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/home/counterfeit">Counterfeit</a>
-            </li>
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/home/disaster-recovery">Disaster Recovery</a>
-            </li>
-            <li class="divider"></li>
-            <li>
-              <a class="dropdown-item" routerLink="/dashboard/message-center">Message Center</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-      <a *ngIf="actionTypeIndicator != ''" class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable btn btn-xs btn-danger" style="background: rgb(234, 68, 68); font-weight: bold !important; height: 36px; margin-right: 10px; border-radius: 3px;" [ngStyle]="{'background': actionBackgroundColor, 'border-color': actionBackgroundColor}">{{actionTypeIndicator}}</a>
+      <div>
+        <ul class="nav navbar-nav top-nav topnav-links navbar-right pull-xs-right top-right-nav">
+          <li class="dropdown nav-item" dropdown>
+            <a href="javascript:;" id="single-button" class="nav-link dropdown-toggle" style="color: #fff;"dropdownToggle >
+              <!-- <i class="fa fa-user"> </i>  -->
+              {{username}} <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="single-button">
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/account">
+                  <!-- <i class="fa fa-fw fa-gear"></i>  -->
+                  Account
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:;" (click)="logout()">
+                  <!-- <i class="fa fa-fw fa-power-off"></i>  -->
+                  Log Out
+                </a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/about">
+                  <!-- <i class="fa fa-fw fa-question-circle"></i>  -->
+                  About SnapRx
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/pharmacies/all']">Pharmacies</a>
+        <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/transactions']">Transactions</a>
+        <a class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable" [routerLink]="['/dashboard/dash']">Dashboard</a>
+        <ul class="nav navbar-nav top-nav action-dropdown topnav-links navbar-right pull-xs-right top-right-nav side-bar-mobile-disable" [ngStyle]="{'background': actionBackgroundColor, 'border-color': actionBackgroundColor}">
+          <li class="dropdown nav-item" dropdown>
+            <a href="javascript:;" id="single-button" class="nav-link dropdown-toggle" style="color: #fff;"dropdownToggle >
+              <!-- <i class="fa fa-user"> </i>  -->
+              Actions <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="single-button">
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/home/licensing">Licensing</a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/home/expired-meds">Expired Meds</a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/home/counterfeit">Counterfeit</a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/home/disaster-recovery">Disaster Recovery</a>
+              </li>
+              <li class="divider"></li>
+              <li>
+                <a class="dropdown-item" routerLink="/dashboard/message-center">Message Center</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <a *ngIf="actionTypeIndicator != ''" class="navbar-brand topnav-links navbar-right pull-xs-right side-bar-mobile-disable btn btn-xs btn-danger" style="background: rgb(234, 68, 68); font-weight: bold !important; height: 36px; margin-right: 10px; border-radius: 3px;" [ngStyle]="{'background': actionBackgroundColor, 'border-color': actionBackgroundColor}">{{actionTypeIndicator}}</a>        
+      </div>
+
       <div class="top-nav-logo" style="float: none; display: inline-block;">
         <a routerLink="/dashboard/home/all">
-          <img style="width: 70px;" src="assets/img/logo.png">
+          <img style="width: 335px;" src="assets/img/logo-nav.png">
         </a>
       </div>
     </div>

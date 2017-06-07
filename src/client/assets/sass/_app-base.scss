@@ -85,16 +85,18 @@ $topnav-background-color: #000;
   letter-spacing: .05em;
   text-transform: uppercase !important;
   padding-top: 7px !important;
+  margin-top: 12px;
 }
 
 .topnav{
   border-radius: 0;
   background-color: $topnav-background-color;
-  padding : 12px;
+  padding : 0px 0px;
     z-index:99;
     .text-center{
         text-align: center;
         padding-left : 0;
+        padding-right: 10px;
     }
     .top-right-nav{
         .buy-now{
@@ -403,11 +405,6 @@ a:hover{
 
     #toggle-sidebar{
         display:block;
-    }
-    .topnav{
-        .text-center{
-            padding-left : 15px;
-        }
     }
     .top-right-nav{
         display: block;
