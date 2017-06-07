@@ -79,7 +79,7 @@
           <div class="card-header card-default">
             <h5>Transaction Feed</h5>
           </div>
-          <div class="card-block" style="padding-bottom: 8px;">
+          <div class="card-block" style="padding-bottom: 15px;">
             <div class="table-responsive">
               <table class="table table-bordered">
                 <tbody>
@@ -89,10 +89,10 @@
                   </tr>
                 </tbody>
               </table>
-              <div *ngFor="let transaction of transactionFeed" style="padding: 15px 15px;">
-                <span><em>{{formatDate(transaction.created_at, true)}}</em></span><br>
-                <span>{{getPharmacyName(transaction?.prescription) || 'n/a'}}</span><br>
-                <span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"><b>{{getProductName(transaction?.packaging) || 'n/a'}}</b></span>
+              <div *ngFor="let transaction of transactionFeed | slice:0:7; let i=index" style="padding: 12px 12px;">
+                <span><em>{{formatDate(transaction?.dispense_date, true)}}</em></span><br>
+                <span>{{transaction?.organization_branch || 'n/a'}}</span><br>
+                <span style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"><b>{{transaction?.unverified_product}} {{transaction?.generic_name}} {{transaction?.brand_name}} ; {{transaction?.quantity_dispensed}} {{transaction?.unit_dispensed}}</b></span>
               </div>
               <p *ngIf="transactionFeed.length == 0" style="text-align: center;">Empty List.</p>
             </div>
@@ -109,7 +109,7 @@
           </div>
           <div class="card-block graphs-mobile">
             <p *ngIf="transactionTrend.current?.length == 0 && transactionTrend.previous?.length == 0" style="text-align: center;">No Transactions.</p>
-            <div class="table-responsive" *ngIf="transactionTrend.current?.length > 0 && transactionTrend.previous?.length > 0">
+            <div class="table-responsive">
               <div class="card card-block graphs-mobile">
                 <div id="transaction-trend" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
               </div>

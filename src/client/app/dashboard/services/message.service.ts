@@ -16,7 +16,12 @@ export class MessageService {
 	constructor(private http: Http) { }
 
 	getAll(){
-		return this.http.get(this.url, this.options)
+		let search = new URLSearchParams();
+		search.append('limit', "10");
+		search.append('sort', '[{"created_at":-1}]');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(this.url, options)
 			.map((response: Response) => response.json());
 	}
 
@@ -34,6 +39,7 @@ export class MessageService {
 
 		let search = new URLSearchParams('skip=' + skip);
 		search.append('limit', limit.toString());
+		search.append('sort', '[{"created_at":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 
@@ -45,6 +51,13 @@ export class MessageService {
 		let body = {'type' : messageTo, 'title': messageTitle, 'message': messageContent, 'user_id': parseInt(localStorage.getItem('currentUser'))};
 
 		return this.http.post(this.url, JSON.stringify(body), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
+	sendNotificationMessage(content: string, title: string){
+		let url = this.endpoint + 'functions/send-notification-message';
+
+		return this.http.post(url, JSON.stringify({registrationId: '', content: content, title: title}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

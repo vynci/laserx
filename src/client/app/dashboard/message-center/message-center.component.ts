@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { MessageService } from '../services/message.service';
 import { LocationService } from '../services/location.service';
+import { HelperService } from '../services/helper.service';
 
 import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 
@@ -14,7 +15,7 @@ import 'rxjs/add/observable/fromEvent';
 	moduleId: module.id,
     selector: 'message-center',
     templateUrl: './message-center.component.html',
-		providers: [MessageService, LocationService]
+		providers: [MessageService, LocationService, HelperService]
 })
 
 export class MessageCenterComponent {
@@ -23,7 +24,8 @@ export class MessageCenterComponent {
 	constructor(
 		private router: Router,
 		private _messageService : MessageService,
-		private _locationService : LocationService
+		private _locationService : LocationService,
+		private _helperService : HelperService,
 	){}
 
 	public totalItems:number = 1;
@@ -79,13 +81,13 @@ export class MessageCenterComponent {
 	}
 
 	public sendMessage():void{
-		console.log(this.messageContent);
-		console.log(this.messageTitle);
-		console.log(this.messageTo);
-
-		this._messageService.sendMessage(this.messageTo, this.messageTitle, this.messageContent)
+		this._messageService.sendNotificationMessage(this.messageContent, this.messageTitle)
 		.subscribe(data => {
-			this.fetchMessages()
+			console.log(data);
+			this._messageService.sendMessage(this.messageTo, this.messageTitle, this.messageContent)
+			.subscribe(data => {
+				this.fetchMessages()
+			});			
 		});
 	}
 

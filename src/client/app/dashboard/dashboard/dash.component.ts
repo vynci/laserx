@@ -27,7 +27,10 @@ export class DashComponent implements OnInit {
 
 	public transactionFeed:Array<Object> = [];
 	public transactions:Array<Object> = [];
-	public transactionTrend:any = {};
+	public transactionTrend:any = {
+		current : [],
+		previous : []
+	};
 	public pharmacies:Array<Object> = [];
 	public isLoading:boolean = false;
 
@@ -71,7 +74,6 @@ export class DashComponent implements OnInit {
 	};
 
 	public viewPharmacy(pharmacyId:any):void{
-		console.log(pharmacyId);
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
 	}
 
@@ -116,7 +118,7 @@ export class DashComponent implements OnInit {
 		});
 	};
 
-	private setTransactionTrendGraph(data:any):void {
+	private setTransactionTrendGraph(trendData:any):void {
 		var transaction: any = $('#transaction-trend');
 		transaction.highcharts({
 			chart: {
@@ -137,13 +139,13 @@ export class DashComponent implements OnInit {
 			},
 			xAxis: {
 				categories: [
-					"Fri",
-					"Sat",
 					"Sun",
 					"Mon",
 					"Tue",
 					"Wed",
-					"Thu"
+					"Thur",
+					"Fri",
+					"Sat"
 				]
 			},
 			yAxis: {
@@ -166,24 +168,24 @@ export class DashComponent implements OnInit {
 			series: [{
 				name: 'Current Week',
 					data: [
-						this.transactionTrend.current[0].total_prescription || 0,
-						this.transactionTrend.current[1].total_prescription || 0,
-						this.transactionTrend.current[2].total_prescription || 0,
-						this.transactionTrend.current[3].total_prescription || 0,
-						this.transactionTrend.current[4].total_prescription || 0,
-						this.transactionTrend.current[5].total_prescription || 0,
-						this.transactionTrend.current[6].total_prescription || 0
+						trendData.current[0].total_prescription,
+						trendData.current[1].total_prescription,
+						trendData.current[2].total_prescription,
+						0,
+						0,
+						0,
+						0
 					]
 				}, {
 					name: 'Previous Week',
 					data: [
-						this.transactionTrend.previous[0].total_prescription || 0,
-						this.transactionTrend.previous[1].total_prescription || 0,
-						this.transactionTrend.previous[2].total_prescription || 0,
-						this.transactionTrend.previous[3].total_prescription || 0,
-						this.transactionTrend.previous[4].total_prescription || 0,
-						this.transactionTrend.previous[5].total_prescription || 0,
-						this.transactionTrend.previous[6].total_prescription || 0
+						0,
+						0,
+						0,
+						0,
+						0,
+						0,
+						0
 					]
 			}]
 		});
@@ -209,40 +211,6 @@ export class DashComponent implements OnInit {
 			}
 		}
 		return list;
-	}
-
-	private parseTransactionFeedData(data:any):void{
-		this.pharmacyNameList = [];
-		this.productNameList = [];
-		data.forEach(transaction => {
-			this._transactionService.getById(transaction.prescription.id)
-			.subscribe(data => {
-				if(data.result.length > 0){
-					this._pharmacyService.getById(data.result[0].pharmacy.id)
-					.subscribe(pharmacy => {
-						this.pharmacyNameList.push(
-							{prescription_packaging_id: transaction.prescription.id, name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch}
-						);
-					});
-				}
-			});
-			this._productService.getById(transaction.packaging.id)
-			.subscribe(packagingItem => {
-				this._productService.getDrugById(packagingItem.result[0].drug_id)
-				.subscribe(drug => {
-					this._productService.getGenericById(packagingItem.result[0].drug_id)
-					.subscribe(generic => {
-						var divider = ' '
-						if(drug.result[0].brand_name){
-							divider = ' - '
-						}
-						this.productNameList.push(
-							{prescription_packaging_id: transaction.packaging.id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name + '; ' + packagingItem.result[0].fda_packaging}
-						);
-					});
-				});
-			});
-		});
 	}
 
 	private parseTransactionData(data:any):void{
@@ -351,14 +319,14 @@ export class DashComponent implements OnInit {
 		this.isLoading = true;
 
 		this._helperService.getPharmacyCountPerProvince()
-			.subscribe(data => {
-				this.setPharmacyGraph(data);
-				this.setTransactionTrendGraph(data);
-			});
+		.subscribe(data => {
+			this.setPharmacyGraph(data);
+		});
 
 		this._helperService.getTransactionTrend()
 		.subscribe(data => {
-			this.transactionTrend = data.result;
+			this.transactionTrend = data.result
+			this.setTransactionTrendGraph(data.result);
 		});
 
 		this._pharmacyService.getAll()
@@ -368,29 +336,18 @@ export class DashComponent implements OnInit {
 			this.isLoading = false;
 		});
 
-		this._transactionProductService.getAll(7, intervalCount)
+		this._helperService.getAllPrescription(15)
 		.subscribe(data => {
 			this.transactionFeed = data.result;
-			this.parseTransactionFeedData(data.result);
-		});
+		});		
 
 		this._pharmacyService.getCount()
 		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
 
 		this.intervalProcess = setInterval(() => {
-
-			if(intervalCount === 2){
-				intervalCount = 1;
-			}else{
-				intervalCount = intervalCount + 1;
-			}
-
-			this._transactionProductService.getAll(7, intervalCount)
-			.subscribe(data => {
-				this.transactionFeed = data.result;
-				this.parseTransactionFeedData(data.result);
-			});
-		}, 10000);
+			var tmp = this.transactionFeed.shift();
+			this.transactionFeed.push(tmp);
+		}, 2000);
 
 		this._transactionProductService.getCount()
 		.subscribe(data => this.transactionCount = data.result[0].row_count);
