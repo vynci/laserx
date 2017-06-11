@@ -26,6 +26,8 @@ export class TopNavComponent {
 
         if(actions[2] === 'message-center'){
           this.actionType = actions[2];
+        }else if(actions[2] === 'expired-medicines'){
+          this.actionType = 'expired-meds';
         }
         this.changeFilterType();
       }

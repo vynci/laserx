@@ -13,6 +13,7 @@ import { CountryViewModule } from './pages/country-view/countryView.module';
 import { ProvinceViewModule } from './pages/province-view/provinceView.module';
 import { TransactionViewModule } from './pages/transaction-view/transactionView.module';
 import { TransactionsModule } from './pages/transactions/transactions.module';
+import { ExpiredMedicinesModule } from './pages/expired-medicines/expired-medicines.module';
 import { DashModule } from './pages/dashboard/dash.module';
 import { MessageCenterModule } from './pages/message-center/message-center.module';
 import { ProductsModule } from './pages/products/products.module';
@@ -37,6 +38,7 @@ import { AuthGuard } from '../guards/index';
       ModalModule,
       HomeModule,
       TransactionsModule,
+      ExpiredMedicinesModule,
       PharmaciesModule,
       PharmacyViewModule,
       ProductViewModule,

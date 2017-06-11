@@ -9,6 +9,7 @@ import { UserViewRoutes } from './pages/user-view/index';
 import { CountryViewRoutes } from './pages/country-view/index';
 import { ProvinceViewRoutes } from './pages/province-view/index';
 import { TransactionsRoutes } from './pages/transactions/index';
+import { ExpiredMedicinesRoutes } from './pages/expired-medicines/index';
 import { DashRoutes } from './pages/dashboard/index';
 import { MessageCenterRoutes } from './pages/message-center/index';
 import { ProductsRoutes } from './pages/products/index';
@@ -30,6 +31,7 @@ export const DashboardRoutes: Route[] = [
     	children: [
 	    ...HomeRoutes,
         ...TransactionsRoutes,
+        ...ExpiredMedicinesRoutes,
 	    ...PharmaciesRoutes,
         ...TransactionViewRoutes,
         ...PharmacyViewRoutes,

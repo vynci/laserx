@@ -239,19 +239,16 @@ export class TransactionsComponent {
 
 	private processCSV(data:any):void{
 		let csvData:Array<Object> = [];
-		console.log(data);
 		data.forEach(object => {
 			console.log(object);
 			if(object.prescription){
 				this._transactionService.getById(object.prescription.id)
 				.subscribe(prescription => {
-					/*var doctorName = prescription*/
 					if(prescription){
 						console.log(prescription);
 					}
 				});
 			}
-
 		});
 	}
 

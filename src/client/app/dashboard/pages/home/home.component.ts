@@ -159,17 +159,17 @@ export class HomeComponent implements OnInit {
 	}
 
 	public viewMoreItems():void{
-			if(this.actionType === 'expired-meds'){
+		if(this.actionType === 'expired-meds'){
+			this.router.navigate(['/dashboard/expired-medicines']);
+		} else if(this.actionType === 'counterfeit'){
 
-			}else if(this.actionType === 'counterfeit'){
+		} else if(this.actionType === 'disaster-recovery'){
 
-			}else if(this.actionType === 'disaster-recovery'){
-
-			}else if(this.actionType === 'licensing'){
-				this.router.navigate(['/dashboard/pharmacies/expired-license']);
-			}else{
-				this.router.navigate(['/dashboard/pharmacies/all']);
-			}
+		} else if(this.actionType === 'licensing'){
+			this.router.navigate(['/dashboard/pharmacies/expired-license']);
+		} else {
+			this.router.navigate(['/dashboard/pharmacies/all']);
+		}
 	}
 
 	public getProvinceName(data:string):string{
