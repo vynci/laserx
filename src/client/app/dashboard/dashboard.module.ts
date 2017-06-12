@@ -7,6 +7,7 @@ import { ModalModule } from 'ng2-bootstrap/ng2-bootstrap';
 import { HomeModule } from './pages/home/home.module';
 import { PharmaciesModule } from './pages/pharmacies/pharmacies.module';
 import { PharmacyViewModule } from './pages/pharmacy-view/pharmacyView.module';
+import { PharmacyProductDetailModule } from './pages/pharmacy-product-detail/pharmacy-product-detail.module';
 import { ProductViewModule } from './pages/product-view/productView.module';
 import { UserViewModule } from './pages/user-view/userView.module';
 import { CountryViewModule } from './pages/country-view/countryView.module';
@@ -14,6 +15,7 @@ import { ProvinceViewModule } from './pages/province-view/provinceView.module';
 import { TransactionViewModule } from './pages/transaction-view/transactionView.module';
 import { TransactionsModule } from './pages/transactions/transactions.module';
 import { ExpiredMedicinesModule } from './pages/expired-medicines/expired-medicines.module';
+import { ExpiredMedicineViewModule } from './pages/expired-medicine-view/expired-medicine-view.module';
 import { DashModule } from './pages/dashboard/dash.module';
 import { MessageCenterModule } from './pages/message-center/message-center.module';
 import { ProductsModule } from './pages/products/products.module';
@@ -39,8 +41,10 @@ import { AuthGuard } from '../guards/index';
       HomeModule,
       TransactionsModule,
       ExpiredMedicinesModule,
+      ExpiredMedicineViewModule,
       PharmaciesModule,
       PharmacyViewModule,
+      PharmacyProductDetailModule,
       ProductViewModule,
       UserViewModule,
       CountryViewModule,

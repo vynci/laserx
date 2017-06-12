@@ -254,8 +254,6 @@ export class DashComponent implements OnInit {
 			if(pharmacy){
 				if(id === pharmacy.id){
 					number = pharmacy.total_prescription
-				}else{
-					number = 'n/a';
 				}
 			}
 		});
@@ -304,8 +302,6 @@ export class DashComponent implements OnInit {
 			if(data){
 				if(id === data.id){
 					date = this.formatDate(data.date, true)
-				}else{
-					date = 'n/a';
 				}
 			}
 		});
@@ -339,7 +335,7 @@ export class DashComponent implements OnInit {
 		this._helperService.getAllPrescription(15)
 		.subscribe(data => {
 			this.transactionFeed = data.result;
-		});		
+		});
 
 		this._pharmacyService.getCount()
 		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);

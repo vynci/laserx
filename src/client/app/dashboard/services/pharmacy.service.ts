@@ -34,9 +34,6 @@ export class PharmacyService {
 	getById(id: number){
 		let search = new URLSearchParams();
 		let searchParams = {
-			'organization_type' : {
-				eq : 'Pharmacy'
-			},
 			'id' : {
 				eq: id
 			}
@@ -57,9 +54,6 @@ export class PharmacyService {
 
 		if(isLicenseExpired){
 			searchParams = {
-				'organization_type' : {
-					eq : 'Pharmacy'
-				},
 				'license_expiration_date' : {
 					lte : toDate.toISOString()
 				}

@@ -21,7 +21,6 @@ export class TransactionProductService {
 		let search = new URLSearchParams('where={"prescription.id":{"eq":' + id + '}}');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
-
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
 	}
@@ -30,14 +29,14 @@ export class TransactionProductService {
 		let search = new URLSearchParams('where={"packaging_id":{"eq":' + id + '}}');
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
-
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());
 	}
 
-	getExpiredProducts(){
+	getExpiredProducts(limit:number, page: number){
 		let search = new URLSearchParams();
 		let toDate = new Date();
+		let skip = (page - 1) * limit;
 
 		let searchParams = {
 			'expiry_date' : {
@@ -45,7 +44,13 @@ export class TransactionProductService {
 			}
 		}
 
+		if(page){
+			search.append('skip', skip.toString());
+		}
+
+		search.append('limit', limit.toString());
 		search.append('where', JSON.stringify(searchParams));
+		search.append('sort', '[{"created_at":-1}]');
 
 		let options = new RequestOptions({ headers: this.headers, search: search});
 

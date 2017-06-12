@@ -9,19 +9,25 @@ import { LocationService } from '../../services/location.service';
 import { HelperService } from '../../services/helper.service';
 import { PhysicianModel } from './physician-model';
 import { ProductModel } from './product-model';
+import { PharmacyModel } from './pharmacy-model';
 import { ProductService } from '../../services/product.service';
 
 declare var pharmacyDetail: any;
 declare var google: any;
 
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/observable/fromEvent';
+
 @Component({
 	moduleId: module.id,
     selector: 'pharmacy-view',
-    templateUrl: './pharmacy-view.component.html',
+    templateUrl: './pharmacy-product-detail.component.html',
 		providers: [PharmacyService, LocationService, TransactionService, HelperService, TransactionProductService, ProductService]
 })
 
-export class PharmacyViewComponent implements OnInit{
+export class PharmacyProductDetailComponent implements OnInit{
 
 	pharmacyDetail = {
 		location : {
@@ -40,7 +46,13 @@ export class PharmacyViewComponent implements OnInit{
 	private map: any;
 	private marker:Object;
 	private physicianNameList:Array<PhysicianModel> = [];
+	private pharmacyNameList:Array<PharmacyModel> = [];
 
+	public search:string        = '';
+	searchControl = new FormControl();
+
+	public productName:string = '';
+	public fdaPackaging:string = '';
 	public isAdmin:boolean = false;
 	public transactions:Array<Object> = [];
 
@@ -55,6 +67,7 @@ export class PharmacyViewComponent implements OnInit{
 	public productNameList:Array<ProductModel> = [];
 
 	public transactionModalInfo:Object;
+	public actionType:string;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -246,7 +259,7 @@ export class PharmacyViewComponent implements OnInit{
 				.subscribe(packaging => {
 					if(packaging.result.length > 0){
 						packaging.result.forEach(item => {
-							this.transactions.push({
+							this.transactionProducts.push({
 								id : transaction.id,
 								dispense_date : transaction.dispense_date,
 								info : transaction.info,
@@ -298,43 +311,87 @@ export class PharmacyViewComponent implements OnInit{
 		});
 	}
 
+	public getPharmacyName(id:number):string {
+		var pharmacyName = 'Loading...';
+
+		this.pharmacyNameList.forEach(pharmacy => {
+			if(pharmacy){
+				if(id === pharmacy.id){
+					pharmacyName = pharmacy.name
+				}
+			}
+		});
+
+		return pharmacyName;
+	};
+
 	private parseData(data:any):void{
-		data.forEach(transactionProduct => {
-			if(transactionProduct){
-				this._productService.getById(transactionProduct.packaging.id)
-				.subscribe(packaging => {
-					this._productService.getDrugById(packaging.result[0].drug_id)
-					.subscribe(drug => {
-						this.productNameList.push({
-							id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transactionProduct.id
+		data.forEach(transaction => {
+			if(transaction.packaging){
+				this._transactionService.getById(transaction.prescription.id)
+				.subscribe(data => {
+					if(data.result.length){
+						this._pharmacyService.getById(data.result[0].pharmacy.id)
+						.subscribe(pharmacy => {
+							if(pharmacy.result.length > 0){
+								this.pharmacyNameList.push(
+									{id: transaction.prescription.id, name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch, pharmacy_id: pharmacy.result[0].id}
+								);
+							}
 						});
-						});
-					});
+					}
+				});
 			}
 		});
 	}
+
 
 	ngOnInit(): void {
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 
-		this._pharmacyService.getById(this.route.snapshot.params['id'])
+		var packagingId = this.route.snapshot.params['packagingId'];
+		var pharmacyId = this.route.snapshot.params['pharmacyId'];
+
+		this.actionType = this.route.snapshot.params['actionType'];
+
+		this._pharmacyService.getById(pharmacyId)
 			.subscribe(data => {
 				this.pharmacyDetail = data.result[0];
 				this.getLocation(this.pharmacyDetail.location.id);
+		});
 
-				this._helperService.getUserByOrganizationId(this.route.snapshot.params['id'])
-				.subscribe(data => {
-					this.pharmacyDetail.ownerName = data.result[0].first_name + ' ' + data.result[0].middle_name + ' ' + data.result[0].last_name;
-					this.pharmacyDetail.mobile = data.result[0].mobile;
-					this.pharmacyDetail.email = data.result[0].email;
+		this._transactionProductService.getByPackagingId(packagingId)
+		.subscribe(data => {
+			this.transactions = data.result;
+			this.parseData(data.result);
+		});
+
+		this._transactionService.getByPharmacyId(pharmacyId, 1)
+		.subscribe(data => {
+			this.parseTransactions(data.result);
+		});
+
+		this._productService.getById(packagingId)
+		.subscribe(packaging => {
+			if(packaging.result[0].drug_id){
+				this._productService.getDrugById(packaging.result[0].drug_id)
+				.subscribe(drug => {
+					this._productService.getGenericById(packaging.result[0].drug_id)
+					.subscribe(generic => {
+						var divider = ' '
+						if(drug.result[0].brand_name){
+							divider = ' - '
+						}
+						this.fdaPackaging = packaging.result[0].fda_packaging;
+						this.productName = drug.result[0].brand_name + divider + generic.result[0].generic_name;
+					});
 				});
+			}else{
+				this.productName = '(Unverified) ' + packaging.result[0].unverified_product;
+			}
 		});
 
-		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1)
-			.subscribe(data => {
-				this.parseTransactions(data.result);
-		});
 	}
 }

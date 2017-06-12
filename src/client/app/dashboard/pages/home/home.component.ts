@@ -4,19 +4,18 @@ import { HelperService } from '../../services/helper.service';
 import { TransactionProductService } from '../../services/transaction-product.service';
 import { TransactionService } from '../../services/transaction.service';
 import { ProductService } from '../../services/product.service';
+import { PharmacyService } from '../../services/pharmacy.service';
 
 import { PharmacySearchModel } from './pharmacy-search-model';
 import { ProductSearchModel } from './product-search-model';
 import { ProductModel } from './product-model';
+import { PharmacyModel } from './pharmacy-model';
 
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/throttleTime';
 import 'rxjs/add/observable/fromEvent';
 
-/**
-*	This class represents the lazy loaded HomeComponent.
-*/
 declare var google: any;
 declare var pharmacies: any;
 
@@ -25,7 +24,7 @@ declare var pharmacies: any;
 	selector: 'home-cmp',
 	templateUrl: 'home.component.html',
 	styleUrls: ['home.css'],
-	providers: [HelperService, TransactionProductService, ProductService, TransactionService]
+	providers: [HelperService, TransactionProductService, ProductService, TransactionService, PharmacyService]
 })
 
 export class HomeComponent implements OnInit {
@@ -35,7 +34,8 @@ export class HomeComponent implements OnInit {
 	public search:string        = '';
 	searchControl = new FormControl();
 	public filterDateString:string = null;
-	public pharmacySearchNameList:Array<PharmacySearchModel> = []
+	public pharmacySearchNameList:Array<PharmacySearchModel> = [];
+	public counterfeitPharmacyList:Array<PharmacySearchModel> = [];
 	public styleExp:string = (window.innerHeight - 50) + 'px';
 	public isDropDown:boolean = false;
 	public isListProduct:boolean = false;
@@ -45,13 +45,16 @@ export class HomeComponent implements OnInit {
 	private subscription;
 	public actionType:string = 'all';
 
+	private pharmacyNameList:Array<PharmacyModel> = [];
+
 	constructor(
 		private router: Router,
 		private route: ActivatedRoute,
 		private _helperService : HelperService,
 		private _transactionProductService : TransactionProductService,
 		private _transactionService : TransactionService,
-		private _productService : ProductService
+		private _productService : ProductService,
+		private _pharmacyService : PharmacyService
 	) {
 		this.subscription = router.events.subscribe((val) => {
 			if(val instanceof NavigationEnd){
@@ -87,8 +90,6 @@ export class HomeComponent implements OnInit {
 	public showDropDown():void{
 		this.isDropDown = true;
 
-		console.log(this.actionType);
-
 		if(this.actionType === 'licensing' || this.actionType === 'all'){
 			this.isListProduct = false;
 		}else{
@@ -100,34 +101,12 @@ export class HomeComponent implements OnInit {
 
 	private initiateMap():void{
 
-		var labelsOff = [{
-			featureType: "administrative",
-			elementType: "labels",
-			stylers: [{
-				visibility: "off"
-				}]
-				},
-				{
-			featureType: "poi",
-			elementType: "labels",
-			stylers: [{
-				visibility: "off"
-			}]
-			},
-			{
-			featureType: "water",
-			elementType: "labels",
-			stylers: [{
-				visibility: "off"
-			}]
-			},
-			{
-			featureType: "road",
-			elementType: "labels",
-			stylers: [{
-				visibility: "off"
-			}]
-		}];
+		var labelsOff = [
+			{featureType: "administrative", elementType: "labels", stylers: [{visibility: "off"}]},
+			{featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }]},
+			{featureType: "water", elementType: "labels", stylers: [{ visibility: "off" }]},
+			{featureType: "road", elementType: "labels", stylers: [{visibility: "off"}]}
+		];
 
 		var input = document.getElementById('pac-input');
 
@@ -158,16 +137,30 @@ export class HomeComponent implements OnInit {
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
 	}
 
+	public viewPharmacyProductDetail(pharmacy:any):void{
+		this.router.navigate(['/dashboard/pharmacy-product/counterfeit', pharmacy.pharmacy_id, pharmacy.packaging_id]);
+	}
+
+	public viewProduct(product:any):void{
+		if(this.actionType === 'expired-meds'){
+			this.router.navigate(['/dashboard/expired-medicine-view', product.id]);
+		}else if(this.actionType === 'counterfeit'){
+			this._transactionProductService.findByBatchLotNumber(product.batch_lot_number)
+			.subscribe(data => {
+				this.parseCounterfeitData(data.result);
+				this.isListProduct = false;
+			});
+		}else if(this.actionType === 'disaster-recovery'){
+			console.log(product);
+		}
+	}
+
 	public viewMoreItems():void{
 		if(this.actionType === 'expired-meds'){
 			this.router.navigate(['/dashboard/expired-medicines']);
-		} else if(this.actionType === 'counterfeit'){
-
-		} else if(this.actionType === 'disaster-recovery'){
-
-		} else if(this.actionType === 'licensing'){
+		}else if(this.actionType === 'licensing'){
 			this.router.navigate(['/dashboard/pharmacies/expired-license']);
-		} else {
+		}else {
 			this.router.navigate(['/dashboard/pharmacies/all']);
 		}
 	}
@@ -176,6 +169,54 @@ export class HomeComponent implements OnInit {
 		var city = data.split(',');
 		let result:string;
 		result = city[city.length - 1];
+
+		return result;
+	}
+
+	private parseCounterfeitData(data:any):void{
+		this.counterfeitPharmacyList = [];
+		data.forEach(transaction => {
+			if(transaction.packaging){
+				this._transactionService.getById(transaction.prescription.id)
+				.subscribe(data => {
+					if(data.result.length){
+						this._pharmacyService.getById(data.result[0].pharmacy.id)
+						.subscribe(pharmacy => {
+							if(pharmacy.result.length > 0){
+								var pharmacy:any = {
+									id: transaction.prescription.id,
+									name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch,
+									pharmacy_id: pharmacy.result[0].id,
+									packaging_id: transaction.packaging.id
+								};
+								this.filterCounterfeitPharmacy(pharmacy);
+							}
+						});
+					}
+				});
+			}
+		});
+	}
+
+	private filterCounterfeitPharmacy(data:any):void{
+		this.pharmacySearchNameList.forEach(pharmacy => {
+			if(pharmacy.pharmacy_id === data.pharmacy_id){
+				if(!this.checkPharmacyDuplicate(this.counterfeitPharmacyList, pharmacy)){
+					pharmacy.packaging_id = data.packaging_id;
+					this.counterfeitPharmacyList.push(pharmacy);
+				}
+			}
+		});
+	}
+
+	private checkPharmacyDuplicate(list:any, pharmacy:any):boolean{
+		var result = false;
+
+		list.forEach(data => {
+			if(data.pharmacy_id === pharmacy.pharmacy_id){
+				result = true;
+			}
+		});
 
 		return result;
 	}
@@ -195,7 +236,7 @@ export class HomeComponent implements OnInit {
 				this.plotMarkers(this.pharmacySearchNameList, pinColor);
 			});
 
-			this._transactionProductService.getExpiredProducts()
+			this._transactionProductService.getExpiredProducts(100000, null)
 			.subscribe(data => {
 				this.parseData(data.result);
 			});
@@ -263,7 +304,7 @@ export class HomeComponent implements OnInit {
 					position: new google.maps.LatLng(pharmacyMarkerList[i].latitude, pharmacyMarkerList[i].longitude),
 					map: this.map,
 					icon : window.location.origin + '/assets/img/' + pinColor
-					});
+				});
 
 					this.markers.push(this.marker);
 
@@ -313,7 +354,6 @@ export class HomeComponent implements OnInit {
 			this.tmpList2 = this.pharmacySearchNameList;
 			this.pharmacySearchNameList = tmpList;
 		}
-
 	}
 
 	private filterProducts(data:string):void{
@@ -338,6 +378,7 @@ export class HomeComponent implements OnInit {
 
 	private parseDisasterRecoveryData(data:any):void{
 		this.productNameList = [];
+		console.log(data);
 		data.forEach(transactionProduct => {
 			if(transactionProduct.generic_name){
 				this.productNameList.push(
@@ -372,7 +413,7 @@ export class HomeComponent implements OnInit {
 							}
 							this.productNameList.push(
 								{
-									id: drug.result[0].id,
+									id: packaging.result[0].id,
 									name: drug.result[0].brand_name + divider + generic.result[0].generic_name,
 									transactionProductId: transactionProduct.id,
 									expiry_date: transactionProduct.expiry_date,
@@ -419,11 +460,13 @@ export class HomeComponent implements OnInit {
 				this.filterProducts(newValue);
 			}else if(this.actionType === 'counterfeit'){
 				if(newValue){
+					this.isListProduct = true;
 					this._transactionProductService.findByBatchLotNumber(newValue)
 					.subscribe(data => {
 						this.parseData(data.result);
 					});
 				}else{
+					this.isListProduct = true;
 					this.productNameList = [];
 				}
 

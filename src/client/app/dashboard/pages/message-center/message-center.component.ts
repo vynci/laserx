@@ -33,7 +33,7 @@ export class MessageCenterComponent {
 
 	public isLoading:boolean = false;
 
-	public maxSize:number = 1;
+	public maxSize:number = 5;
 	public bigTotalItems:number = 1;
 	public bigCurrentPage:number = 1;
 
@@ -87,7 +87,7 @@ export class MessageCenterComponent {
 			this._messageService.sendMessage(this.messageTo, this.messageTitle, this.messageContent)
 			.subscribe(data => {
 				this.fetchMessages()
-			});			
+			});
 		});
 	}
 

@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, ViewChild, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Location }               from '@angular/common';
 import { TransactionService } from '../../services/transaction.service';
 import { TransactionProductService } from '../../services/transaction-product.service';
 import { ProductService } from '../../services/product.service';
@@ -21,11 +22,11 @@ import 'rxjs/add/observable/fromEvent';
 @Component({
 	moduleId: module.id,
 	selector: 'tables-cmp',
-	templateUrl: 'expired-medicines.component.html',
+	templateUrl: 'expired-medicine-view.component.html',
 	providers: [TransactionService, PharmacyService, HelperService, JSONToCSV, TransactionProductService, ProductService]
 })
 
-export class ExpiredMedicinesComponent {
+export class ExpiredMedicineViewComponent {
 
 	public search:string        = '';
 	searchControl = new FormControl();
@@ -33,6 +34,8 @@ export class ExpiredMedicinesComponent {
 	private pharmacyNameList:Array<PharmacyModel> = [];
 	private physicianNameList:Array<PhysicianModel> = [];
 	public productNameList:Array<ProductModel> = [];
+	public productName:string = '';
+	public productStrength:string = '';
 	private sortType:string = '"dispense_date":-1';
 	private isSortAscending:boolean = false;
 	private today:any = new Date();
@@ -44,6 +47,8 @@ export class ExpiredMedicinesComponent {
 
 	constructor(
 		private router: Router,
+		private route: ActivatedRoute,
+		private location: Location,
 		private _transactionService : TransactionService,
 		private _pharmacyService : PharmacyService,
 		private _helperService : HelperService,
@@ -73,6 +78,7 @@ export class ExpiredMedicinesComponent {
 	};
 
 	public viewPharmacy(id:any):void{
+		console.log(id);
 		this.pharmacyNameList.forEach(pharmacy => {
 			if(pharmacy){
 				if(id === pharmacy.id){
@@ -80,12 +86,6 @@ export class ExpiredMedicinesComponent {
 				}
 			}
 		});
-	}
-
-	public viewProduct(id:any):void{
-		console.log(id);
-		this.router.navigate(['/dashboard/expired-medicine-view', id]);
-
 	}
 
 	public getPharmacyName(id:number):string {
@@ -140,38 +140,20 @@ export class ExpiredMedicinesComponent {
 					if(data.result.length){
 						this._pharmacyService.getById(data.result[0].pharmacy.id)
 						.subscribe(pharmacy => {
-							this.pharmacyNameList.push(
-								{id: transaction.prescription.id, name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch, pharmacy_id: pharmacy.result[0].id}
-							);
-						});
-					}
-				});
-			}
-			if(transaction.packaging){
-				this._productService.getById(transaction.packaging.id)
-				.subscribe(packaging => {
-					if(packaging.result[0].drug_id){
-						this._productService.getDrugById(packaging.result[0].drug_id)
-						.subscribe(drug => {
-							this._productService.getGenericById(packaging.result[0].drug_id)
-							.subscribe(generic => {
-								var divider = ' '
-								if(drug.result[0].brand_name){
-									divider = ' - '
-								}
-								this.productNameList.push(
-									{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transaction.id}
+							if(pharmacy.result.length > 0){
+								this.pharmacyNameList.push(
+									{id: transaction.prescription.id, name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch, pharmacy_id: pharmacy.result[0].id}
 								);
-							});
+							}
 						});
-					}else{
-						this.productNameList.push(
-							{id: null, name:'(Unverified) ' + packaging.result[0].unverified_product, transactionProductId: transaction.id}
-						);
 					}
 				});
 			}
 		});
+	}
+
+	public goBack(): void {
+		this.location.back();
 	}
 
 	public pageChanged(event:any):void {
@@ -192,15 +174,37 @@ export class ExpiredMedicinesComponent {
 	ngOnInit(): void {
 		this.isLoading = true;
 
+		var packagingId = this.route.snapshot.params['packagingId'];
+
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 
-		this._transactionProductService.getExpiredProducts(10, this.currentPage)
+		this._transactionProductService.getByPackagingId(packagingId)
 		.subscribe(data => {
 			this.transactions = data.result;
 			this.parseData(data.result);
 			this.isLoading = false;
+		});
+
+		this._productService.getById(packagingId)
+		.subscribe(packaging => {
+			if(packaging.result[0].drug_id){
+				this._productService.getDrugById(packaging.result[0].drug_id)
+				.subscribe(drug => {
+					this._productService.getGenericById(packaging.result[0].drug_id)
+					.subscribe(generic => {
+						var divider = ' '
+						if(drug.result[0].brand_name){
+							divider = ' - '
+						}
+						this.productName = drug.result[0].brand_name + divider + generic.result[0].generic_name;
+						this.productStrength = packaging.result[0].fda_packaging;
+					});
+				});
+			}else{
+				this.productName = '(Unverified) ' + packaging.result[0].unverified_product;
+			}
 		});
 
 		this._helperService.getAllPharmacyLocation()
