@@ -221,6 +221,19 @@ export class HomeComponent implements OnInit {
 		return result;
 	}
 
+	private dateConvert(date:string, isCurrent:boolean):string{
+		var dateObj = new Date();
+		if(!isCurrent){
+			dateObj = new Date(date);
+		}
+
+		var month = dateObj.getUTCMonth() + 1;
+		var day = dateObj.getUTCDate() + 1;
+		var year = dateObj.getUTCFullYear();
+
+		return year + "-" + month + "-" + day;
+	}	
+
 	private initiateMarkers():void{
 		var pinColor = 'spin_blue.png'
 		var tmp = 0;
@@ -261,7 +274,7 @@ export class HomeComponent implements OnInit {
 				this.plotMarkers(this.pharmacySearchNameList, pinColor);
 			});
 
-			this._helperService.getAllPrescription(500)
+			this._helperService.getAllPrescription(500, this.dateConvert('Jan 2 2000', false), this.dateConvert(null, true))
 			.subscribe(data => {
 				this.parseDisasterRecoveryData(data.result);
 			});

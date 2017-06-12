@@ -100,10 +100,17 @@ export class TransactionProductService {
 		.map((response: Response) => response.json());
 	}
 
-	getCount(){
+	getAllCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
 
-		return this.http.post(url, JSON.stringify({table_name: 'prescription_packaging'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'prescription'}), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}
+
+	getCount(filter:number){
+		let url = this.endpoint + 'functions/count-table-rows';
+
+		return this.http.post(url, JSON.stringify({table_name: 'prescription', filter_type: 'prescription', filter: filter.toString()}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

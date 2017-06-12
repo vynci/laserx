@@ -332,6 +332,9 @@ export class PharmacyViewComponent implements OnInit{
 				});
 		});
 
+		this._transactionProductService.getCount(this.route.snapshot.params['id'])
+		.subscribe(data => this.bigTotalItems = data.result[0].row_count);		
+
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1)
 			.subscribe(data => {
 				this.parseTransactions(data.result);

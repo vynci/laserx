@@ -168,28 +168,38 @@ export class DashComponent implements OnInit {
 			series: [{
 				name: 'Current Week',
 					data: [
-						trendData.current[0].total_prescription,
-						trendData.current[1].total_prescription,
-						trendData.current[2].total_prescription,
-						0,
-						0,
-						0,
-						0
+						this.parseTrendData(trendData.current[0]),
+						this.parseTrendData(trendData.current[1]),
+						this.parseTrendData(trendData.current[2]),
+						this.parseTrendData(trendData.current[3]),
+						this.parseTrendData(trendData.current[4]),
+						this.parseTrendData(trendData.current[5]),
+						this.parseTrendData(trendData.current[6])
 					]
 				}, {
 					name: 'Previous Week',
 					data: [
-						0,
-						0,
-						0,
-						0,
-						0,
-						0,
-						0
+						this.parseTrendData(trendData.previous[0]),
+						this.parseTrendData(trendData.previous[1]),
+						this.parseTrendData(trendData.previous[2]),
+						this.parseTrendData(trendData.previous[3]),
+						this.parseTrendData(trendData.previous[4]),
+						this.parseTrendData(trendData.previous[5]),
+						this.parseTrendData(trendData.previous[6])
 					]
 			}]
 		});
 	};
+
+	private parseTrendData(data:any):number{
+		var total_count = 0;
+
+		if(data){
+			total_count = data.total_prescription;			
+		}
+
+		return total_count;
+	}
 
 	private mapPharmacyArray(data:any):any {
 		var list = data;
@@ -253,7 +263,7 @@ export class DashComponent implements OnInit {
 		this.prescriptionNumberList.forEach(pharmacy => {
 			if(pharmacy){
 				if(id === pharmacy.id){
-					number = pharmacy.total_prescription
+					number = pharmacy.total_prescription;
 				}
 			}
 		});
@@ -309,6 +319,19 @@ export class DashComponent implements OnInit {
 		return date;
 	};
 
+	private dateConvert(date:string, isCurrent:boolean):string{
+		var dateObj = new Date();
+		if(!isCurrent){
+			dateObj = new Date(date);
+		}
+
+		var month = dateObj.getUTCMonth() + 1;
+		var day = dateObj.getUTCDate() + 1;
+		var year = dateObj.getUTCFullYear();
+
+		return year + "-" + month + "-" + day;
+	}
+
 	ngOnInit(){
 		var intervalCount = 1;
 
@@ -332,7 +355,7 @@ export class DashComponent implements OnInit {
 			this.isLoading = false;
 		});
 
-		this._helperService.getAllPrescription(15)
+		this._helperService.getAllPrescription(15, this.dateConvert(null, false), this.dateConvert(null, true))
 		.subscribe(data => {
 			this.transactionFeed = data.result;
 		});
@@ -345,7 +368,7 @@ export class DashComponent implements OnInit {
 			this.transactionFeed.push(tmp);
 		}, 2000);
 
-		this._transactionProductService.getCount()
+		this._transactionProductService.getAllCount()
 		.subscribe(data => this.transactionCount = data.result[0].row_count);
 
 		this.searchControl.valueChanges

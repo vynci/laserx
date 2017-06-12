@@ -373,6 +373,9 @@ export class PharmacyProductDetailComponent implements OnInit{
 			this.parseTransactions(data.result);
 		});
 
+		this._transactionProductService.getCount(pharmacyId)
+		.subscribe(data => this.bigTotalItems = data.result[0].row_count);				
+
 		this._productService.getById(packagingId)
 		.subscribe(packaging => {
 			if(packaging.result[0].drug_id){

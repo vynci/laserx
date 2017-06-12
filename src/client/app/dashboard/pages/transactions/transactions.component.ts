@@ -278,8 +278,21 @@ export class TransactionsComponent {
 		this.router.navigate(['/dashboard/transaction-view', transactionId]);
 	}
 
+	private dateConvert(date:string, isCurrent:boolean):string{
+		var dateObj = new Date();
+		if(!isCurrent){
+			dateObj = new Date(date);
+		}
+
+		var month = dateObj.getUTCMonth() + 1;
+		var day = dateObj.getUTCDate() + 1;
+		var year = dateObj.getUTCFullYear();
+
+		return year + "-" + month + "-" + day;
+	}
+
 	public downloadCSV():void{
-		this._helperService.getAllPrescription(100000)
+		this._helperService.getAllPrescription(100000, this.dateConvert('Jan 2 2000', false), this.dateConvert(null, true))
 		.subscribe(data => {
 			console.log(data);
 			this._jsonToCSVService.Convert(data.result, 'filename123.csv');
