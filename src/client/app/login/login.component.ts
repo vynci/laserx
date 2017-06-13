@@ -8,7 +8,8 @@ import { FormControl } from '@angular/forms';
 	moduleId: module.id,
 	selector: 'login-cmp',
 	templateUrl: 'login.component.html',
-	providers: [AuthService]
+	providers: [AuthService],
+	styleUrls: ['login.css']
 })
 
 export class LoginComponent {

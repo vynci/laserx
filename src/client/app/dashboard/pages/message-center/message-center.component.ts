@@ -81,7 +81,7 @@ export class MessageCenterComponent {
 	}
 
 	public sendMessage():void{
-		this._messageService.sendNotificationMessage(this.messageContent, this.messageTitle)
+		this._messageService.sendNotificationMessage(this.messageContent, this.messageTitle, this.messageTo)
 		.subscribe(data => {
 			console.log(data);
 			this._messageService.sendMessage(this.messageTo, this.messageTitle, this.messageContent)

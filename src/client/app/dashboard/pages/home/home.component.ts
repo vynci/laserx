@@ -40,6 +40,7 @@ export class HomeComponent implements OnInit {
 	public isDropDown:boolean = false;
 	public isListProduct:boolean = false;
 	public isPharmacyProduct:boolean = false;
+	public isLoading:boolean = false;
 
 	public placeHolderType:string = 'Search Pharmacy or Province';
 
@@ -151,6 +152,8 @@ export class HomeComponent implements OnInit {
 		}else if(this.actionType === 'counterfeit'){
 			this._transactionProductService.findByBatchLotNumber(product.batch_lot_number)
 			.subscribe(data => {
+				this.deleteMarkers();
+				this.initiateMarkers();				
 				this.parseCounterfeitData(data.result);
 				this.isListProduct = false;
 				this.isPharmacyProduct = true;
@@ -185,7 +188,8 @@ export class HomeComponent implements OnInit {
 
 	private parseCounterfeitData(data:any):void{
 		this.counterfeitPharmacyList = [];
-		data.forEach(transaction => {
+		var dataLength = data.length;
+		data.forEach((transaction, idx) => {
 			if(transaction.packaging){
 				this._transactionService.getById(transaction.prescription.id)
 				.subscribe(data => {
@@ -199,7 +203,7 @@ export class HomeComponent implements OnInit {
 									pharmacy_id: pharmacy.result[0].id,
 									packaging_id: transaction.packaging.id
 								};
-								this.filterCounterfeitPharmacy(pharmacy);
+								this.filterCounterfeitPharmacy(pharmacy, idx, dataLength);
 							}
 						});
 					}
@@ -208,15 +212,22 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
-	private filterCounterfeitPharmacy(data:any):void{
-		this.pharmacySearchNameList.forEach(pharmacy => {
+	private filterCounterfeitPharmacy(data:any, idx:any, dataLength:any):void{
+		/*this.pharmacySearchNameList*/
+		var tmp = this.pharmacySearchNameList;
+		tmp.forEach(pharmacy => {
 			if(pharmacy.pharmacy_id === data.pharmacy_id){
 				if(!this.checkPharmacyDuplicate(this.counterfeitPharmacyList, pharmacy)){
 					pharmacy.packaging_id = data.packaging_id;
 					this.counterfeitPharmacyList.push(pharmacy);
+					this.pharmacySearchNameList.push(pharmacy);
 				}
 			}
 		});
+		if(idx === (dataLength - 1)){
+			this.deleteMarkers();
+			this.plotMarkers(this.counterfeitPharmacyList, 'spin_darkblue.png');
+		}
 	}
 
 	private checkPharmacyDuplicate(list:any, pharmacy:any):boolean{
@@ -242,7 +253,7 @@ export class HomeComponent implements OnInit {
 		var year = dateObj.getUTCFullYear();
 
 		return year + "-" + month + "-" + day;
-	}	
+	}
 
 	private initiateMarkers():void{
 		var pinColor = 'spin_blue.png'
@@ -396,12 +407,10 @@ export class HomeComponent implements OnInit {
 			this.prodTmpList2 = this.productNameList;
 			this.productNameList = tmpList;
 		}
-
 	}
 
 	private parseDisasterRecoveryData(data:any):void{
 		this.productNameList = [];
-		console.log(data);
 		data.forEach(transactionProduct => {
 			if(transactionProduct.generic_name){
 				this.productNameList.push(
@@ -422,7 +431,8 @@ export class HomeComponent implements OnInit {
 
 	private parseData(data:any):void{
 		this.productNameList = [];
-		data.forEach(transactionProduct => {
+		this.isLoading = true;
+		data.forEach((transactionProduct, idx, array) => {
 			if(transactionProduct.packaging){
 				this._productService.getById(transactionProduct.packaging.id)
 				.subscribe(packaging => {
@@ -446,6 +456,7 @@ export class HomeComponent implements OnInit {
 									organization_branch : null
 								}
 							);
+							this.isLoading = false;
 						});
 					});
 				});

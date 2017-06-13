@@ -54,10 +54,10 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
-	sendNotificationMessage(content: string, title: string){
+	sendNotificationMessage(content: string, title: string, type: string){
 		let url = this.endpoint + 'functions/send-notification-message';
 
-		return this.http.post(url, JSON.stringify({registrationId: '', content: content, title: title}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({registrationId: '', content: content, title: title, type: type}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

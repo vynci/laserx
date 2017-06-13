@@ -34,7 +34,8 @@
 			</div>
 		</div>
 		<div *ngIf="isListProduct">
-			<div *ngIf="productNameList.length == 0 && actionType === 'expired-meds'" style="padding: 10px 10px; cursor: pointer; text-align: center;">Loading...</div>
+			<div *ngIf="isLoading && actionType === 'expired-meds'" style="padding: 10px 10px; cursor: pointer; text-align: center;">Loading...</div>
+			<div *ngIf="productNameList == 0 && actionType === 'expired-meds' && !isLoading" style="padding: 10px 10px; cursor: pointer; text-align: center;">No Records Found.</div>
 			<div *ngFor="let product of productNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
 				<div class="row">
 					<div class="col-lg-8">

@@ -64,7 +64,7 @@
 							<tbody>
 								<tr>
 									<th style="cursor: text;" scope="row">Owner's Name</th>
-									<td *ngIf="!isEdit">{{pharmacyDetail.ownerName || 'n/a'}}</td>
+									<td *ngIf="!isEdit">{{pharmacyDetail.organization_owner || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="Owner's Name" [(ngModel)]="pharmacyDetail.owner_firstname"></td>
 								</tr>
 								<!-- <tr>
@@ -172,7 +172,7 @@
 								</div>
 								<div class="col-lg-6" style="text-align: right;">
 									 <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"
-									[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination> 
+									[boundaryLinks]="true" [rotate]="false" (numPages)="numPages = $event"></pagination>
 								</div>
 							</div>
 						</div>

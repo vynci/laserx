@@ -92,8 +92,7 @@ export class TransactionViewComponent {
 				if(id === product.transactionProductId){
 					if(product.id === null){
 						style = {
-							'background' : '#EA4444',
-							'color' : 'white'
+							'color' : '#EA4444'
 						}
 					}
 				}
