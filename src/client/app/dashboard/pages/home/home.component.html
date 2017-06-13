@@ -3,7 +3,7 @@
 	<span class="input-group-btn"><button class="btn btn-primary" type="button" style="border-radius: 0px !important;"><i class="fa fa-search"></i></button></span>
 	<br>
 	<div *ngIf="isDropDown" style="position: fixed; width: 350px; background: white; left: 30px;">
-		<div *ngIf="!isListProduct && actionType != 'counterfeit'">
+		<div *ngIf="!isListProduct && !isPharmacyProduct">
 			<div *ngFor="let pharmacy of pharmacySearchNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacy(pharmacy.pharmacy_id)">
 				<div class="row">
 					<div class="col-lg-8">
@@ -18,7 +18,7 @@
 				</div>
 			</div>
 		</div>
-		<div *ngIf="!isListProduct && actionType === 'counterfeit'">
+		<div *ngIf="!isListProduct && isPharmacyProduct">
 			<div *ngFor="let pharmacy of counterfeitPharmacyList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacyProductDetail(pharmacy)">
 				<div class="row">
 					<div class="col-lg-8">

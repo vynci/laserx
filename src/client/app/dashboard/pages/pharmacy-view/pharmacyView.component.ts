@@ -134,7 +134,9 @@ export class PharmacyViewComponent implements OnInit{
 	};
 
 	public pageChanged(event:any):void {
+		console.log(event.page);
 		this.transactions = [];
+		this.productNameList = [];
 		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], event.page)
 		.subscribe(data => {
 			this.parseTransactions(data.result);
@@ -213,8 +215,7 @@ export class PharmacyViewComponent implements OnInit{
 				if(id === product.transactionProductId){
 					if(product.id === null){
 						style = {
-							'background' : '#EA4444',
-							'color' : 'white'
+							'color' : '#EA4444'
 						}
 					}
 				}

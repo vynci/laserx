@@ -226,8 +226,7 @@ export class PharmacyProductDetailComponent implements OnInit{
 				if(id === product.transactionProductId){
 					if(product.id === null){
 						style = {
-							'background' : '#EA4444',
-							'color' : 'white'
+							'color' : '#EA4444'
 						}
 					}
 				}

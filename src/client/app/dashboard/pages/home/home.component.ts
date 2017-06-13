@@ -39,6 +39,7 @@ export class HomeComponent implements OnInit {
 	public styleExp:string = (window.innerHeight - 50) + 'px';
 	public isDropDown:boolean = false;
 	public isListProduct:boolean = false;
+	public isPharmacyProduct:boolean = false;
 
 	public placeHolderType:string = 'Search Pharmacy or Province';
 
@@ -64,6 +65,7 @@ export class HomeComponent implements OnInit {
 
 				this.searchControl.reset();
 				this.isDropDown = false;
+				this.isPharmacyProduct = false;
 				this.actionType = action;
 				this.deleteMarkers();
 				this.initiateMarkers();
@@ -138,10 +140,12 @@ export class HomeComponent implements OnInit {
 	}
 
 	public viewPharmacyProductDetail(pharmacy:any):void{
-		this.router.navigate(['/dashboard/pharmacy-product/counterfeit', pharmacy.pharmacy_id, pharmacy.packaging_id]);
+		this.router.navigate(['/dashboard/pharmacy-product/' + this.actionType, pharmacy.pharmacy_id, pharmacy.packaging_id]);
 	}
 
 	public viewProduct(product:any):void{
+		this.isPharmacyProduct = false;
+
 		if(this.actionType === 'expired-meds'){
 			this.router.navigate(['/dashboard/expired-medicine-view', product.id]);
 		}else if(this.actionType === 'counterfeit'){
@@ -149,9 +153,15 @@ export class HomeComponent implements OnInit {
 			.subscribe(data => {
 				this.parseCounterfeitData(data.result);
 				this.isListProduct = false;
+				this.isPharmacyProduct = true;
 			});
 		}else if(this.actionType === 'disaster-recovery'){
-			console.log(product);
+			this._transactionProductService.getByPackagingId(product.id)
+			.subscribe(data => {
+				this.parseCounterfeitData(data.result);
+				this.isPharmacyProduct = true;
+				this.isListProduct = false;
+			});
 		}
 	}
 
@@ -396,11 +406,11 @@ export class HomeComponent implements OnInit {
 			if(transactionProduct.generic_name){
 				this.productNameList.push(
 					{
-						id: null,
+						id: transactionProduct.packaging_id,
 						name: transactionProduct.generic_name + ' ' + transactionProduct.brand_name,
 						organization_branch : transactionProduct.organization_branch,
 						expiry_date : transactionProduct.dispense_date,
-						transactionProductId : null,
+						transactionProductId : transactionProduct.id,
 						fda_packaging : null,
 						package_form : null,
 						batch_lot_number : null
@@ -446,6 +456,7 @@ export class HomeComponent implements OnInit {
 	ngOnInit(){
 
 		this.actionType = this.route.snapshot.params['action'];
+		this.isPharmacyProduct = false;
 
 		if(this.actionType === 'licensing'){
 			this._helperService.getAllExpiredPharmacyLocation()
