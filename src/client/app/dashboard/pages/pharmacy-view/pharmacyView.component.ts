@@ -9,7 +9,13 @@ import { LocationService } from '../../services/location.service';
 import { HelperService } from '../../services/helper.service';
 import { PhysicianModel } from './physician-model';
 import { ProductModel } from './product-model';
+import { ProductSearchModel } from './product-search-model';
 import { ProductService } from '../../services/product.service';
+
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/throttleTime';
+import 'rxjs/add/observable/fromEvent';
 
 declare var pharmacyDetail: any;
 declare var google: any;
@@ -35,6 +41,9 @@ export class PharmacyViewComponent implements OnInit{
 		email : '',
 	}
 
+	search        = '';
+	searchControl = new FormControl();
+
 	isEdit: boolean = false;
 	isUpdateSuccess: boolean = false;
 	private map: any;
@@ -42,7 +51,10 @@ export class PharmacyViewComponent implements OnInit{
 	private physicianNameList:Array<PhysicianModel> = [];
 
 	public isAdmin:boolean = false;
-	public transactions:Array<Object> = [];
+	public transactions:Array<ProductSearchModel> = [];
+	public transactionsTmpList:Array<ProductSearchModel> = [];
+
+	public expiredTransactions:Array<ProductSearchModel> = [];
 
 	public totalItems:number = 64;
 	public currentPage:number = 4;
@@ -55,6 +67,9 @@ export class PharmacyViewComponent implements OnInit{
 	public productNameList:Array<ProductModel> = [];
 
 	public transactionModalInfo:Object;
+	public sliceData:number = 0;
+	public diffSliceData:number = 0;
+	public isLoading:boolean = false;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -134,13 +149,7 @@ export class PharmacyViewComponent implements OnInit{
 	};
 
 	public pageChanged(event:any):void {
-		console.log(event.page);
-		this.transactions = [];
-		this.productNameList = [];
-		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], event.page)
-		.subscribe(data => {
-			this.parseTransactions(data.result);
-		});
+		this.sliceData = (event.page - 1) * 10;
 	};
 
 	public enableEdit():void {
@@ -207,20 +216,13 @@ export class PharmacyViewComponent implements OnInit{
 			return productName;
 	};
 
-	public isProductUnverified(id:number):any {
+	public isProductUnverified(isUnverified:boolean):any {
 		var style = {};
-
-		this.productNameList.forEach(product => {
-			if(product){
-				if(id === product.transactionProductId){
-					if(product.id === null){
-						style = {
-							'color' : '#EA4444'
-						}
-					}
-				}
+		if(isUnverified){
+			style = {
+				'color' : '#EA4444'
 			}
-		});
+		}
 
 		return style;
 	};
@@ -241,50 +243,88 @@ export class PharmacyViewComponent implements OnInit{
 	}
 
 	private parseTransactions(data:any):void{
+		
+		if(data.length > 0){
+			this.isLoading = true;
+		}else{
+			this.isLoading = false;
+		}
+
 		data.forEach(transaction => {
 			if(transaction){
 				this._transactionProductService.getById(transaction.id)
 				.subscribe(packaging => {
 					if(packaging.result.length > 0){
 						packaging.result.forEach(item => {
-							this.transactions.push({
-								id : transaction.id,
-								dispense_date : transaction.dispense_date,
-								info : transaction.info,
-								prescription_image_link : transaction.prescription_image_link,
-								physician_license_number : transaction.physician_license_number,
-								quantity_dispensed : item.quantity_dispensed,
-								quantity_prescribed : item.quantity_prescribed,
-								packaging : item.packaging,
-								batch_lot_number : item.batch_lot_number,
-								instruction : item.instruction,
-								instruction_unit : item.instruction_unit,
-								expiry_date : item.expiry_date,
-								remark : item.remark
-							});
 							if(item.packaging){
 								this._productService.getById(item.packaging.id)
 								.subscribe(packagingItem => {
-									if(packagingItem.result[0].drug_id){
-										this._productService.getDrugById(packagingItem.result[0].drug_id)
-										.subscribe(drug => {
-											this._productService.getGenericById(packagingItem.result[0].drug_id)
-											.subscribe(generic => {
-												var divider = ' '
+									var productName;
+									var isUnverified = false;
+									var drugId = packagingItem.result[0].drug_id || 0;
+									this._productService.getDrugById(drugId)
+									.subscribe(drug => {
+										this._productService.getGenericById(drugId)
+										.subscribe(generic => {
+											var divider = ' '
+
+											if(packagingItem.result[0].drug_id && drug.result[0] && generic.result[0]){
 												if(drug.result[0].brand_name){
 													divider = ' - '
-												}
-												this.productNameList.push(
-													{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transaction.id}
-												);
+												}													
+												productName = drug.result[0].brand_name + divider + generic.result[0].generic_name; 
+											}else{
+												productName = '(Unverified) ' + packagingItem.result[0].unverified_product || '';
+												isUnverified = true;
+											}
+											this.isLoading = false;
+											this.transactions.push({
+												id : transaction.id,
+												dispense_date : transaction.dispense_date,
+												info : transaction.info,
+												prescription_image_link : transaction.prescription_image_link,
+												physician_license_number : transaction.physician_license_number,
+												quantity_dispensed : item.quantity_dispensed,
+												quantity_prescribed : item.quantity_prescribed,
+												packaging : item.packaging,
+												batch_lot_number : item.batch_lot_number,
+												instruction : item.instruction,
+												instruction_unit : item.instruction_unit,
+												expiry_date : item.expiry_date,
+												remark : item.remark,
+												productName : productName,
+												isUnverified : isUnverified
 											});
-										});
-									}else{
-										this.productNameList.push(
-											{id: null, name: '(Unverified) ' + packagingItem.result[0].unverified_product || '', transactionProductId: transaction.id}
-										);
-									}
 
+											if(item.expiry_date){
+												var now = new Date();
+												var expiryDate = new Date(item.expiry_date);
+												
+												if(now > expiryDate){
+													this.expiredTransactions.push({
+														id : transaction.id,
+														dispense_date : transaction.dispense_date,
+														info : transaction.info,
+														prescription_image_link : transaction.prescription_image_link,
+														physician_license_number : transaction.physician_license_number,
+														quantity_dispensed : item.quantity_dispensed,
+														quantity_prescribed : item.quantity_prescribed,
+														packaging : item.packaging,
+														batch_lot_number : item.batch_lot_number,
+														instruction : item.instruction,
+														instruction_unit : item.instruction_unit,
+														expiry_date : item.expiry_date,
+														remark : item.remark,
+														productName : productName,
+														isUnverified : isUnverified
+													});
+												}
+											}												
+											// this.productNameList.push(
+											// 	{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transaction.id}
+											// );
+										});
+									});
 								});
 							}else{
 								this.productNameList.push(
@@ -295,7 +335,6 @@ export class PharmacyViewComponent implements OnInit{
 					}
 				});
 			}
-
 		});
 	}
 
@@ -309,10 +348,39 @@ export class PharmacyViewComponent implements OnInit{
 						this.productNameList.push({
 							id: drug.result[0].id, name: drug.result[0].brand_name, transactionProductId: transactionProduct.id
 						});
-						});
 					});
+				});
 			}
 		});
+	}
+
+	private contains(data:string, subData:string):boolean{
+		var string = data;
+		var substring = subData;
+
+		return string.includes(substring);
+	}
+
+	private filterProducts(data:string):void{
+		if(data !== null){
+			let tmpList:Array<any> = [];
+
+			if(this.transactionsTmpList.length > 0){
+				this.transactions = this.transactionsTmpList;
+			}
+
+			this.transactions.forEach(transaction => {
+				var doctorName = this.getTransactionInfo(transaction.info, 'physician');
+				var batchLotNumber = transaction.batch_lot_number;
+				var source = transaction.productName.toLowerCase() + ' ' + doctorName.toLowerCase() + ' ' + batchLotNumber;
+				if(this.contains(source, data.toLowerCase())){
+					tmpList.push(transaction);
+				}
+			});
+
+			this.transactionsTmpList = this.transactions;
+			this.transactions = tmpList;
+		}
 	}
 
 	ngOnInit(): void {
@@ -324,7 +392,7 @@ export class PharmacyViewComponent implements OnInit{
 			.subscribe(data => {
 				this.pharmacyDetail = data.result[0];
 				this.getLocation(this.pharmacyDetail.location.id);
-
+				
 				this._helperService.getUserByOrganizationId(this.route.snapshot.params['id'])
 				.subscribe(data => {
 					this.pharmacyDetail.ownerName = data.result[0].first_name + ' ' + data.result[0].middle_name + ' ' + data.result[0].last_name;
@@ -336,9 +404,15 @@ export class PharmacyViewComponent implements OnInit{
 		this._transactionProductService.getCount(this.route.snapshot.params['id'])
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);		
 
-		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1)
+		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1, 1000)
 			.subscribe(data => {
 				this.parseTransactions(data.result);
 		});
+
+		this.searchControl.valueChanges
+		.debounceTime(250)
+		.subscribe(newValue => {
+			this.filterProducts(newValue);
+		});		
 	}
 }

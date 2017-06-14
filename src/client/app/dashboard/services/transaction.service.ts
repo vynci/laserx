@@ -36,9 +36,9 @@ export class TransactionService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPharmacyId(id: number, page: number){
+	getByPharmacyId(id: number, page: number, limit: number){
 		let search = new URLSearchParams('where={"pharmacy.id":{"eq":' + id + '}}');
-		search.append('limit', '10');
+		search.append('limit', limit.toString());
 		search.append('skip', (page - 1).toString());
 		search.append('sort', '[{"dispense_date":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});

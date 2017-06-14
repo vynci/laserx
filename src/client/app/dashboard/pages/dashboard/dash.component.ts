@@ -233,7 +233,7 @@ export class DashComponent implements OnInit {
 					this.prescriptionNumberList.push(data.result[0]);
 				}
 			});
-			this._transactionService.getByPharmacyId(pharmacy.id, 1)
+			this._transactionService.getByPharmacyId(pharmacy.id, 1, 10)
 			.subscribe(data => {
 				if(data.result.length > 0){
 					this.lastTransactionList.push({
@@ -258,8 +258,7 @@ export class DashComponent implements OnInit {
 	};
 
 	public getPrescriptionNumber(id:number):string {
-		var number = 'Loading...';
-
+		var number = 'n/a';
 		this.prescriptionNumberList.forEach(pharmacy => {
 			if(pharmacy){
 				if(id === pharmacy.id){
@@ -267,7 +266,6 @@ export class DashComponent implements OnInit {
 				}
 			}
 		});
-
 		return number.toString();
 	};
 
@@ -307,7 +305,7 @@ export class DashComponent implements OnInit {
 	};
 
 	public getLastTransactionDate(id:number):string {
-		var date = 'Loading...';
+		var date = 'n/a';
 		this.lastTransactionList.forEach(data => {
 			if(data){
 				if(id === data.id){
@@ -351,7 +349,7 @@ export class DashComponent implements OnInit {
 		this._pharmacyService.getAll()
 		.subscribe(data => {
 			this.transactions = data.result;
-			this.parseTransactionData(this.transactions);
+			this.parseTransactionData(data.result);
 			this.isLoading = false;
 		});
 
@@ -379,7 +377,7 @@ export class DashComponent implements OnInit {
 			this._pharmacyService.find(this.search, this.currentPage, null, 'organization_branch')
 			.subscribe(data => {
 				this.transactions = data.result;
-				this.parseTransactionData(this.transactions);
+				this.parseTransactionData(data.result);
 			});
 		});
 	}
