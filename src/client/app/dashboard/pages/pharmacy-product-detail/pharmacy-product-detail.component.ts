@@ -328,10 +328,26 @@ export class PharmacyProductDetailComponent implements OnInit{
 		});
 	}
 
+	public isDateExpired(dateFrom:any, dateTo:any, isCompare:boolean):any {
+		var style = {};
+		var now = new Date(dateFrom);
+		var expiryDate = new Date(dateTo);		
+
+		if(!isCompare){
+			now = new Date();
+		}
+
+		if(now > expiryDate){			
+			style = {
+				'color' : '#EA4444'
+			}
+		}		
+
+		return style;
+	};
+
 	public getPharmacyName(id:any):string {
 		var pharmacyName = 'Loading...';
-		console.log(id);
-		console.log(this.pharmacyNameList);
 		this.pharmacyNameList.forEach(pharmacy => {
 			if(pharmacy){
 				if(id === pharmacy.id){
@@ -408,7 +424,7 @@ export class PharmacyProductDetailComponent implements OnInit{
 				this.getLocation(this.pharmacyDetail.location.id);
 		});
 
-		this._transactionProductService.getByPackagingId(packagingId)
+		this._transactionProductService.getByPackagingId(packagingId, null)
 		.subscribe(data => {
 			this.parseData(data.result);
 		});

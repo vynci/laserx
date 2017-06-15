@@ -171,16 +171,33 @@ export class ExpiredMedicineViewComponent {
 		this.router.navigate(['/dashboard/transaction-view', transactionId]);
 	}
 
+	public isDateExpired(dateFrom:any, dateTo:any, isCompare:boolean):any {
+		var style = {};
+		var now = new Date(dateFrom);
+		var expiryDate = new Date(dateTo);		
+
+		if(!isCompare){
+			now = new Date();
+		}
+
+		if(now > expiryDate){			
+			style = {
+				'color' : '#EA4444'
+			}
+		}		
+
+		return style;
+	};		
+
 	ngOnInit(): void {
 		this.isLoading = true;
-
 		var packagingId = this.route.snapshot.params['packagingId'];
 
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
 		}
 
-		this._transactionProductService.getByPackagingId(packagingId)
+		this._transactionProductService.getByPackagingId(packagingId, new Date())
 		.subscribe(data => {
 			this.transactions = data.result;
 			this.parseData(data.result);

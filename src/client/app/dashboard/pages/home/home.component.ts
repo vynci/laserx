@@ -159,7 +159,7 @@ export class HomeComponent implements OnInit {
 				this.isPharmacyProduct = true;
 			});
 		}else if(this.actionType === 'disaster-recovery'){
-			this._transactionProductService.getByPackagingId(product.id)
+			this._transactionProductService.getByPackagingId(product.id, null)
 			.subscribe(data => {
 				this.parseCounterfeitData(data.result);
 				this.isPharmacyProduct = true;

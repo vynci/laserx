@@ -140,7 +140,6 @@ export class PharmacyViewComponent implements OnInit{
 	};
 
 	public setModalValues(data:any):void {
-		console.log(data);
 		this.transactionModalInfo = data;
 	};
 
@@ -226,6 +225,24 @@ export class PharmacyViewComponent implements OnInit{
 
 		return style;
 	};
+
+	public isDateExpired(dateFrom:any, dateTo:any, isCompare:boolean):any {
+		var style = {};
+		var now = new Date(dateFrom);
+		var expiryDate = new Date(dateTo);		
+
+		if(!isCompare){
+			now = new Date();
+		}
+
+		if(now > expiryDate){			
+			style = {
+				'color' : '#EA4444'
+			}
+		}		
+
+		return style;
+	};	
 
 	public update():void {
 		this._pharmacyService.update(this.route.snapshot.params['id'], this.pharmacyDetail)

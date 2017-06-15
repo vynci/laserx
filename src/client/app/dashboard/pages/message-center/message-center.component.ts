@@ -46,9 +46,6 @@ export class MessageCenterComponent {
 	};
 
 	public pageChanged(event:any):void {
-		console.log('Page changed to: ' + event.page);
-		console.log('Number items per page: ' + event.itemsPerPage);
-
 		this._messageService.getByPage(event.itemsPerPage, event.page)
 		.subscribe(data => this.messages = data.result);
 	};
@@ -78,6 +75,11 @@ export class MessageCenterComponent {
 			this.isLoading = false;
 			this.messages = data.result
 		});
+	}
+
+	public clearMessage():void{
+		this.messageContent = '';
+		this.messageTitle = '';
 	}
 
 	public sendMessage():void{

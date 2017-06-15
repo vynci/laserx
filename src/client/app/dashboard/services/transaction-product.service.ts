@@ -25,9 +25,29 @@ export class TransactionProductService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPackagingId(id: number){
-		let search = new URLSearchParams('where={"packaging_id":{"eq":' + id + '}}');
+	getByPackagingId(id: number, expiryDate:any){
+		let search = new URLSearchParams();
 		let options = new RequestOptions({ headers: this.headers, search: search});
+		var searchParams;
+
+		if(expiryDate){
+			searchParams = {
+				'expiry_date' : {
+					lte : expiryDate
+				},
+				'packaging_id' : {
+					'eq': id
+				}
+			}
+		}else{
+			searchParams = {
+				'packaging_id' : {
+					'eq': id
+				}
+			}			
+		}
+
+		search.append('where', JSON.stringify(searchParams));
 
 		return this.http.get(this.url, options)
 		.map((response: Response) => response.json());

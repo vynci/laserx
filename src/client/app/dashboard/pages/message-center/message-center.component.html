@@ -13,7 +13,7 @@
 							</h2>
 						</div>
 						<div class="col-lg-4" style="text-align: right;">
-							<a class="btn btn-warning" (click)="sendMessageModal.show()"> <i class="fa fa-envelope"></i> Send Message </a>
+							<a class="btn btn-warning" (click)="sendMessageModal.show(); clearMessage()"> <i class="fa fa-envelope"></i> Send Message </a>
 						</div>
 					</div>
 				</div>
@@ -93,7 +93,7 @@
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<label for=""><b>To:</b></label>
+					<label for=""><b>Type:</b></label>
 					<select class="form-control" placeholder="Select Type" [(ngModel)]="messageTo">
 						<option value="Recall">Recall</option>
 						<option value="Regular Message">Regular Message</option>
@@ -109,7 +109,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" (click)="sendMessage(); sendMessageModal.hide();">Send</button>
+				<button type="button" class="btn btn-primary" [disabled]="messageContent == ''" (click)="sendMessage(); sendMessageModal.hide();">Send</button>
 				<button type="button" class="btn btn-secondary" (click)="sendMessageModal.hide()">Close</button>
 			</div>
 		</div>

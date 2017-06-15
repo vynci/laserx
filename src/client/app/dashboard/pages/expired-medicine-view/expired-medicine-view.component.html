@@ -59,7 +59,7 @@
                     <td>{{formatDate(transaction.created_at, true)}}</td>
                     <td><a style="cursor: pointer;" (click)="viewPharmacy(transaction.prescription?.id)">{{getPharmacyName(transaction.prescription?.id) || 'n/a'}}</a></td>
                     <td>{{transaction.batch_lot_number}}</td>
-                    <td>{{formatDate(transaction.expiry_date, false)}}</td>
+                    <td [ngStyle]="isDateExpired(transaction.created_at, transaction.expiry_date, true)">{{formatDate(transaction.expiry_date, false)}}</td>
                     <td>{{transaction.instruction}}x {{transaction.instruction_unit}}</td>
                     <td>{{transaction.remark}}</td>
                   </tr>

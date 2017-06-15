@@ -42,7 +42,7 @@
                   <tbody>
                     <tr *ngFor="let transaction of transactions">
                       <td scope="row"><a style="cursor: pointer;" (click)="viewPharmacy(transaction.id)">{{transaction.organization_branch}}</a></td>
-                      <td>{{transaction.mobile || 'n/a'}}</td>
+                      <td>{{getOwnerInfo(transaction.id, 'mobile') || 'n/a'}}</td>
                       <td>{{getPrescriptionNumber(transaction.id) || 'n/a'}}</td>
                       <td>{{getLastTransactionDate(transaction.id) || 'n/a'}}</td>
                     </tr>

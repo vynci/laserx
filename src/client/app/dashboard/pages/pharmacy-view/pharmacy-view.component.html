@@ -84,7 +84,7 @@
 								</tr>
 								<tr>
 									<th style="cursor: text;" scope="row">LTO Expiration Date</th>
-									<td *ngIf="!isEdit">{{formatDate(pharmacyDetail.license_expiration_date, true) || 'n/a'}}</td>
+									<td *ngIf="!isEdit" [ngStyle]="isDateExpired(null, pharmacyDetail.license_expiration_date, false)">{{formatDate(pharmacyDetail.license_expiration_date, false) || 'n/a'}}</td>
 									<td *ngIf="isEdit"><input type="text" class="form-control" placeholder="LTO Expiration Date" [(ngModel)]="pharmacyDetail.gov_id1_expirationdate"></td>
 								</tr>
 								<!-- <tr>
@@ -150,7 +150,7 @@
 											<td>{{formatDate(transaction.dispense_date, true)}}</td>
 											<td [ngStyle]="isProductUnverified(transaction.isUnverified)">{{transaction.productName}}</td>
 											<td>{{transaction.batch_lot_number}}</td>
-											<td>{{formatDate(transaction.expiry_date, false)}}</td>
+											<td [ngStyle]="isDateExpired(transaction.dispense_date, transaction.expiry_date, true)">{{formatDate(transaction.expiry_date, false)}}</td>
 										</template>
 									</tr>
 								</tbody>
@@ -227,7 +227,7 @@
 											<td>{{getTransactionInfo(transaction.info, 'physician')}}</td>
 											<td [ngStyle]="isProductUnverified(transaction.isUnverified)">{{transaction.productName}}</td>
 											<td>{{transaction.batch_lot_number}}</td>
-											<td>{{formatDate(transaction.expiry_date, false)}}</td>
+											<td [ngStyle]="isDateExpired(transaction.dispense_date, transaction.expiry_date, true)">{{formatDate(transaction.expiry_date, false)}}</td>
 											<td>{{transaction.instruction}}x {{transaction.instruction_unit}}</td>
 											<td>{{transaction.remark || 'n/a'}}</td>
 											<td>
@@ -290,7 +290,7 @@
 						<div>
 							<h5><b style="color: #22ba22;">Product Details</b></h5>
 							<h6><b style="color: #a0ab42;">Product</b></h6>
-							<span>{{getProductName(transactionModalInfo?.id) || 'n/a'}}</span><br><br>
+							<span>{{transactionModalInfo?.productName || 'n/a'}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Instruction</b></h6>
 							<span>{{transactionModalInfo?.instruction}}x {{transactionModalInfo?.instruction_unit}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Quantity Dispensed</b></h6>
@@ -300,7 +300,7 @@
 							<h6><b style="color: #a0ab42;">Batch Lot Number</b></h6>
 							<span>{{transactionModalInfo?.batch_lot_number}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Expiry Date</b></h6>
-							<span>{{formatDate(transactionModalInfo?.expiry_date, false)}}</span><br><br>
+							<span [ngStyle]="isDateExpired(transactionModalInfo?.dispense_date, transactionModalInfo?.expiry_date, true)">{{formatDate(transactionModalInfo?.expiry_date, false)}}</span><br><br>
 							<h6><b style="color: #a0ab42;">Remarks</b></h6>
 							<span>{{transactionModalInfo?.remark || 'n/a'}}</span>
 						</div>

@@ -107,7 +107,7 @@
 										<td>{{transactionProduct.quantity_prescribed}} {{transactionProduct.unit_prescribed  || 'n/a'}}</td>
 										<td>{{transactionProduct.instruction}}x a {{transactionProduct.instruction_unit}}</td>
 										<td>{{transactionProduct.batch_lot_number  || 'n/a'}}</td>
-										<td>{{formatDate(transactionProduct.expiry_date, false) || 'n/a'}}</td>
+										<td [ngStyle]="isDateExpired(transactionProduct.created_at, transactionProduct.expiry_date, true)">{{formatDate(transactionProduct.expiry_date, false) || 'n/a'}}</td>
 										<td>{{transactionProduct.remark  || 'n/a'}}</td>
 									</tr>
 								</tbody>

@@ -59,6 +59,24 @@ export class TransactionViewComponent {
 		return dateString;
 	};
 
+	public isDateExpired(dateFrom:any, dateTo:any, isCompare:boolean):any {
+		var style = {};
+		var now = new Date(dateFrom);
+		var expiryDate = new Date(dateTo);		
+
+		if(!isCompare){
+			now = new Date();
+		}
+
+		if(now > expiryDate){			
+			style = {
+				'color' : '#EA4444'
+			}
+		}		
+
+		return style;
+	};		
+
 	public getTransactionInfo(data:string, type:string):string {
 		var result = 'Loading...';
 

@@ -9,6 +9,7 @@ import { PrescriptionNumbertModel } from './prescription-number-model';
 import { ProductModel } from './product-model';
 import { PharmacyModel } from './pharmacy-model';
 import { TransactionDateModel } from './transaction-date-model';
+import { OwnerModel } from './owner-model';
 
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
@@ -39,6 +40,7 @@ export class DashComponent implements OnInit {
 
 	public pharmacyNameList:Array<PharmacyModel> = [];
 	public productNameList:Array<ProductModel> = [];
+	private ownerInfoList:Array<OwnerModel> = [];
 
 	public transactionCount:number = 0;
 
@@ -242,6 +244,19 @@ export class DashComponent implements OnInit {
 					});
 				}
 			});
+			this._helperService.getUserByOrganizationId(pharmacy.id)
+			.subscribe(owner => {
+				if(owner.result.length > 0){
+					this.ownerInfoList.push(
+						{
+							id: pharmacy.id,
+							name: owner.result[0].first_name + ' ' + owner.result[0].middle_name + ' ' + owner.result[0].last_name,
+							email: owner.result[0].email,
+							mobile : owner.result[0].mobile
+						}
+					);
+				}
+			});			
 		});
 	}
 
@@ -316,6 +331,19 @@ export class DashComponent implements OnInit {
 
 		return date;
 	};
+
+	public getOwnerInfo(id:number, type:string):string {
+		var pharmacyName = 'n/a';
+		this.ownerInfoList.forEach(pharmacy => {
+			if(pharmacy){
+				if(id === pharmacy.id){
+					pharmacyName = pharmacy[type];
+				}
+			}
+		});
+
+		return pharmacyName;
+	};	
 
 	private dateConvert(date:string, isCurrent:boolean):string{
 		var dateObj = new Date();
