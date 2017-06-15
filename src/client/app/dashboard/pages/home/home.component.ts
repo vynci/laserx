@@ -213,7 +213,6 @@ export class HomeComponent implements OnInit {
 	}
 
 	private filterCounterfeitPharmacy(data:any, idx:any, dataLength:any):void{
-		/*this.pharmacySearchNameList*/
 		var tmp = this.pharmacySearchNameList;
 		tmp.forEach(pharmacy => {
 			if(pharmacy.pharmacy_id === data.pharmacy_id){
@@ -225,8 +224,13 @@ export class HomeComponent implements OnInit {
 			}
 		});
 		if(idx === (dataLength - 1)){
+			var pinColor = 'spin_darkblue.png';
+			if(this.actionType === 'disaster-recovery'){
+				pinColor = 'spin_green.png';
+			}
+
 			this.deleteMarkers();
-			this.plotMarkers(this.counterfeitPharmacyList, 'spin_darkblue.png');
+			this.plotMarkers(this.counterfeitPharmacyList, pinColor, data.packaging_id);
 		}
 	}
 
@@ -267,7 +271,7 @@ export class HomeComponent implements OnInit {
 			this._helperService.getAllExpiredMedicineLocation()
 			.subscribe(data => {
 				this.pharmacySearchNameList = data.result;
-				this.plotMarkers(this.pharmacySearchNameList, pinColor);
+				this.plotMarkers(this.pharmacySearchNameList, pinColor, null);
 			});
 
 			this._transactionProductService.getExpiredProducts(100000, null)
@@ -282,7 +286,7 @@ export class HomeComponent implements OnInit {
 			this._helperService.getAllPharmacyLocation()
 			.subscribe(data => {
 				this.pharmacySearchNameList = data.result;
-				this.plotMarkers(this.pharmacySearchNameList, pinColor);
+				this.plotMarkers(this.pharmacySearchNameList, pinColor, null);
 			});
 		}else if(this.actionType === 'disaster-recovery'){
 			this.placeHolderType = 'Search Product Name';
@@ -292,7 +296,7 @@ export class HomeComponent implements OnInit {
 			this._helperService.getAllPharmacyLocation()
 			.subscribe(data => {
 				this.pharmacySearchNameList = data.result;
-				this.plotMarkers(this.pharmacySearchNameList, pinColor);
+				this.plotMarkers(this.pharmacySearchNameList, pinColor, null);
 			});
 
 			this._helperService.getAllPrescription(500, this.dateConvert('Jan 2 2000', false), this.dateConvert(null, true))
@@ -307,7 +311,7 @@ export class HomeComponent implements OnInit {
 			this._helperService.getAllExpiredPharmacyLocation()
 			.subscribe(data => {
 				this.pharmacySearchNameList = data.result;
-				this.plotMarkers(this.pharmacySearchNameList, pinColor);
+				this.plotMarkers(this.pharmacySearchNameList, pinColor, null);
 			});
 		}else{
 			this.placeHolderType = 'Search Pharmacy or Province';
@@ -317,13 +321,13 @@ export class HomeComponent implements OnInit {
 			this._helperService.getAllPharmacyLocation()
 			.subscribe(data => {
 				this.pharmacySearchNameList = data.result;
-				this.plotMarkers(this.pharmacySearchNameList, pinColor);
+				this.plotMarkers(this.pharmacySearchNameList, pinColor, null);
 			});
 		}
 
 	}
 
-	private plotMarkers(pharmacyMarkerList:any, pinColor:string):void{
+	private plotMarkers(pharmacyMarkerList:any, pinColor:string, packagingId:number):void{
 		for (var i = 0; i < (pharmacyMarkerList.length); i++) {
 			var pharmacyName = 'n/a';
 			var pharmacyAddress = pharmacyMarkerList[i].address;
@@ -334,20 +338,26 @@ export class HomeComponent implements OnInit {
 			}
 
 			if(pharmacyMarkerList[i].latitude !== null && pharmacyMarkerList[i].longitude !== null){
+				var link = 'dashboard/pharmacy-view/' + pharmacyId;
+
+				if(packagingId){
+					link = 'dashboard/pharmacy-product/' + this.actionType + '/' + pharmacyId + '/' + packagingId;
+				}
+
 				this.marker = new google.maps.Marker({
 					position: new google.maps.LatLng(pharmacyMarkerList[i].latitude, pharmacyMarkerList[i].longitude),
 					map: this.map,
 					icon : window.location.origin + '/assets/img/' + pinColor
 				});
 
-					this.markers.push(this.marker);
+				this.markers.push(this.marker);
 
-					google.maps.event.addListener(this.marker, 'click', (function(marker, i, pharmacyName, pharmacyAddress, infowindow, map, pharmacyId) {
-						return function() {
-							infowindow.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress + '</p><div style="padding-top: 15px;border-top: 1px dashed gray;"><a class="btn btn-primary" href="dashboard/pharmacy-view/' + pharmacyId +'">View Info</a></div>');
+				google.maps.event.addListener(this.marker, 'click', (function(marker, i, pharmacyName, pharmacyAddress, infowindow, map, pharmacyId, link) {
+					return function() {
+							infowindow.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress + '</p><div style="padding-top: 15px;border-top: 1px dashed gray;"><a class="btn btn-primary" href="' + link + '">View Info</a></div>');
 							infowindow.open(map, marker);
 					}
-				})(this.marker, i, pharmacyName, pharmacyAddress, this.infowindow, this.map, pharmacyId));
+				})(this.marker, i, pharmacyName, pharmacyAddress, this.infowindow, this.map, pharmacyId, link));
 			}
 		}
 	}

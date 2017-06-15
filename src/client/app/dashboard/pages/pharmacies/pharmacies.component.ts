@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute, Params } from '@angular/router';
 import { PharmacyService } from '../../services/pharmacy.service';
-import { LocationService } from '../../services/location.service';
+import { ProvinceService } from '../../services/province.service';
 import { HelperService } from '../../services/helper.service';
 import { OwnerModel } from './owner-model';
+import { RegionModel } from './region-model';
 
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
@@ -16,7 +17,7 @@ import { ModalDirective } from 'ng2-bootstrap/components/modal/modal.component';
 	moduleId: module.id,
     selector: 'blank-page',
     templateUrl: './pharmacies.component.html',
-		providers: [PharmacyService, LocationService, HelperService]
+		providers: [PharmacyService, ProvinceService, HelperService]
 })
 
 export class PharmaciesComponent {
@@ -32,7 +33,7 @@ export class PharmaciesComponent {
 		private router: Router,
 		private route: ActivatedRoute,
 		private _pharmacyService : PharmacyService,
-		private _locationService : LocationService,
+		private _provinceService : ProvinceService,
 		private _helperService : HelperService
 	){}
 
@@ -121,6 +122,7 @@ export class PharmaciesComponent {
 
 	private isLicenseExpired:boolean = false;
 	private ownerInfoList:Array<OwnerModel> = [];
+	private regionInfoList:Array<RegionModel> = [];
 
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
@@ -174,6 +176,19 @@ export class PharmaciesComponent {
 		return pharmacyName;
 	};
 
+	public getRegionInfo(id:number):string {
+		var regionName = 'n/a';
+		this.regionInfoList.forEach(region => {
+			if(region){
+				if(id === region.id){
+					regionName = region.name;
+				}
+			}
+		});
+
+		return regionName;
+	};	
+
 	private contains(data:string, subData:string):boolean{
 		var string = data;
 		var substring = subData;
@@ -197,6 +212,19 @@ export class PharmaciesComponent {
 					);
 				}
 			});
+			if(pharmacy.region){
+				this._provinceService.getById(pharmacy.region.id)
+				.subscribe(region => {
+					if(region.result.length > 0){
+						this.regionInfoList.push(
+							{
+								id: pharmacy.id,
+								name: region.result[0].region_name
+							}
+						);
+					}					
+				});					
+			}		
 		});
 	}
 

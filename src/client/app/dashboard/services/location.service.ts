@@ -9,7 +9,7 @@ export class LocationService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/region';
+	private url = this.endpoint + 'classes/location';
 
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
