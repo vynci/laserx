@@ -391,12 +391,17 @@ a:hover{
                 font-size: 20px;
             }
         }
+        height: 50px;
     }
 }
 
 @media screen and (max-width: 768px) {
   .top-nav-logo {
     display : none !important;
+  }
+
+  .topnav {
+      height: 55px;
   }
 
 }
