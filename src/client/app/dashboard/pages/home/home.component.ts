@@ -148,7 +148,18 @@ export class HomeComponent implements OnInit {
 		this.isPharmacyProduct = false;
 
 		if(this.actionType === 'expired-meds'){
-			this.router.navigate(['/dashboard/expired-medicine-view', product.id]);
+			var tmp = []
+
+			this.productNameList.forEach(productName =>{
+				if(productName.id === product.id){
+					tmp.push(productName);
+				}
+			});
+			this.isListProduct = false;
+			this.isPharmacyProduct = true;
+			this.parseCounterfeitData(tmp);
+
+			// this.router.navigate(['/dashboard/expired-medicine-view', product.id]);
 		}else if(this.actionType === 'counterfeit'){
 			this._transactionProductService.findByBatchLotNumber(product.batch_lot_number)
 			.subscribe(data => {
@@ -190,18 +201,23 @@ export class HomeComponent implements OnInit {
 		this.counterfeitPharmacyList = [];
 		var dataLength = data.length;
 		data.forEach((transaction, idx) => {
-			if(transaction.packaging){
+			if(transaction){
 				this._transactionService.getById(transaction.prescription.id)
 				.subscribe(data => {
 					if(data.result.length){
 						this._pharmacyService.getById(data.result[0].pharmacy.id)
 						.subscribe(pharmacy => {
 							if(pharmacy.result.length > 0){
+								var packagingId = transaction.id; 
+								if(transaction.packaging){
+									packagingId = transaction.packaging.id;
+								}
+
 								var pharmacy:any = {
 									id: transaction.prescription.id,
 									name: pharmacy.result[0].organization_chain + ' ' + pharmacy.result[0].organization_branch,
 									pharmacy_id: pharmacy.result[0].id,
-									packaging_id: transaction.packaging.id
+									packaging_id: packagingId
 								};
 								this.filterCounterfeitPharmacy(pharmacy, idx, dataLength);
 							}
@@ -214,8 +230,10 @@ export class HomeComponent implements OnInit {
 
 	private filterCounterfeitPharmacy(data:any, idx:any, dataLength:any):void{
 		var tmp = this.pharmacySearchNameList;
+		console.log(this.pharmacySearchNameList)
 		tmp.forEach(pharmacy => {
 			if(pharmacy.pharmacy_id === data.pharmacy_id){
+				console.log('match');
 				if(!this.checkPharmacyDuplicate(this.counterfeitPharmacyList, pharmacy)){
 					pharmacy.packaging_id = data.packaging_id;
 					this.counterfeitPharmacyList.push(pharmacy);
@@ -458,6 +476,9 @@ export class HomeComponent implements OnInit {
 								{
 									id: packaging.result[0].id,
 									name: drug.result[0].brand_name + divider + generic.result[0].generic_name,
+									prescription : {
+										id : transactionProduct.prescription.id
+									},
 									transactionProductId: transactionProduct.id,
 									expiry_date: transactionProduct.expiry_date,
 									fda_packaging: packaging.result[0].fda_packaging,

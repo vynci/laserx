@@ -103,7 +103,7 @@ export class HelperService {
 	}
 
 	getAllExpiredMedicineLocation(){
-		let url = this.endpoint + 'functions/get-all-expired-medicine-location';
+		let url = 'http://localhost:3000/api/2/' + 'functions/get-all-expired-medicine-location';
 
 		return this.http.post(url, JSON.stringify({country_id: 171}), {headers: this.headers})
 		.map((response: Response) => response.json());

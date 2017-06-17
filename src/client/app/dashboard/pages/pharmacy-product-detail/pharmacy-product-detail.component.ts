@@ -277,7 +277,7 @@ export class PharmacyProductDetailComponent implements OnInit{
 												}													
 												productName = drug.result[0].brand_name + divider + generic.result[0].generic_name; 
 											}else{
-												productName = '(Unverified) ' + packagingItem.result[0].unverified_product || '';
+												productName = packagingItem.result[0].unverified_product || 'n/a';
 												isUnverified = true;
 											}
 											var tranObject = {

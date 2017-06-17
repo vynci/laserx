@@ -103,15 +103,13 @@ export class TransactionViewComponent {
 	}
 
 	public isProductUnverified(id:number):any {
-		var style = {};
+		var style = false;
 
 		this.productNameList.forEach(product => {
 			if(product){
 				if(id === product.transactionProductId){
 					if(product.id === null){
-						style = {
-							'color' : '#EA4444'
-						}
+						style = true;
 					}
 				}
 			}
@@ -155,7 +153,7 @@ export class TransactionViewComponent {
 						});
 					}else{
 						this.productNameList.push(
-							{id: null, name:'(Unverified) ' + packaging.result[0].unverified_product, transactionProductId: transactionProduct.id}
+							{id: null, name: packaging.result[0].unverified_product, transactionProductId: transactionProduct.id}
 						);
 					}
 
