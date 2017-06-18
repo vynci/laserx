@@ -230,10 +230,9 @@ export class HomeComponent implements OnInit {
 
 	private filterCounterfeitPharmacy(data:any, idx:any, dataLength:any):void{
 		var tmp = this.pharmacySearchNameList;
-		console.log(this.pharmacySearchNameList)
+
 		tmp.forEach(pharmacy => {
 			if(pharmacy.pharmacy_id === data.pharmacy_id){
-				console.log('match');
 				if(!this.checkPharmacyDuplicate(this.counterfeitPharmacyList, pharmacy)){
 					pharmacy.packaging_id = data.packaging_id;
 					this.counterfeitPharmacyList.push(pharmacy);
@@ -450,7 +449,8 @@ export class HomeComponent implements OnInit {
 						transactionProductId : transactionProduct.id,
 						fda_packaging : null,
 						package_form : null,
-						batch_lot_number : null
+						batch_lot_number : null,
+						prescription: {}
 					}
 				);
 			}

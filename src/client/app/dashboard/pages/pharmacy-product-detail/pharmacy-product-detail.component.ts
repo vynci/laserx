@@ -405,6 +405,7 @@ export class PharmacyProductDetailComponent implements OnInit{
 
 			this.transactionsTmpList = this.transactions;
 			this.transactions = tmpList;
+			this.bigTotalItems = tmpList.length;
 		}
 	}
 

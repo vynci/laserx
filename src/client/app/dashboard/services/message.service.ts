@@ -34,10 +34,22 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
-	getByPage(limit: number, page: number){
+	getByPage(limit: number, page: number, searchString: string, keySearch: string){
 		let skip = (page - 1) * limit;
 
+		if(!keySearch){
+			keySearch = 'id';
+		}
+
+		let searchParams = {};
+
+		searchParams[keySearch] = {
+			has : searchString
+		};
+
 		let search = new URLSearchParams('skip=' + skip);
+
+		search.append('where', JSON.stringify(searchParams));		
 		search.append('limit', limit.toString());
 		search.append('sort', '[{"created_at":-1}]');
 		let options = new RequestOptions({ headers: this.headers, search: search});

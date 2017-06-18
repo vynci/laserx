@@ -46,7 +46,7 @@ export class MessageCenterComponent {
 	};
 
 	public pageChanged(event:any):void {
-		this._messageService.getByPage(event.itemsPerPage, event.page)
+		this._messageService.getByPage(event.itemsPerPage, event.page, null, null)
 		.subscribe(data => this.messages = data.result);
 	};
 
