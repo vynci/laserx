@@ -66,12 +66,19 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
-	sendNotificationMessage(content: string, title: string, type: string){
+	sendNotificationMessage(id:any){
 		let url = this.endpoint + 'functions/send-notification-message';
 
-		return this.http.post(url, JSON.stringify({registrationId: '', content: content, title: title, type: type}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({id:id}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
+
+	generateNotificationMessage(message: string, title: string, type: string){
+		let url = this.endpoint + 'functions/generate-notification-message';
+
+		return this.http.post(url, JSON.stringify({message: message, title: title, type: type}), {headers: this.headers})
+		.map((response: Response) => response.json());
+	}	
 
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';

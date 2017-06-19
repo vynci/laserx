@@ -92,12 +92,24 @@ export class MessageCenterComponent {
 	}
 
 	public sendMessage():void{
-		this._messageService.sendNotificationMessage(this.messageContent, this.messageTitle, this.messageTo)
+		this._messageService.generateNotificationMessage(this.messageContent, this.messageTitle, this.messageTo)
 		.subscribe(data => {
-			this._messageService.sendMessage(this.messageTo, this.messageTitle, this.messageContent)
+			console.log(data);
+			this._messageService.getByPage(1000, 1, 'Pending', 'status')
 			.subscribe(data => {
-				this.fetchMessages()
-			});
+				var result = data.result;
+				var idList = [];
+				result.forEach((message, idx) =>{
+					idList.push(message.id);
+					if(idx === (result.length - 1)){
+						this._messageService.sendNotificationMessage(idList)
+						.subscribe(data => {
+							console.log(data);
+							this.fetchMessages();
+						});							
+					}					
+				});
+			});							
 		});
 	}
 
@@ -140,6 +152,7 @@ export class MessageCenterComponent {
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);
 
 		this.initiateSearchListener();	
+	
 	}
 
 
