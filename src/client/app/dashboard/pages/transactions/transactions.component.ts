@@ -299,6 +299,47 @@ export class TransactionsComponent {
 		});
 	}
 
+	private	initiateSearchListener():void{
+		this.searchControl.valueChanges
+		.debounceTime(1000)
+		.subscribe(newValue => {
+			this.search = newValue;
+			this.currentPage = 1;
+			this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)
+			.subscribe(data => {				
+				if(data.result.length > 0){
+					this.transactions = data.result;
+					this.parseData(this.transactions);
+				}else{
+					let searchTmp = [];
+					searchTmp = this.search.split(' ');
+
+					this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, searchTmp[0], 'info')
+					.subscribe(data => {						
+						if(data.result > 0){
+							this.transactions = data.result;
+							this.parseData(this.transactions);
+						} else {
+							this.pharmacySearchNameList.forEach(pharmacy => {
+								if(pharmacy){
+									if(this.contains(pharmacy.pharmacy_name.toLowerCase(), this.search.toLowerCase())){
+										this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id')
+										.subscribe(data => {
+											this.transactions = data.result;
+											this.parseData(this.transactions);
+										});
+									}
+								}
+							});
+						}
+
+					});
+				}
+
+			});
+		});		
+	}
+
 	ngOnInit(): void {
 		this.isLoading = true;
 		if (localStorage.getItem('roleId') === 'admin') {
@@ -321,45 +362,7 @@ export class TransactionsComponent {
 		});
 
 		this.generateDays();
-
-		this.searchControl.valueChanges
-		.debounceTime(250)
-		.subscribe(newValue => {
-			this.search = newValue;
-			this.currentPage = 1;
-			this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)
-			.subscribe(data => {
-				this.transactions = data.result;
-				if(this.transactions.length > 0){
-					this.parseData(this.transactions);
-				}else{
-					let searchTmp = [];
-					searchTmp = this.search.split(' ');
-
-					this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, searchTmp[0], 'info')
-					.subscribe(data => {
-						this.transactions = data.result;
-						if(this.transactions.length > 0){
-							this.parseData(this.transactions);
-						} else {
-							this.pharmacySearchNameList.forEach(pharmacy => {
-								if(pharmacy){
-									if(this.contains(pharmacy.pharmacy_name.toLowerCase(), this.search.toLowerCase())){
-										this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id')
-										.subscribe(data => {
-											this.transactions = data.result;
-											this.parseData(this.transactions);
-										});
-									}
-								}
-							});
-						}
-
-					});
-				}
-
-			});
-		});
+		this.initiateSearchListener();
 	}
 
 }

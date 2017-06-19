@@ -28,6 +28,9 @@ export class MessageCenterComponent {
 		private _helperService : HelperService,
 	){}
 
+	search        = '';
+	searchControl = new FormControl();
+
 	public totalItems:number = 1;
 	public currentPage:number = 1;
 
@@ -46,8 +49,14 @@ export class MessageCenterComponent {
 	};
 
 	public pageChanged(event:any):void {
-		this._messageService.getByPage(event.itemsPerPage, event.page, null, null)
-		.subscribe(data => this.messages = data.result);
+		this.currentPage = event.page;
+
+		if(this.search !== ''){
+			this.searchMessage(this.search);
+		}else{
+			this._messageService.getByPage(event.itemsPerPage, event.page, this.search, null)
+			.subscribe(data => this.messages = data.result);			
+		}
 	};
 
 	public viewPharmacy(pharmacyId:any):void{
@@ -85,7 +94,6 @@ export class MessageCenterComponent {
 	public sendMessage():void{
 		this._messageService.sendNotificationMessage(this.messageContent, this.messageTitle, this.messageTo)
 		.subscribe(data => {
-			console.log(data);
 			this._messageService.sendMessage(this.messageTo, this.messageTitle, this.messageContent)
 			.subscribe(data => {
 				this.fetchMessages()
@@ -93,11 +101,45 @@ export class MessageCenterComponent {
 		});
 	}
 
+	private searchMessage(newValue:string):void{
+		this._messageService.getByPage(10, this.currentPage, newValue, 'message')
+		.subscribe(data => {
+			if(data.result.length > 0){
+				this.messages = data.result;
+			}else{
+				this._messageService.getByPage(10, this.currentPage, newValue, 'title')
+				.subscribe(data => {
+					if(data.result.length > 0){
+						this.messages = data.result;
+					}else{
+						this._messageService.getByPage(10, this.currentPage, newValue, 'type')
+						.subscribe(data => {
+							if(data.result.length > 0){
+								this.messages = data.result;
+							}						
+						});							
+					}						
+				});					
+			}				
+		});		
+	}
+
+	private initiateSearchListener():void{
+		this.searchControl.valueChanges
+		.debounceTime(250)
+		.subscribe(newValue => {
+			this.search = newValue;
+			this.searchMessage(newValue);			
+		});	
+	}
+
 	ngOnInit(): void {
 		this.fetchMessages();
 
 		this._messageService.getCount()
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);
+
+		this.initiateSearchListener();	
 	}
 
 

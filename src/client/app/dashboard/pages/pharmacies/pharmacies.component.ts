@@ -227,26 +227,8 @@ export class PharmaciesComponent {
 			}		
 		});
 	}
-
-	ngOnInit(): void {
-		this.isLoading = true;
-		this.filterType = this.route.snapshot.params['filter'];
-
-		if (localStorage.getItem('roleId') === 'admin') {
-			this.isAdmin = true;
-		}
-
-		if(this.filterType === 'expired-license'){
-			this.selectedFilterValue = 'Expired License';
-		}else{
-			this.selectedFilterValue = 'All Pharmacies';
-		}
-
-		this.filter();
-
-		this._pharmacyService.getCount()
-		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
-
+	
+	private	initiateSearchListiner():void{
 		this.searchControl.valueChanges
 		.debounceTime(250)
 		.subscribe(newValue => {
@@ -277,7 +259,30 @@ export class PharmaciesComponent {
 					});
 				}
 			});
-		});
+		});		
+	}
+
+	ngOnInit(): void {
+		this.isLoading = true;
+		this.filterType = this.route.snapshot.params['filter'];
+
+		if (localStorage.getItem('roleId') === 'admin') {
+			this.isAdmin = true;
+		}
+
+		if(this.filterType === 'expired-license'){
+			this.selectedFilterValue = 'Expired License';
+		}else{
+			this.selectedFilterValue = 'All Pharmacies';
+		}
+
+		this.filter();
+
+		this._pharmacyService.getCount()
+		.subscribe(resPharmacyData => this.bigTotalItems = resPharmacyData.result[0].row_count);
+
+		this.initiateSearchListiner();
+
 	}
 
 
