@@ -147,6 +147,7 @@ export class TransactionsComponent {
 		.subscribe(data => {
 			this.transactions = data.result
 			this.parseData(this.transactions);
+			this.getCountWithFilters(this.filterDate, this.search, null);
 		});
 	}
 
