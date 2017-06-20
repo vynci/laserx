@@ -63,7 +63,7 @@
                 </tbody>
               </table>
             </div>
-            <p *ngIf="transactions.length == 0" style="text-align: center;">No Transactions.</p>
+            <p *ngIf="transactions.length == 0 && !isLoading" style="text-align: center;">No Transactions.</p>
             <div class="row">
               <div class="col-lg-12">
                 <div class="loader" *ngIf="isLoading">
@@ -74,9 +74,9 @@
               </div>
             </div>
 
-            <div class="row" *ngIf="transactions.length != 0">
-              <div class="col-lg-6">
-                <p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{bigCurrentPage * 10}} of {{bigTotalItems}} entries</p>
+            <div class="row">
+              <div class="col-lg-6" *ngIf="transactions.length != 0">
+                <p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{(bigCurrentPage * 10) - (10-transactions.length)}} of {{bigTotalItems}} entries</p>
               </div>
               <div class="col-lg-6" style="text-align: right;">
                 <pagination (pageChanged)="pageChanged($event)" [totalItems]="bigTotalItems" [(ngModel)]="bigCurrentPage" [maxSize]="maxSize" class="pagination-sm"

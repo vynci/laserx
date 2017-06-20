@@ -73,8 +73,8 @@ export class TransactionService {
 		toDate.setDate(toDate.getDate() + 2); 
 
 		if(dateFilter){
-			fromDate = new Date(dateFilter.from.year, dateFilter.from.month, dateFilter.from.day);
-			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 2);
+			fromDate = new Date(dateFilter.from.year, dateFilter.from.month, dateFilter.from.day + 1);
+			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 1);
 		}
 
 		let skip = (page - 1) * limit;

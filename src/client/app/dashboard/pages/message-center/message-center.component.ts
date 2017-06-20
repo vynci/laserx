@@ -113,21 +113,32 @@ export class MessageCenterComponent {
 		});
 	}
 
+	private getCountWithFilters(searchString: string, keySearch: string):void{
+		/* This is a temporary dirty count. Need to Optimize via Backend API*/
+		this._messageService.getByPage(10000, 1, searchString, keySearch)
+		.subscribe(data => {
+			this.bigTotalItems = data.result.length;
+		});
+	}
+
 	private searchMessage(newValue:string):void{
 		this._messageService.getByPage(10, this.currentPage, newValue, 'message')
 		.subscribe(data => {
 			if(data.result.length > 0){
 				this.messages = data.result;
+				this.getCountWithFilters(newValue, 'message');
 			}else{
 				this._messageService.getByPage(10, this.currentPage, newValue, 'title')
 				.subscribe(data => {
 					if(data.result.length > 0){
 						this.messages = data.result;
+						this.getCountWithFilters(newValue, 'title');
 					}else{
 						this._messageService.getByPage(10, this.currentPage, newValue, 'type')
 						.subscribe(data => {
 							if(data.result.length > 0){
 								this.messages = data.result;
+								this.getCountWithFilters(newValue, 'type');
 							}						
 						});							
 					}						
@@ -140,6 +151,9 @@ export class MessageCenterComponent {
 		this.searchControl.valueChanges
 		.debounceTime(250)
 		.subscribe(newValue => {
+			this.currentPage = 1;
+			this.bigCurrentPage = 1;
+			
 			this.search = newValue;
 			this.searchMessage(newValue);			
 		});	

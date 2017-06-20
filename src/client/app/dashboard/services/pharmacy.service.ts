@@ -45,9 +45,9 @@ export class PharmacyService {
 		.map((response: Response) => response.json());
 	}
 
-	find(searchString: string, page: number, isLicenseExpired: boolean, keySearch: string){
+	find(limit:number, searchString: string, page: number, isLicenseExpired: boolean, keySearch: string){
 		let search = new URLSearchParams();
-		let skip = (page - 1) * 10;
+		let skip = (page - 1) * limit;
 		let toDate = new Date();
 
 		let searchParams = {};
@@ -73,7 +73,7 @@ export class PharmacyService {
 
 		search.append('where', JSON.stringify(searchParams));
 		search.append('skip', skip.toString());
-		search.append('limit', '10');
+		search.append('limit', limit.toString());
 		let options = new RequestOptions({ headers: this.headers, search: search});
 
 		return this.http.get(this.url, options)

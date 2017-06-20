@@ -59,7 +59,7 @@ export class TransactionsComponent {
 
 	public pharmacySearchNameList:Array<PharmacySearchModel> = []
 
-	public filterDateString:string = null;
+	public filterDateString:string = '';
 	public filterDate:any = {
 		from : {
 			month : 0,
@@ -266,12 +266,17 @@ export class TransactionsComponent {
 
 	public pageChanged(event:any):void {
 		this.pharmacyNameList = [];
+		this.currentPage = event.page;
 
-		this._transactionService.getByPage(this.pageLimit, event.page, this.sortType, this.filterDate, this.search, null)
-		.subscribe(resPharmacyData => {
-			this.transactions = resPharmacyData.result
-			this.parseData(this.transactions);
-		});
+		if(this.search !== '' || this.filterDateString !== ''){
+			this.searchTransactions(this.search);
+		}else{
+			this._transactionService.getByPage(this.pageLimit, event.page, this.sortType, this.filterDate, this.search, null)
+			.subscribe(resPharmacyData => {
+				this.transactions = resPharmacyData.result
+				this.parseData(this.transactions);
+			});
+		}
 	};
 
 	public viewTransaction(transactionId:any):void{
@@ -294,49 +299,67 @@ export class TransactionsComponent {
 	public downloadCSV():void{
 		this._helperService.getAllPrescription(100000, this.dateConvert('Jan 2 2000', false), this.dateConvert(null, true))
 		.subscribe(data => {
-			console.log(data);
-			this._jsonToCSVService.Convert(data.result, 'filename123.csv');
+			this._jsonToCSVService.Convert(data.result, 'fda_elogbook_' + this.dateConvert(null, true) +'.csv');
 		});
+	}
+
+	private searchTransactions(newValue:string):void{
+		/* This is a temporary dirty search. Need to Optimize via Backend API*/
+
+		this.search = newValue;
+
+		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)
+		.subscribe(data => {				
+			if(data.result.length > 0){
+				this.transactions = data.result;
+				this.parseData(this.transactions);
+				this.getCountWithFilters(this.filterDate, this.search, null);
+			}else{
+				let searchTmp = [];
+				searchTmp = this.search.split(' ');
+
+				this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, searchTmp[0], 'info')
+				.subscribe(data => {						
+					if(data.result > 0){
+						this.transactions = data.result;
+						this.parseData(this.transactions);
+						this.getCountWithFilters(this.filterDate, searchTmp[0], 'info');
+					} else {
+						this.pharmacySearchNameList.forEach(pharmacy => {
+							if(pharmacy){
+								if(this.contains(pharmacy.pharmacy_name.toLowerCase(), this.search.toLowerCase())){
+									this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id')
+									.subscribe(data => {
+										this.transactions = data.result;
+										this.parseData(this.transactions);
+										this.getCountWithFilters(this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id');
+									});
+								}
+							}
+						});
+					}
+
+				});
+			}
+		});
+	}
+
+	private getCountWithFilters(dateFilter: any, searchString: string, keySearch: string):void{
+		/* This is a temporary dirty count. Need to Optimize via Backend API*/
+
+		this._transactionService.getByPage(1000, 1, this.sortType, dateFilter, searchString, keySearch)
+		.subscribe(data => {
+			this.bigTotalItems = data.result.length;
+		});		
 	}
 
 	private	initiateSearchListener():void{
 		this.searchControl.valueChanges
 		.debounceTime(1000)
 		.subscribe(newValue => {
-			this.search = newValue;
 			this.currentPage = 1;
-			this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)
-			.subscribe(data => {				
-				if(data.result.length > 0){
-					this.transactions = data.result;
-					this.parseData(this.transactions);
-				}else{
-					let searchTmp = [];
-					searchTmp = this.search.split(' ');
-
-					this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, searchTmp[0], 'info')
-					.subscribe(data => {						
-						if(data.result > 0){
-							this.transactions = data.result;
-							this.parseData(this.transactions);
-						} else {
-							this.pharmacySearchNameList.forEach(pharmacy => {
-								if(pharmacy){
-									if(this.contains(pharmacy.pharmacy_name.toLowerCase(), this.search.toLowerCase())){
-										this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id')
-										.subscribe(data => {
-											this.transactions = data.result;
-											this.parseData(this.transactions);
-										});
-									}
-								}
-							});
-						}
-
-					});
-				}
-
-			});
+			this.bigCurrentPage = 1;
+			this.searchTransactions(newValue);
 		});		
 	}
 

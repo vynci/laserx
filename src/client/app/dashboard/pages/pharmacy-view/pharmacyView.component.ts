@@ -134,7 +134,7 @@ export class PharmacyViewComponent implements OnInit{
 			this.marker = new google.maps.Marker({
 				position: new google.maps.LatLng(data.result[0].latitude, data.result[0].longitude),
 				map: this.map,
-				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_blue.png'
+				icon : '/assets/img/spin_default.png'
 			});
 		});
 	};
@@ -389,7 +389,10 @@ export class PharmacyViewComponent implements OnInit{
 			this.transactions.forEach(transaction => {
 				var doctorName = this.getTransactionInfo(transaction.info, 'physician');
 				var batchLotNumber = transaction.batch_lot_number;
-				var source = transaction.productName.toLowerCase() + ' ' + doctorName.toLowerCase() + ' ' + batchLotNumber;
+				var instruction = transaction.instruction + 'x ' + transaction.instruction_unit;
+				var remarks = transaction.remark;
+
+				var source = transaction.productName.toLowerCase() + ' ' + doctorName.toLowerCase() + ' ' + batchLotNumber + ' ' + instruction.toLowerCase() + ' ' + remarks.toLowerCase()  +' ' + transaction.id;
 				if(this.contains(source, data.toLowerCase())){
 					tmpList.push(transaction);
 				}
@@ -430,6 +433,9 @@ export class PharmacyViewComponent implements OnInit{
 		this.searchControl.valueChanges
 		.debounceTime(250)
 		.subscribe(newValue => {
+			this.sliceData = (1 - 1) * 10;			
+			this.currentPage = 1;
+			this.bigCurrentPage = 1;			
 			this.filterProducts(newValue);
 		});		
 	}

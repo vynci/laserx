@@ -62,7 +62,11 @@ export class HomeComponent implements OnInit {
 			if(val instanceof NavigationEnd){
 				let action:string = val.url;
 				let actions:Array<string> = action.split('/');
-				action = actions[3];
+				this.productNameList = [];
+				this.pharmacySearchNameList = [];
+				this.counterfeitPharmacyList = [];				
+
+				action = actions[3];			
 
 				this.searchControl.reset();
 				this.isDropDown = false;

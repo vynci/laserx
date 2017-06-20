@@ -42,7 +42,7 @@
 						<div>
 							<span><b><a>{{product.name}}; {{product.package_form}}; {{product.fda_packaging}}</a></b></span><br>
 							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{formatDate(product.expiry_date, false)}}</span>
-							<span *ngIf="actionType === 'disaster-recovery'">{{product.organization_branch}}<br></span>
+							<!--<span *ngIf="actionType === 'disaster-recovery'">{{product.organization_branch}}<br></span>-->
 							<span *ngIf="actionType === 'disaster-recovery'">Transaction Date: {{formatDate(product.expiry_date, false)}}</span>
 							<span *ngIf="actionType === 'counterfeit'">BATCH LOT NO: {{product.batch_lot_number}}</span>
 						</div>
@@ -54,6 +54,10 @@
 		<div *ngIf="actionType !== 'disaster-recovery' && actionType !== 'counterfeit' && productNameList.length" style="padding: 10px 10px; cursor: pointer; text-align: center;" (click)="viewMoreItems()">
 			<a>View More</a>
 		</div>
+
+		<div *ngIf="actionType !== 'disaster-recovery' && actionType !== 'counterfeit' && actionType !== 'expired-meds' && pharmacySearchNameList.length" style="padding: 10px 10px; cursor: pointer; text-align: center;" (click)="viewMoreItems()">
+			<a>View More</a>
+		</div>		
 
 	</div>
 </div>

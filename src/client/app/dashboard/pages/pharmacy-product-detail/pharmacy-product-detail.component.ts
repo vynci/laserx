@@ -461,6 +461,10 @@ export class PharmacyProductDetailComponent implements OnInit{
 		this.searchControl.valueChanges
 		.debounceTime(250)
 		.subscribe(newValue => {
+			this.sliceData = (1 - 1) * 10;			
+			this.currentPage = 1;
+			this.bigCurrentPage = 1;
+
 			this.filterProducts(newValue);
 		});
 

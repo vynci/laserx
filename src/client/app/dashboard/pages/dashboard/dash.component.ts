@@ -62,13 +62,15 @@ export class DashComponent implements OnInit {
 	public bigTotalItems:number = 109;
 	public bigCurrentPage:number = 1;
 
+	private pageLimit:number = 10;
+
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
 	};
 
 	public pageChanged(event:any):void {
 		this.currentPage = event.page;
-		this._pharmacyService.find(this.search, this.currentPage, false, 'organization_branch')
+		this._pharmacyService.find(this.pageLimit, this.search, this.currentPage, false, 'organization_branch')
 		.subscribe(resPharmacyData => {
 			this.transactions = resPharmacyData.result;
 			this.parseTransactionData(resPharmacyData.result);
@@ -358,6 +360,14 @@ export class DashComponent implements OnInit {
 		return year + "-" + month + "-" + day;
 	}
 
+	private getCountWithFilters(isLicenseExpired: boolean, searchString: string, keySearch: string):void{
+		/* This is a temporary dirty count. Need to Optimize via Backend API*/
+		this._pharmacyService.find(1000, searchString, 1, isLicenseExpired, keySearch)
+		.subscribe(data => {
+			this.bigTotalItems = data.result.length;
+		});
+	}	
+
 	ngOnInit(){
 		var intervalCount = 1;
 
@@ -402,9 +412,12 @@ export class DashComponent implements OnInit {
 		.subscribe(newValue => {
 			this.search = newValue;
 			this.currentPage = 1;
-			this._pharmacyService.find(this.search, this.currentPage, null, 'organization_branch')
+			this.bigCurrentPage = 1;
+			
+			this._pharmacyService.find(this.pageLimit, this.search, this.currentPage, null, 'organization_branch')
 			.subscribe(data => {
 				this.transactions = data.result;
+				this.getCountWithFilters(false, newValue, 'organization_branch');				
 				this.parseTransactionData(data.result);
 			});
 		});

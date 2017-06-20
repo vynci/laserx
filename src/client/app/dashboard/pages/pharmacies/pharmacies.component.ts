@@ -44,75 +44,6 @@ export class PharmaciesComponent {
 		'Expired Medicines'
 	];
 
-	private ownerListSearchList:Array<OwnerModel> = [
-		{
-			name : 'Test D N',
-			email : 'testd@gmail.com',
-			id : 43558,
-			mobile : null
-		},
-		{
-			name : 'Test N K',
-			email : 'test2@gmail.com',
-			id : 43560,
-			mobile : null
-		},
-		{
-			name : 'tedkks hdhd kdjd',
-			email : 'test3@gmail.com',
-			id : 43561,
-			mobile : null
-		},
-		{
-			name : 'Pharmacy Chain Pharmacy Branch',
-			email : 'pormento@mclinica.com',
-			id : 47787,
-			mobile : null
-		},
-		{
-			name : 'GUNDAM HEAVY ARMS',
-			email : 'abc789@gmail.com',
-			id : 47790,
-			mobile : null
-		},
-		{
-			name : '2K PHARMACEUTICAL (PHARMACY)',
-			email : '456@gmail.com',
-			id : 47791,
-			mobile : null
-		},
-		{
-			name : '117 DRUGSTORE',
-			email : 'test9@gmail.com',
-			id : 47792,
-			mobile : null
-		},
-		{
-			name : '153 GENERIC PHARMACY',
-			email : 'test11@gmail.com',
-			id : 47794,
-			mobile : null
-		},
-		{
-			name : '100 GENERIC PHARMACY',
-			email : 'pb@gmail.com',
-			id : 47795,
-			mobile : null
-		},
-		{
-			name : 'PB PHARMACY',
-			email : 'elizaga@mclinica.com',
-			id : 47796,
-			mobile : null
-		},
-		{
-			name : 'ANORLONDO',
-			email : 'abcd000@gmail.com',
-			id : 47797,
-			mobile : null
-		}
-	];
-
 	public totalItems:number = 64;
 	public currentPage:number = 1;
 
@@ -120,6 +51,7 @@ export class PharmaciesComponent {
 	public bigTotalItems:number = 103;
 	public bigCurrentPage:number = 1;
 
+	private pageLimit:number = 10;
 	private isLicenseExpired:boolean = false;
 	private ownerInfoList:Array<OwnerModel> = [];
 	private regionInfoList:Array<RegionModel> = [];
@@ -142,17 +74,18 @@ export class PharmaciesComponent {
 			this.search = '';
 			this.isLicenseExpired = false;
 		}
-		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
+		this._pharmacyService.find(this.pageLimit, this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
 		.subscribe(resPharmacyData =>{
 			this.isLoading = false;
 			this.pharmacies = resPharmacyData.result
 			this.parseData(this.pharmacies);
+			this.getCountWithFilters(this.isLicenseExpired, this.search, 'organization_branch');
 		});
 	};
 
 	public pageChanged(event:any):void {
 		this.currentPage = event.page;
-		this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
+		this._pharmacyService.find(this.pageLimit, this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
 		.subscribe(resPharmacyData => {
 			this.pharmacies = resPharmacyData.result
 			this.parseData(this.pharmacies);
@@ -227,39 +160,47 @@ export class PharmaciesComponent {
 			}		
 		});
 	}
-	
+
+	private getCountWithFilters(isLicenseExpired: boolean, searchString: string, keySearch: string):void{
+		/* This is a temporary dirty count. Need to Optimize via Backend API*/
+		this._pharmacyService.find(1000, searchString, 1, isLicenseExpired, keySearch)
+		.subscribe(data => {
+			this.bigTotalItems = data.result.length;
+		});
+	}
+
+	private searchPharmacies(newValue:string):void{
+		/* This is a temporary dirty search. Need to Optimize via Backend API*/
+
+		this._pharmacyService.find(this.pageLimit, newValue, this.currentPage, this.isLicenseExpired, 'organization_branch')
+		.subscribe(resPharmacyData => {
+			if(resPharmacyData.result.length > 0){
+				this.pharmacies = resPharmacyData.result
+				this.parseData(this.pharmacies);
+				this.getCountWithFilters(this.isLicenseExpired, newValue, 'organization_branch');
+			}else{
+				this._pharmacyService.find(this.pageLimit, this.search, this.currentPage, this.isLicenseExpired, 'organization_owner')
+				.subscribe(resPharmacyData => {
+					if(resPharmacyData.result.length > 0){
+						this.pharmacies = resPharmacyData.result
+						this.parseData(this.pharmacies);
+						this.getCountWithFilters(this.isLicenseExpired, newValue, 'organization_owner');
+					}
+				});
+			}
+		});
+	}
+
 	private	initiateSearchListiner():void{
 		this.searchControl.valueChanges
 		.debounceTime(250)
 		.subscribe(newValue => {
 			this.search = newValue;
 			this.currentPage = 1;
-			this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_branch')
-			.subscribe(resPharmacyData => {
-				if(resPharmacyData.result.length > 0){
-					this.pharmacies = resPharmacyData.result
-					this.parseData(this.pharmacies);
-				}else{
-					this._pharmacyService.find(this.search, this.currentPage, this.isLicenseExpired, 'organization_owner')
-					.subscribe(resPharmacyData => {
-						if(resPharmacyData.result.length > 0){
-							this.pharmacies = resPharmacyData.result
-							this.parseData(this.pharmacies);
-						}else{
-							this.ownerListSearchList.forEach(data =>{
-								if(this.contains(data.email.toLowerCase(), this.search.toLowerCase())){
-									this._pharmacyService.getById(data.id)
-									.subscribe(data => {
-										this.pharmacies = data.result
-										this.parseData(this.pharmacies);
-									});
-								}
-							});
-						}
-					});
-				}
-			});
-		});		
+			this.bigCurrentPage = 1;
+
+			this.searchPharmacies(newValue);
+		});					
 	}
 
 	ngOnInit(): void {
