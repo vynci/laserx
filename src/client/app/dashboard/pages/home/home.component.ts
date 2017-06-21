@@ -141,6 +141,7 @@ export class HomeComponent implements OnInit {
 	private map:any;
 
 	public viewPharmacy(pharmacyId:any):void{
+		console.log(pharmacyId);
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
 	}
 
@@ -193,12 +194,67 @@ export class HomeComponent implements OnInit {
 		}
 	}
 
+	public zoomInPharmacy(id:any):void{
+		var pharmacy = this.getPharmacyById(id);
+		var marker = this.getMarkerByPharmacyId(id);
+		var url = 'dashboard/pharmacy-view/';
+		var link =  url + id;
+		var infoId = id;
+
+		if(marker.packagingId){
+			link = 'dashboard/pharmacy-product/' + this.actionType + '/' + id + '/' + marker.packagingId;
+			infoId = id + '-' + marker.packagingId;
+		}
+
+		this.map.setCenter({lat: pharmacy.latitude, lng: pharmacy.longitude});
+		this.map.setZoom(18);
+
+		this.infowindow.setContent('<b>' + pharmacy.pharmacy_name +'</b><br><p style="width: 130px;">' + pharmacy.address + '</p><div style="padding-top: 15px;border-top: 1px dashed gray;"><a id="view-info" class="btn btn-primary">View Info</a></div>');
+		this.infowindow.open(this.map, marker);
+
+		document.getElementById('view-info').addEventListener('click', () => {
+			if(marker.packagingId){
+				var data = {
+					pharmacy_id : id,
+					packaging_id : marker.packagingId
+				}
+				this.viewPharmacyProductDetail(data);
+			}else{
+				this.viewPharmacy(id);
+			}
+		}, false);
+	}
+
 	public getProvinceName(data:string):string{
 		var city = data.split(',');
 		let result:string;
 		result = city[city.length - 1];
 
 		return result;
+	}
+
+	private getMarkerByPharmacyId(id:any):any{
+		var marker;
+
+		this.markers.forEach(data => {
+			if(data.pharmacy_id === id){
+				marker = data;
+			}
+		});
+
+		return marker;
+	}
+
+	private getPharmacyById(id:any):any{
+		var pharmacy;
+
+		this.pharmacySearchNameList.forEach(data => {
+			if(data.pharmacy_id === id){
+				pharmacy = data;
+			}
+		});
+
+		return pharmacy;
 	}
 
 	private parseCounterfeitData(data:any):void{
@@ -366,19 +422,29 @@ export class HomeComponent implements OnInit {
 				}
 
 				this.marker = new google.maps.Marker({
+					pharmacy_id : pharmacyMarkerList[i].pharmacy_id,
 					position: new google.maps.LatLng(pharmacyMarkerList[i].latitude, pharmacyMarkerList[i].longitude),
 					map: this.map,
+					packagingId : packagingId,
 					icon : window.location.origin + '/assets/img/' + pinColor
 				});
 
 				this.markers.push(this.marker);
 
-				google.maps.event.addListener(this.marker, 'click', (function(marker, i, pharmacyName, pharmacyAddress, infowindow, map, pharmacyId, link) {
+				google.maps.event.addListener(this.marker, 'click', (function(marker, i, pharmacyName, pharmacyAddress, infowindow, map, pharmacyId, packagingId, router) {
 					return function() {
-							infowindow.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress + '</p><div style="padding-top: 15px;border-top: 1px dashed gray;"><a class="btn btn-primary" href="' + link + '">View Info</a></div>');
-							infowindow.open(map, marker);
+						infowindow.setContent('<b>' + pharmacyName +'</b><br><p style="width: 130px;">' + pharmacyAddress + '</p><div style="padding-top: 15px;border-top: 1px dashed gray;"><a id="view-info" class="btn btn-primary">View Info</a></div>');
+						infowindow.open(map, marker);
+
+						document.getElementById('view-info').addEventListener('click', () => {
+							if(packagingId){
+								this.router.navigate(['/dashboard/pharmacy-product/' + pharmacyId, packagingId]);
+							}else{
+								router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
+							}
+						}, false);
 					}
-				})(this.marker, i, pharmacyName, pharmacyAddress, this.infowindow, this.map, pharmacyId, link));
+				})(this.marker, i, pharmacyName, pharmacyAddress, this.infowindow, this.map, pharmacyId, packagingId, this.router));
 			}
 		}
 	}

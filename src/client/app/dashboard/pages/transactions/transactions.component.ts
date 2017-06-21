@@ -290,17 +290,27 @@ export class TransactionsComponent {
 			dateObj = new Date(date);
 		}
 
-		var month = dateObj.getUTCMonth() + 1;
-		var day = dateObj.getUTCDate() + 1;
-		var year = dateObj.getUTCFullYear();
+		var month = dateObj.getMonth() + 1;
+		var day = dateObj.getDate();
+		var year = dateObj.getFullYear();
 
 		return year + "-" + month + "-" + day;
 	}
 
 	public downloadCSV():void{
-		this._helperService.getAllPrescription(100000, this.dateConvert('Jan 2 2000', false), this.dateConvert(null, true))
+		var fromDate = this.dateConvert('Jan 2 2000', false);
+		var toDate = this.dateConvert(null, true);
+
+		if(this.filterDateString){
+			fromDate = this.dateConvert((this.filterDate.from.month + 1) + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year, false);
+			toDate = this.dateConvert((this.filterDate.to.month + 1) + '/' + (this.filterDate.to.day + 1) + '/' + this.filterDate.to.year, false);
+		}
+
+		console.log(fromDate);
+		console.log(toDate);
+		this._helperService.getAllPrescription(1000000, fromDate, toDate)
 		.subscribe(data => {
-			this._jsonToCSVService.Convert(data.result, 'fda_elogbook_' + this.dateConvert(null, true) +'.csv');
+			this._jsonToCSVService.Convert(data.result, 'fda_elogbook_' + Date.now() +'.csv');
 		});
 	}
 

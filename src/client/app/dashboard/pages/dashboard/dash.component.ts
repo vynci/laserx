@@ -81,8 +81,20 @@ export class DashComponent implements OnInit {
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
 	}
 
+	private sortPharmacyProvince(data:any):any{
+		data.sort(function(a, b) {
+			return parseFloat(a.price) - parseFloat(b.price);
+		});
+	}
+
 	private setPharmacyGraph(data:any):void {
 		var pharmacyData = this.mapPharmacyArray(data.result);
+		pharmacyData.sort(function(a, b) {
+			return parseFloat(b.y) - parseFloat(a.y);
+		});
+
+		pharmacyData[0].selected = true;
+		pharmacyData[0].sliced = true;
 
 		var totalFruit: any = $('#total-fruit');
 		totalFruit.highcharts({
@@ -169,18 +181,8 @@ export class DashComponent implements OnInit {
 					fillOpacity: 0.5
 				}
 			},
-			series: [{
-				name: 'Current Week',
-					data: [
-						this.parseTrendData(trendData.current[0]),
-						this.parseTrendData(trendData.current[1]),
-						this.parseTrendData(trendData.current[2]),
-						this.parseTrendData(trendData.current[3]),
-						this.parseTrendData(trendData.current[4]),
-						this.parseTrendData(trendData.current[5]),
-						this.parseTrendData(trendData.current[6])
-					]
-				}, {
+			series: [
+				{
 					name: 'Previous Week',
 					data: [
 						this.parseTrendData(trendData.previous[0]),
@@ -191,7 +193,20 @@ export class DashComponent implements OnInit {
 						this.parseTrendData(trendData.previous[5]),
 						this.parseTrendData(trendData.previous[6])
 					]
-			}]
+				},
+				{
+				name: 'Current Week',
+					data: [
+						this.parseTrendData(trendData.current[0]),
+						this.parseTrendData(trendData.current[1]),
+						this.parseTrendData(trendData.current[2]),
+						this.parseTrendData(trendData.current[3]),
+						this.parseTrendData(trendData.current[4]),
+						this.parseTrendData(trendData.current[5]),
+						this.parseTrendData(trendData.current[6])
+					]
+				}
+			]
 		});
 	};
 
@@ -219,10 +234,7 @@ export class DashComponent implements OnInit {
 
 		for (var i = 0; i < list.length; i++) {
 			list[i].y = (list[i].y / total) * 100;
-			if(i === 0){
-				list[i].sliced = true;
-				list[i].selected = true;
-			}
+
 		}
 		return list;
 	}

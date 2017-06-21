@@ -4,30 +4,30 @@
 	<br>
 	<div *ngIf="isDropDown" style="position: absolute; width: 100%; background: white; left: 0px;">
 		<div *ngIf="!isListProduct && !isPharmacyProduct">
-			<div *ngFor="let pharmacy of pharmacySearchNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacy(pharmacy.pharmacy_id)">
+			<div *ngFor="let pharmacy of pharmacySearchNameList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
 				<div class="row">
-					<div class="col-lg-8 col-md-8 col-sm-6 col-xs-6">
+					<div class="col-lg-8 col-md-8 col-sm-6 col-xs-6" (click)="viewPharmacy(pharmacy.pharmacy_id)">
 						<div>
 							<span><b><a>{{pharmacy.pharmacy_name}}</a></b></span><br>
 							<span>{{pharmacy.region_name || 'n/a'}}</span>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-6" style="padding-left: 75px;">
+					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-6" (click)="zoomInPharmacy(pharmacy.pharmacy_id)" style="padding-left: 75px;">
 						<i class="fa fa-map-marker" style="font-size: 22px; color: #888;"></i>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div *ngIf="!isListProduct && isPharmacyProduct">
-			<div *ngFor="let pharmacy of counterfeitPharmacyList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;" (click)="viewPharmacyProductDetail(pharmacy)">
+			<div *ngFor="let pharmacy of counterfeitPharmacyList | slice:0:5; let i=index" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
 				<div class="row">
-					<div class="col-lg-8">
+					<div class="col-lg-8 col-md-8 col-sm-6 col-xs-6" (click)="viewPharmacyProductDetail(pharmacy)">
 						<div>
 							<span><b><a>{{pharmacy.pharmacy_name}}</a></b></span><br>
 							<span>{{pharmacy.region_name || 'n/a'}}</span>
 						</div>
 					</div>
-					<div class="col-lg-4" style="padding-left: 75px;">
+					<div class="col-lg-4 col-md-4 col-sm-6 col-xs-6" (click)="zoomInPharmacy(pharmacy.pharmacy_id)" style="padding-left: 75px;">
 						<i class="fa fa-map-marker" style="font-size: 22px; color: #888;"></i>
 					</div>
 				</div>

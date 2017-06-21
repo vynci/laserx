@@ -138,13 +138,12 @@ export class PharmacyProductDetailComponent implements OnInit{
 			this.marker = new google.maps.Marker({
 				position: new google.maps.LatLng(data.result[0].latitude, data.result[0].longitude),
 				map: this.map,
-				icon : 'http://snaprx.mclinica.com/resources/images/map_pins/spin_blue.png'
+				icon : '/assets/img/spin_default.png'
 			});
 		});
 	};
 
 	public setModalValues(data:any):void {
-		console.log(data);
 		this.transactionModalInfo = data;
 	};
 
