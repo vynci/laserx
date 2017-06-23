@@ -297,20 +297,33 @@ export class TransactionsComponent {
 		return year + "-" + month + "-" + day;
 	}
 
+	private parseDigitNumber(data:number):string{
+		var result = data.toString();
+		if(data < 10){
+			result = '0' + data;
+		}
+
+		return result;
+	}
+
 	public downloadCSV():void{
 		var fromDate = this.dateConvert('Jan 2 2000', false);
 		var toDate = this.dateConvert(null, true);
+		var now = new Date();
+		var month = this.parseDigitNumber(now.getMonth() + 1);
+		var day = this.parseDigitNumber(now.getDate() + 1);
+		var hrs = this.parseDigitNumber(now.getHours());
+		var mins = this.parseDigitNumber(now.getMinutes());
+		var secs = this.parseDigitNumber(now.getSeconds());
 
 		if(this.filterDateString){
 			fromDate = this.dateConvert((this.filterDate.from.month + 1) + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year, false);
 			toDate = this.dateConvert((this.filterDate.to.month + 1) + '/' + (this.filterDate.to.day + 1) + '/' + this.filterDate.to.year, false);
 		}
 
-		console.log(fromDate);
-		console.log(toDate);
 		this._helperService.getAllPrescription(1000000, fromDate, toDate)
 		.subscribe(data => {
-			this._jsonToCSVService.Convert(data.result, 'fda_elogbook_' + Date.now() +'.csv');
+			this._jsonToCSVService.Convert(data.result, 'fda_elogbook_' + now.getFullYear() + month + day + hrs + mins + secs +'.csv');
 		});
 	}
 
@@ -374,10 +387,19 @@ export class TransactionsComponent {
 		});		
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}	
+	
 	ngOnInit(): void {
 		this.isLoading = true;
+
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
+		}else{
+			this.checkUserRole();
 		}
 
 		this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, this.search, null)

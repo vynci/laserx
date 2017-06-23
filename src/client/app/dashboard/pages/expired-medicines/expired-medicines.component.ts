@@ -189,8 +189,16 @@ export class ExpiredMedicinesComponent {
 		this.router.navigate(['/dashboard/transaction-view', transactionId]);
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}
+
 	ngOnInit(): void {
 		this.isLoading = true;
+
+		this.checkUserRole();		
 
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;

@@ -407,11 +407,19 @@ export class PharmacyProductDetailComponent implements OnInit{
 			this.bigTotalItems = tmpList.length;
 		}
 	}
-
+	
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}
+		
 	ngOnInit(): void {
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
-		}
+		}else{
+			this.checkUserRole();
+		}			
 
 		var packagingId = this.route.snapshot.params['packagingId'];
 		var pharmacyId = this.route.snapshot.params['pharmacyId'];

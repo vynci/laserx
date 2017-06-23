@@ -203,12 +203,21 @@ export class PharmaciesComponent {
 		});					
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}	
+
 	ngOnInit(): void {
-		this.isLoading = true;
+		this.isLoading = true;				
+
 		this.filterType = this.route.snapshot.params['filter'];
 
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
+		}else{
+			this.checkUserRole();
 		}
 
 		if(this.filterType === 'expired-license'){

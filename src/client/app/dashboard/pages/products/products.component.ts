@@ -38,12 +38,19 @@ export class ProductsComponent {
 	};
 
 	public viewProduct(productId:any):void{
-		console.log(productId);
 		this.router.navigate(['/dashboard/product-view', productId]);
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}	
+
 	ngOnInit(): void {
 		this.isLoading = true;
+
+		this.checkUserRole();
 
 		this._productService.getAll()
 		.subscribe(data => {

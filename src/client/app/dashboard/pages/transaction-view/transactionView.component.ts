@@ -23,6 +23,7 @@ export class TransactionViewComponent {
 	private sortType:string = 'dispense_date';
 
 	constructor(
+		private router: Router,
 		private route: ActivatedRoute,
 		private location: Location,
 		private _transactionService : TransactionService,
@@ -169,7 +170,15 @@ export class TransactionViewComponent {
 			});
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}	
+
 	ngOnInit(): void {
+		this.checkUserRole();
+
 		this._transactionProductService.getById(this.route.snapshot.params['id'])
 		.subscribe(data => {
 			this.transactionProducts = data.result;

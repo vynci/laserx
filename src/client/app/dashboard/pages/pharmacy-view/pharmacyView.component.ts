@@ -70,6 +70,8 @@ export class PharmacyViewComponent implements OnInit{
 	public sliceData:number = 0;
 	public diffSliceData:number = 0;
 	public isLoading:boolean = false;
+	public roleId:string;
+	public pharmacyId:number;
 
 	constructor(
 		private route: ActivatedRoute,
@@ -245,7 +247,7 @@ export class PharmacyViewComponent implements OnInit{
 	};	
 
 	public update():void {
-		this._pharmacyService.update(this.route.snapshot.params['id'], this.pharmacyDetail)
+		this._pharmacyService.update(this.pharmacyId, this.pharmacyDetail)
 		.subscribe(data => {
 			this.isEdit = false;
 			this.isUpdateSuccess = true;
@@ -404,17 +406,31 @@ export class PharmacyViewComponent implements OnInit{
 		}
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}
+
 	ngOnInit(): void {
 		if (localStorage.getItem('roleId') === 'admin') {
 			this.isAdmin = true;
-		}
+		}else{
+			this.checkUserRole();
+			if(localStorage.getItem('roleId') === 'pharmacy'){
+				this.pharmacyId = parseInt(localStorage.getItem('organizationId'));
+			}else{
+				this.pharmacyId = this.route.snapshot.params['id'];
+			}						
+			this.roleId = localStorage.getItem('roleId');
+		}		
 
-		this._pharmacyService.getById(this.route.snapshot.params['id'])
+		this._pharmacyService.getById(this.pharmacyId)
 			.subscribe(data => {
 				this.pharmacyDetail = data.result[0];
 				this.getLocation(this.pharmacyDetail.location.id);
 				
-				this._helperService.getUserByOrganizationId(this.route.snapshot.params['id'])
+				this._helperService.getUserByOrganizationId(this.pharmacyId)
 				.subscribe(data => {
 					this.pharmacyDetail.ownerName = data.result[0].first_name + ' ' + data.result[0].middle_name + ' ' + data.result[0].last_name;
 					this.pharmacyDetail.mobile = data.result[0].mobile;
@@ -422,10 +438,10 @@ export class PharmacyViewComponent implements OnInit{
 				});
 		});
 
-		this._transactionProductService.getCount(this.route.snapshot.params['id'])
+		this._transactionProductService.getCount(this.pharmacyId)
 		.subscribe(data => this.bigTotalItems = data.result[0].row_count);		
 
-		this._transactionService.getByPharmacyId(this.route.snapshot.params['id'], 1, 1000)
+		this._transactionService.getByPharmacyId(this.pharmacyId, 1, 1000)
 			.subscribe(data => {
 				this.parseTransactions(data.result);
 		});

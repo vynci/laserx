@@ -27,14 +27,28 @@ export class LoginComponent {
 	){}
 
 	private getUserInfo(userId:string):void {
-		console.log(userId);
 		this._authService.getUserInfo(userId)
 		.subscribe(userInfo => {
-			localStorage.setItem('roleId', userInfo.result.type);
+			localStorage.setItem('roleId', userInfo.result.type || 'pharmacy');
 			localStorage.setItem('username', userInfo.result.username);
-			this.router.navigate(['/dashboard/home/all']);
+
+			if(userInfo.result.organization){
+				localStorage.setItem('organizationId', userInfo.result.organization.id);
+			}else{
+				localStorage.setItem('organizationId', null);
+			}			
+
+			this.redirectUser();
 		});
 	}
+
+	private redirectUser():void{
+		if(localStorage.getItem('roleId') === 'admin' || localStorage.getItem('roleId') === 'fda'){
+			this.router.navigate(['/dashboard/home/all']);
+		}else{
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}	
 
 	public login():void {
 		this.isLoading = true;
@@ -52,7 +66,7 @@ export class LoginComponent {
 
 	ngOnInit(): void {
 		if (localStorage.getItem('sessionToken')) {
-			this.router.navigate(['/dashboard/home/all']);
+			this.redirectUser();			
 		}
 	}
  }

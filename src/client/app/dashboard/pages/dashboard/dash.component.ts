@@ -380,10 +380,18 @@ export class DashComponent implements OnInit {
 		});
 	}	
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}
+
 	ngOnInit(){
 		var intervalCount = 1;
 
 		this.isLoading = true;
+
+		this.checkUserRole();		
 
 		this._helperService.getPharmacyCountPerProvince()
 		.subscribe(data => {

@@ -147,6 +147,12 @@ export class MessageCenterComponent {
 		});		
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}
+
 	private initiateSearchListener():void{
 		this.searchControl.valueChanges
 		.debounceTime(250)
@@ -160,6 +166,8 @@ export class MessageCenterComponent {
 	}
 
 	ngOnInit(): void {
+		this.checkUserRole();
+
 		this.fetchMessages();
 
 		this._messageService.getCount()

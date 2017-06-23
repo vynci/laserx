@@ -565,7 +565,15 @@ export class HomeComponent implements OnInit {
 		});
 	}
 
+	private checkUserRole():void{
+		if(localStorage.getItem('roleId') !== 'admin' && localStorage.getItem('roleId') !== 'fda'){
+			this.router.navigate(['/dashboard/pharmacy-view/' + localStorage.getItem('organizationId')]);
+		}
+	}	
+
 	ngOnInit(){
+
+		this.checkUserRole();
 
 		this.actionType = this.route.snapshot.params['action'];
 		this.isPharmacyProduct = false;

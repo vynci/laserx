@@ -13,6 +13,7 @@ export class TopNavComponent {
   private actionType:string = 'all';
   public actionTypeIndicator:string = '';
   public actionBackgroundColor:string = '#007402';
+  public roleId:string;
 
 	constructor(
 		private router: Router,
@@ -88,6 +89,7 @@ export class TopNavComponent {
 
   ngOnInit(): void {
     this.username = localStorage.getItem('username');
+    this.roleId = localStorage.getItem('roleId');
   }
 
   ngOnDestroy(){

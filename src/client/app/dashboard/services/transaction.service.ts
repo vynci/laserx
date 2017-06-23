@@ -70,11 +70,10 @@ export class TransactionService {
 	getByPage(limit: number, page: number, sortType:string, dateFilter: any, searchString: string, keySearch: string){
 		let fromDate = new Date(2000,1,1);
 		let toDate = new Date();
-		toDate.setDate(toDate.getDate() + 2); 
 
 		if(dateFilter){
 			fromDate = new Date(dateFilter.from.year, dateFilter.from.month, dateFilter.from.day + 1);
-			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 1);
+			toDate = new Date(dateFilter.to.year, dateFilter.to.month, dateFilter.to.day + 1, 23, 59, 59);
 		}
 
 		let skip = (page - 1) * limit;
