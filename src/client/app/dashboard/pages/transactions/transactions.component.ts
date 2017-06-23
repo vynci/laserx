@@ -286,6 +286,7 @@ export class TransactionsComponent {
 
 	private dateConvert(date:string, isCurrent:boolean):string{
 		var dateObj = new Date();
+		dateObj.setDate(dateObj.getDate() + 1);
 		if(!isCurrent){
 			dateObj = new Date(date);
 		}

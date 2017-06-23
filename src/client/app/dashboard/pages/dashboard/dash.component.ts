@@ -28,6 +28,7 @@ export class DashComponent implements OnInit {
 
 	public transactionFeed:Array<Object> = [];
 	public transactions:Array<Object> = [];
+	public pharmacyProvinceCount:any;
 	public transactionTrend:any = {
 		current : [],
 		previous : []
@@ -395,6 +396,7 @@ export class DashComponent implements OnInit {
 
 		this._helperService.getPharmacyCountPerProvince()
 		.subscribe(data => {
+			this.pharmacyProvinceCount = data.result;
 			this.setPharmacyGraph(data);
 		});
 

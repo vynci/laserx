@@ -74,8 +74,8 @@
               </div>
             </div>
 
-            <div class="row">
-              <div class="col-lg-6" *ngIf="transactions.length != 0">
+            <div class="row" *ngIf="transactions.length != 0">
+              <div class="col-lg-6">
                 <p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{(bigCurrentPage * 10) - (10-transactions.length)}} of {{bigTotalItems}} entries</p>
               </div>
               <div class="col-lg-6" style="text-align: right;">

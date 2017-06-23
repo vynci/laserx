@@ -124,6 +124,7 @@
             <h5>Pharmacies</h5>
           </div>
           <div class="card-block graphs-mobile graphs-mobile">
+            <p *ngIf="pharmacyProvinceCount?.length == 0" style="text-align: center;">No Data.</p>
             <div class="card card-block graphs-mobile" style="box-shadow: none;">
               <div id="total-fruit" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
             </div>
