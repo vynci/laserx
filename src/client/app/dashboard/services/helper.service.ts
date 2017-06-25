@@ -110,7 +110,7 @@ export class HelperService {
 	}
 
 	getAllPrescription(limit:number, from:string, to: string){
-		let url = this.endpoint + 'functions/get-all-prescription';
+		let url = 'http://localhost:3000/api/2/' + 'functions/get-all-prescription';
 
 		return this.http.post(url, JSON.stringify({limit: limit, date_from: from, date_to: to}), {headers: this.headers})
 		.map((response: Response) => response.json());

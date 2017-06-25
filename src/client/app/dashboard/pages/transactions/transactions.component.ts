@@ -170,6 +170,37 @@ export class TransactionsComponent {
 		return result;
 	}
 
+	public getTransactionInfoObject(data:string, type:string):any {
+		var result = {
+			physician_firstname : '',
+			physician_middlename : '',
+			physician_lastname : '',
+			pharmacist_firstname : '',
+			pharmacist_lastname : '',
+			pharmacist_middlename : '',
+			pharmacist_license_number : '',
+			physician_license_number : ''
+		};
+
+		if(data){
+			var infoObject = JSON.parse(data);
+			console.log(infoObject);
+			if(type === 'physician'){
+				result.physician_firstname = infoObject.physician_firstname;
+				result.physician_middlename = infoObject.physician_middlename;
+				result.physician_lastname = infoObject.physician_lastname;
+				result.physician_license_number = infoObject.physician_license_number;
+			}else if(type === 'pharmacist'){
+				result.pharmacist_firstname = infoObject.pharmacist_firstname;
+				result.pharmacist_middlename = infoObject.pharmacist_middlename;
+				result.pharmacist_lastname = infoObject.pharmacist_lastname;	
+				result.pharmacist_license_number = infoObject.pharmacist_license_number;		
+			}
+		}
+
+		return result;
+	}
+
 	public getPharmacyName(id:number):string {
 		var pharmacyName = 'Loading...';
 
@@ -307,6 +338,30 @@ export class TransactionsComponent {
 		return result;
 	}
 
+	private cleanCSVData(data:any):any{
+		var result = [];		
+
+		data.forEach(transaction => {
+			var physicianObj = this.getTransactionInfoObject(transaction.info, 'physician');
+			var pharmacistObj = this.getTransactionInfoObject(transaction.info, 'pharmacist');
+
+			transaction.physician_firstname = physicianObj.physician_firstname;
+			transaction.physician_middlename = physicianObj.physician_middlename;
+			transaction.physician_lastname = physicianObj.physician_lastname;
+			transaction.physician_license = physicianObj.physician_license_number;
+
+			transaction.pharmacist_firstname = pharmacistObj.pharmacist_firstname;
+			transaction.pharmacist_middlename = pharmacistObj.pharmacist_middlename;
+			transaction.pharmacist_lastname = pharmacistObj.pharmacist_lastname;
+			transaction.pharmacist_license = pharmacistObj.pharmacist_license_number;
+
+			delete transaction.info;
+			result.push(transaction);
+		});
+
+		return result;
+	}
+
 	public downloadCSV():void{
 		var fromDate = this.dateConvert('Jan 2 2000', false);
 		var toDate = this.dateConvert(null, true);
@@ -323,8 +378,8 @@ export class TransactionsComponent {
 		}
 
 		this._helperService.getAllPrescription(1000000, fromDate, toDate)
-		.subscribe(data => {
-			this._jsonToCSVService.Convert(data.result, 'fda_elogbook_' + now.getFullYear() + month + day + hrs + mins + secs +'.csv');
+		.subscribe(data => {						
+			this._jsonToCSVService.Convert(this.cleanCSVData(data.result), 'fda_elogbook_' + now.getFullYear() + month + day + hrs + mins + secs +'.csv');
 		});
 	}
 
