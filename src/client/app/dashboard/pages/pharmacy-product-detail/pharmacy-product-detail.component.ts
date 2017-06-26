@@ -299,7 +299,10 @@ export class PharmacyProductDetailComponent implements OnInit{
 
 											this.isLoading = false;
 											this.transactions.push(tranObject);
-											this.pharmacyTransactions.push(tranObject);
+
+											if(tranObject.packaging.id === parseInt(this.route.snapshot.params['packagingId'])){
+												this.pharmacyTransactions.push(tranObject);
+											}											
 
 											if(item.expiry_date){
 												var now = new Date();
@@ -347,6 +350,7 @@ export class PharmacyProductDetailComponent implements OnInit{
 
 	public getPharmacyName(id:any):string {
 		var pharmacyName = 'Loading...';
+
 		this.pharmacyNameList.forEach(pharmacy => {
 			if(pharmacy){
 				if(id === pharmacy.id){

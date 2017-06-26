@@ -44,6 +44,7 @@
 							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{formatDate(product.expiry_date, false)}}</span>
 							<!--<span *ngIf="actionType === 'disaster-recovery'">{{product.organization_branch}}<br></span>-->
 							<span *ngIf="actionType === 'disaster-recovery'">Transaction Date: {{formatDate(product.expiry_date, false)}}</span>
+							<span *ngIf="actionType === 'counterfeit'">Transaction Date: {{formatDate(product.expiry_date, false)}}</span>
 							<span *ngIf="actionType === 'counterfeit'">BATCH LOT NO: {{product.batch_lot_number}}</span>
 						</div>
 					</div>

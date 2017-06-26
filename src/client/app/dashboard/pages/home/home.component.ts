@@ -530,6 +530,11 @@ export class HomeComponent implements OnInit {
 	private parseData(data:any):void{
 		this.productNameList = [];
 		this.isLoading = true;
+
+		if(data.length === 0){
+			this.isLoading = false;
+		}
+
 		data.forEach((transactionProduct, idx, array) => {
 			if(transactionProduct.packaging){
 				this._productService.getById(transactionProduct.packaging.id)
@@ -538,10 +543,17 @@ export class HomeComponent implements OnInit {
 					.subscribe(drug => {
 						this._productService.getGenericById(packaging.result[0].drug_id)
 						.subscribe(generic => {
-							var divider = ' '
+							var divider = ' ';
+							var date = transactionProduct.expiry_date;
+
+							if(this.actionType === 'counterfeit'){
+								date = transactionProduct.created_at;
+							}
+
 							if(drug.result[0].brand_name){
 								divider = ' - '
 							}
+
 							this.productNameList.push(
 								{
 									id: packaging.result[0].id,
@@ -550,7 +562,7 @@ export class HomeComponent implements OnInit {
 										id : transactionProduct.prescription.id
 									},
 									transactionProductId: transactionProduct.id,
-									expiry_date: transactionProduct.expiry_date,
+									expiry_date: date,
 									fda_packaging: packaging.result[0].fda_packaging,
 									package_form: packaging.result[0].package_form,
 									batch_lot_number : transactionProduct.batch_lot_number,
