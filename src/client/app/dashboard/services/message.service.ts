@@ -9,7 +9,7 @@ export class MessageService {
 
 	private headers = new Headers({'Content-Type': 'application/json', 'X-Warp-API-Key': '1x0jpzj3kp0go08sow0s4395z1tgzinc48c8s0ccss'});
 	private endpoint = Config.API;
-	private url = this.endpoint + 'classes/notification_message';
+	private url = this.endpoint + 'classes/message_batch';
 	private search = new URLSearchParams('limit=10');
 	private options = new RequestOptions({ headers: this.headers, search: this.search});
 
@@ -59,6 +59,32 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
+	getNotificationMessageByPage(limit: number, page: number, searchString: string, keySearch: string){
+		let skip = (page - 1) * limit;
+		let url = this.endpoint + 'classes/notification_message';
+
+		if(!keySearch){
+			keySearch = 'id';
+		}
+
+		let searchParams = {};
+
+		searchParams[keySearch] = {
+			has : searchString
+		};
+
+		let search = new URLSearchParams('skip=' + skip);
+
+		search.append('where', JSON.stringify(searchParams));		
+		search.append('limit', limit.toString());
+		search.append('sort', '[{"created_at":-1}]');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
 	sendMessage(messageTo:string, messageTitle:string, messageContent:string){
 		let body = {'type' : messageTo, 'title': messageTitle, 'message': messageContent, 'user_id': parseInt(localStorage.getItem('currentUser'))};
 
@@ -66,17 +92,17 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
-	sendNotificationMessage(id:any){
+	sendNotificationMessage(messageBatchId:any, notification_message_id:any){
 		let url = this.endpoint + 'functions/send-notification-message';
 
-		return this.http.post(url, JSON.stringify({id:id}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({message_batch_id: messageBatchId, notification_message_id : notification_message_id, user_id : parseInt(localStorage.getItem('currentUser'))}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 
 	generateNotificationMessage(message: string, title: string, type: string){
-		let url = this.endpoint + 'functions/generate-notification-message';
+		let url = this.endpoint + 'functions/create-notification-message';
 
-		return this.http.post(url, JSON.stringify({message: message, title: title, type: type}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({message: message, title: title, type: type, user_id: localStorage.getItem('currentUser')}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}	
 

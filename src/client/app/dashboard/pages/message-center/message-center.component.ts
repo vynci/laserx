@@ -95,14 +95,14 @@ export class MessageCenterComponent {
 		this._messageService.generateNotificationMessage(this.messageContent, this.messageTitle, this.messageTo)
 		.subscribe(data => {
 			console.log(data);
-			this._messageService.getByPage(1000, 1, 'Pending', 'status')
+			this._messageService.getNotificationMessageByPage(1000, 1, 'Pending', 'status')
 			.subscribe(data => {
 				var result = data.result;
 				var idList = [];
 				result.forEach((message, idx) =>{
 					idList.push(message.id);
 					if(idx === (result.length - 1)){
-						this._messageService.sendNotificationMessage(idList)
+						this._messageService.sendNotificationMessage(message.message_batch_id, idList)
 						.subscribe(data => {
 							console.log(data);
 							this.fetchMessages();
