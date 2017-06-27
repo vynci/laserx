@@ -141,16 +141,39 @@ export class TransactionViewComponent {
 					if(packaging.result[0].drug_id){
 						this._productService.getDrugById(packaging.result[0].drug_id)
 						.subscribe(drug => {
-							this._productService.getGenericById(packaging.result[0].drug_id)
-							.subscribe(generic => {
-								var divider = ' '
-								if(drug.result[0].brand_name){
-									divider = ' - '
-								}
-								this.productNameList.push(
-									{id: drug.result[0].id, name: drug.result[0].brand_name + divider + generic.result[0].generic_name, transactionProductId: transactionProduct.id}
-								);
-							});
+							var genericName = '';
+							packaging.result.forEach((item, idx) => {
+								this._productService.getDrugCompositionByPackagingId(transactionProduct.packaging.id)
+								.subscribe(drugComposition => {
+									this._productService.getGenericById(item.generic.id)
+									.subscribe(generic => {
+										var brandDivider = ' ';
+										var genericDivider = '';
+										var composition = '';
+										if(drug.result[0].brand_name){
+											brandDivider = ' - '
+										}
+
+										if(genericName){
+											genericDivider = ' + ';
+										}
+
+										if(packaging.result.length >= 2){
+											composition = drugComposition.result[0].composition_quantity + drugComposition.result[0].composition_unit;
+										}else{
+											composition = drugComposition.result[0].quantity + drugComposition.result[0].quantity_unit;
+										}										
+
+										genericName = generic.result[0].generic_name + genericDivider + genericName;
+
+										if(idx === (packaging.result.length - 1)){
+											this.productNameList.push(
+												{id: drug.result[0].id, name: genericName + brandDivider + drug.result[0].brand_name  + '; ' + composition + '; ' + packaging.result[0].fda_packaging, transactionProductId: transactionProduct.id}
+											);										
+										}
+									});
+								});									
+							});	
 						});
 					}else{
 						this.productNameList.push(

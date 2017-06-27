@@ -38,6 +38,15 @@ export class ProductService {
 		.map((response: Response) => response.json());
 	}
 
+	getDrugCompositionByPackagingId(id: number){
+		let search = new URLSearchParams('where={"packaging.id":{"eq":' + id + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+		let url = this.endpoint + 'classes/drug_composition';
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}	
+
 	findByDrugName(filter:string){
 		let search = new URLSearchParams();
 		let searchParams = {};
