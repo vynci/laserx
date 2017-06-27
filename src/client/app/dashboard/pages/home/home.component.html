@@ -38,13 +38,13 @@
 			<div *ngIf="productNameList == 0 && actionType === 'expired-meds' && !isLoading" style="padding: 10px 10px; cursor: pointer; text-align: center;">No Records Found.</div>
 			<div *ngFor="let product of productNameList | slice:0:5; let i=index" (click)="viewProduct(product)" style="padding: 10px 10px; border-bottom: 1px solid lightgray; cursor: pointer;">
 				<div class="row">
-					<div class="col-lg-8">
+					<div class="col-lg-12">
 						<div>
 							<span><b><a>{{product.name}}; {{product.package_form}}; {{product.fda_packaging}}</a></b></span><br>
-							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{formatDate(product.expiry_date, false)}}</span>
+							<span *ngIf="actionType === 'expired-meds'">EXPIRY DATE: {{formatDate(product.expiry_date, true)}}</span>
 							<!--<span *ngIf="actionType === 'disaster-recovery'">{{product.organization_branch}}<br></span>-->
-							<span *ngIf="actionType === 'disaster-recovery'">Transaction Date: {{formatDate(product.expiry_date, false)}}</span>
-							<span *ngIf="actionType === 'counterfeit'">Transaction Date: {{formatDate(product.expiry_date, false)}}</span>
+							<span *ngIf="actionType === 'disaster-recovery'">Transaction Date: {{formatDate(product.expiry_date, true)}}</span>
+							<span *ngIf="actionType === 'counterfeit'">Transaction Date: {{formatDate(product.expiry_date, true)}}</span><br>
 							<span *ngIf="actionType === 'counterfeit'">BATCH LOT NO: {{product.batch_lot_number}}</span>
 						</div>
 					</div>

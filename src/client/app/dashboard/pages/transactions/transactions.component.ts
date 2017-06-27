@@ -399,9 +399,9 @@ export class TransactionsComponent {
 				searchTmp = this.search.split(' ');
 
 				this._transactionService.getByPage(this.pageLimit, this.currentPage, this.sortType, this.filterDate, searchTmp[0], 'info')
-				.subscribe(data => {						
-					if(data.result > 0){
-						this.transactions = data.result;
+				.subscribe(infoData => {						
+					if(infoData.result.length > 0){
+						this.transactions = infoData.result;
 						this.parseData(this.transactions);
 						this.getCountWithFilters(this.filterDate, searchTmp[0], 'info');
 					} else {

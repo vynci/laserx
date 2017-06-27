@@ -43,6 +43,9 @@ export class MessageCenterComponent {
 	public messageTitle:string = '';
 	public messageContent:string = '';
 	public messageTo:string = 'Regular Message';
+	public isSending:boolean = false;
+	public isSent:boolean = false;		
+	private messageStatusList:any = [];
 
 	public setPage(pageNo:number):void {
 		this.currentPage = pageNo;
@@ -55,12 +58,14 @@ export class MessageCenterComponent {
 			this.searchMessage(this.search);
 		}else{
 			this._messageService.getByPage(event.itemsPerPage, event.page, this.search, null)
-			.subscribe(data => this.messages = data.result);			
+			.subscribe(data => {
+				this.messages = data.result
+				this.parseMessageData(data.result);
+			});			
 		}
 	};
 
 	public viewPharmacy(pharmacyId:any):void{
-		console.log(pharmacyId);
 		this.router.navigate(['/dashboard/pharmacy-view', pharmacyId]);
 	}
 
@@ -83,6 +88,7 @@ export class MessageCenterComponent {
 		.subscribe(data => {
 			this.isLoading = false;
 			this.messages = data.result
+			this.parseMessageData(data.result);
 		});
 	}
 
@@ -91,20 +97,58 @@ export class MessageCenterComponent {
 		this.messageTitle = '';
 	}
 
+	public getMessageStatus(id:number):string{
+		var result = 'Loading';
+
+		this.messageStatusList.forEach(status => {
+			if(id === status.messageId){
+				result = status.transmittedCount + ' of ' + (status.transmittedCount + status.pendingCount);
+			}
+		});
+
+		return result;
+	}
+
+	private parseMessageData(data:any):void{
+		data.forEach(message => {
+			this._messageService.getNotificationMessageByMessageId(message.id)
+			.subscribe(notificationMessages => {
+				var transmittedCount = 0;
+				var pendingCount = 0;
+
+				notificationMessages.result.forEach(obj => {
+					if(obj){
+						// var infoObject = JSON.parse(obj.response);
+						if(obj.status === 'Transmitted'){
+							transmittedCount = transmittedCount + 1;
+						}else{
+							pendingCount = pendingCount + 1;
+						}						
+					}
+				});
+				this.messageStatusList.push({messageId : message.id, transmittedCount: transmittedCount, pendingCount: pendingCount});
+			});			
+		});		
+	}
+
 	public sendMessage():void{
+		this.isSending = true;
 		this._messageService.generateNotificationMessage(this.messageContent, this.messageTitle, this.messageTo)
 		.subscribe(data => {
-			console.log(data);
-			this._messageService.getNotificationMessageByPage(1000, 1, 'Pending', 'status')
+			this._messageService.getNotificationMessageByPage(100000, 1, 'Pending', 'status')
 			.subscribe(data => {
 				var result = data.result;
 				var idList = [];
 				result.forEach((message, idx) =>{
 					idList.push(message.id);
 					if(idx === (result.length - 1)){
-						this._messageService.sendNotificationMessage(message.message_batch_id, idList)
+						this._messageService.sendNotificationMessage(result[0].message_batch_id, idList)
 						.subscribe(data => {
-							console.log(data);
+							this.isSending = false;
+							this.isSent = true;
+							setTimeout(() => {
+								this.isSent = false;
+							}, 3000);
 							this.fetchMessages();
 						});							
 					}					

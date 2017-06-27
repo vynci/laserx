@@ -61,6 +61,7 @@
 						</tbody>
 					</table>
 				</div>
+				<p *ngIf="pharmacies.length == 0 && !isLoading" style="text-align: center;">No Records Found.</p>
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="loader" *ngIf="isLoading">

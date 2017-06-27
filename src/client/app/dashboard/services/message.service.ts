@@ -59,6 +59,20 @@ export class MessageService {
 		.map((response: Response) => response.json());
 	}
 
+	getNotificationMessageByMessageId(id: number){
+		let url = this.endpoint + 'classes/notification_message';
+
+		let search = new URLSearchParams('where={"message_batch_id":{"eq":' + id + '}}');
+
+		search.append('limit', '10000');
+		search.append('sort', '[{"created_at":-1}]');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}	
+
 	getNotificationMessageByPage(limit: number, page: number, searchString: string, keySearch: string){
 		let skip = (page - 1) * limit;
 		let url = this.endpoint + 'classes/notification_message';
@@ -109,7 +123,7 @@ export class MessageService {
 	getCount(){
 		let url = this.endpoint + 'functions/count-table-rows';
 
-		return this.http.post(url, JSON.stringify({table_name: 'notification_message'}), {headers: this.headers})
+		return this.http.post(url, JSON.stringify({table_name: 'message_batch'}), {headers: this.headers})
 		.map((response: Response) => response.json());
 	}
 

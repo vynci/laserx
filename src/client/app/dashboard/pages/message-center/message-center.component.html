@@ -25,9 +25,12 @@
 		<div class="col-lg-12">
 			<div class="card card-block">
 				<div class="row">
-					<div class="col-lg-3"></div>
-					<div class="col-lg-3"></div>
-					<div class="col-lg-3"></div>
+					<div class="col-lg-4">
+						<div *ngIf="isSent" style="padding: 10px 10px; background: #007402; color: white; border-radius: 3px;">Message Sent!</div>
+						<div *ngIf="isSending" style="padding: 10px 10px; background: rgb(235, 147, 22); color: white; border-radius: 3px;">Sending Messages...</div>
+					</div>
+					<div class="col-lg-2"></div>
+					<div class="col-lg-3"></div>					
 					<div class="col-lg-3">
 						<div class="form-group input-group">
 							<input type="text" class="form-control" type=text [value]="search" [formControl]="searchControl" placeholder="Search...">
@@ -44,7 +47,6 @@
 								<th>Title</th>
 								<th>Message</th>
 								<th>Sender</th>
-								<th>Receiver ID</th>
 								<th>Status</th>
 							</tr>
 						</thead>
@@ -55,8 +57,7 @@
 								<td>{{message.title}}</td>
 								<td>{{message.message}}</td>
 								<td>{{message.transmitted_by || 'FDA Account'}}</td>
-								<td>{{message.receiver_id}}</td>
-								<td>{{message.status}}</td>
+								<td>{{getMessageStatus(message.id)}}</td>
 							</tr>
 						</tbody>
 					</table>
