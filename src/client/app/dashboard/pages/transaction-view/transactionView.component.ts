@@ -145,13 +145,18 @@ export class TransactionViewComponent {
 							packaging.result.forEach((item, idx) => {
 								this._productService.getDrugCompositionByPackagingId(transactionProduct.packaging.id)
 								.subscribe(drugComposition => {
-									this._productService.getGenericById(item.generic.id)
+									var genericId = 0;
+
+									if(item.generic){
+										genericId = item.generic.id;
+									}
+									this._productService.getGenericById(genericId)
 									.subscribe(generic => {
 										var brandDivider = ' ';
 										var genericDivider = '';
 										var composition = '';
-										if(drug.result[0].brand_name){
-											brandDivider = ' - '
+										if(drug.result[0].brand_name && generic.result.length > 0){
+											brandDivider = ' - ';
 										}
 
 										if(genericName){
@@ -159,12 +164,18 @@ export class TransactionViewComponent {
 										}
 
 										if(packaging.result.length >= 2){
-											composition = drugComposition.result[0].composition_quantity + drugComposition.result[0].composition_unit;
+											if(drugComposition.result.length > 0){
+												composition = drugComposition.result[0].composition_quantity + drugComposition.result[0].composition_unit;
+											}
 										}else{
-											composition = drugComposition.result[0].quantity + drugComposition.result[0].quantity_unit;
+											if(drugComposition.result.length > 0){
+												composition = drugComposition.result[0].quantity + drugComposition.result[0].quantity_unit;
+											}											
 										}										
 
-										genericName = generic.result[0].generic_name + genericDivider + genericName;
+										if(generic.result.length > 0){
+											genericName = generic.result[0].generic_name + genericDivider + genericName;
+										}										
 
 										if(idx === (packaging.result.length - 1)){
 											this.productNameList.push(
