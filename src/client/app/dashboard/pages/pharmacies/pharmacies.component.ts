@@ -179,12 +179,50 @@ export class PharmaciesComponent {
 				this.parseData(this.pharmacies);
 				this.getCountWithFilters(this.isLicenseExpired, newValue, 'organization_branch');
 			}else{
-				this._pharmacyService.find(this.pageLimit, this.search, this.currentPage, this.isLicenseExpired, 'organization_owner')
+				this._pharmacyService.find(this.pageLimit, newValue, this.currentPage, this.isLicenseExpired, 'organization_owner')
 				.subscribe(resPharmacyData => {
 					if(resPharmacyData.result.length > 0){
 						this.pharmacies = resPharmacyData.result
 						this.parseData(this.pharmacies);
 						this.getCountWithFilters(this.isLicenseExpired, newValue, 'organization_owner');
+					}else{
+						this._helperService.getUserByMobile(newValue)
+						.subscribe(user => {
+							if(user.result.length > 0){
+								this._pharmacyService.getById(user.result[0].organization.id)
+								.subscribe(resPharmacyData => {
+									if(resPharmacyData.result.length > 0){
+										this.pharmacies = resPharmacyData.result
+										this.parseData(this.pharmacies);
+										this.getCountWithFilters(this.isLicenseExpired, user.result[0].organization.id, 'id');
+									}else{
+										this.pharmacies = [];
+										this.bigTotalItems = 0;
+									}
+								});
+							}else{
+								this._helperService.getUserByEmail(newValue)
+								.subscribe(user => {
+									if(user.result.length > 0){
+										this._pharmacyService.getById(user.result[0].organization.id)
+										.subscribe(resPharmacyData => {
+											if(resPharmacyData.result.length > 0){
+												this.pharmacies = resPharmacyData.result
+												this.parseData(this.pharmacies);
+												this.getCountWithFilters(this.isLicenseExpired, user.result[0].organization.id, 'id');
+											}else{
+												this.pharmacies = [];
+												this.bigTotalItems = 0;
+											}
+										});										
+									}else{
+										this.pharmacies = [];
+										this.bigTotalItems = 0;										
+									}
+								});								
+							}							
+
+						});
 					}
 				});
 			}

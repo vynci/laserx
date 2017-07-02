@@ -72,7 +72,7 @@
 					</div>
 				</div>
 
-				<div class="row">
+				<div *ngIf="pharmacies.length > 0 && !isLoading" class="row">
 					<div class="col-lg-6">
 						<p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{(bigCurrentPage * 10) - (10-pharmacies.length)}} of {{bigTotalItems}} entries</p>
 					</div>

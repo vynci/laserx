@@ -55,6 +55,24 @@ export class HelperService {
 		.map((response: Response) => response.json());
 	}
 
+	getUserByMobile(mobile: string){
+		let url = this.endpoint + 'users/'
+		let search = new URLSearchParams('where={"mobile":{"has":' + '"' + mobile + '"' + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}
+
+	getUserByEmail(email: string){
+		let url = this.endpoint + 'users/'
+		let search = new URLSearchParams('where={"email":{"has":' + '"' + email + '"' + '}}');
+		let options = new RequestOptions({ headers: this.headers, search: search});
+
+		return this.http.get(url, options)
+		.map((response: Response) => response.json());
+	}	
+
 	updateUser(id: number, data: any){
 		let url = this.endpoint + 'users/' + id;
 		let headers = new Headers({

@@ -264,9 +264,11 @@ export class PharmacyProductDetailComponent implements OnInit{
 									var productName;
 									var isUnverified = false;
 									var drugId = packagingItem.result[0].drug_id || 0;
+									var genericId = packagingItem.result[0].generic.id || 0;
+									
 									this._productService.getDrugById(drugId)
 									.subscribe(drug => {
-										this._productService.getGenericById(drugId)
+										this._productService.getGenericById(genericId)
 										.subscribe(generic => {
 											var divider = ' '
 
@@ -274,7 +276,7 @@ export class PharmacyProductDetailComponent implements OnInit{
 												if(drug.result[0].brand_name){
 													divider = ' - '
 												}													
-												productName = drug.result[0].brand_name + divider + generic.result[0].generic_name; 
+												productName = generic.result[0].generic_name + ' (' + (drug.result[0].brand_name || 'No Brand Name') + ')'; 
 											}else{
 												productName = packagingItem.result[0].unverified_product || 'n/a';
 												isUnverified = true;
@@ -454,14 +456,14 @@ export class PharmacyProductDetailComponent implements OnInit{
 			if(packaging.result[0].drug_id){
 				this._productService.getDrugById(packaging.result[0].drug_id)
 				.subscribe(drug => {
-					this._productService.getGenericById(packaging.result[0].drug_id)
+					this._productService.getGenericById(packaging.result[0].generic.id)
 					.subscribe(generic => {
 						var divider = ' '
 						if(drug.result[0].brand_name){
 							divider = ' - '
 						}
 						this.fdaPackaging = packaging.result[0].fda_packaging;
-						this.productName = drug.result[0].brand_name + divider + generic.result[0].generic_name;
+						this.productName = generic.result[0].generic_name + ' (' + (drug.result[0].brand_name || 'No Brand Name') + ')'; 
 					});
 				});
 			}else{

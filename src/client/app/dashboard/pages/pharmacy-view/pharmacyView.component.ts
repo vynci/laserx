@@ -275,23 +275,25 @@ export class PharmacyViewComponent implements OnInit{
 				.subscribe(packaging => {
 					if(packaging.result.length > 0){
 						packaging.result.forEach(item => {
+							console.log(packaging);							
 							if(item.packaging){
 								this._productService.getById(item.packaging.id)
 								.subscribe(packagingItem => {
 									var productName;
 									var isUnverified = false;
 									var drugId = packagingItem.result[0].drug_id || 0;
+									var genericId = 0;
+
+									if(packagingItem.result[0].generic){
+										genericId = packagingItem.result[0].generic.id;	
+									}									
+
 									this._productService.getDrugById(drugId)
 									.subscribe(drug => {
-										this._productService.getGenericById(drugId)
+										this._productService.getGenericById(genericId)
 										.subscribe(generic => {
-											var divider = ' '
-
 											if(packagingItem.result[0].drug_id && drug.result[0] && generic.result[0]){
-												if(drug.result[0].brand_name){
-													divider = ' - '
-												}													
-												productName = drug.result[0].brand_name + divider + generic.result[0].generic_name; 
+												productName = generic.result[0].generic_name + ' (' + (drug.result[0].brand_name || 'No Brand Name') + ')'; 
 											}else{
 												productName = packagingItem.result[0].unverified_product || 'n/a';
 												isUnverified = true;

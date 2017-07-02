@@ -184,7 +184,6 @@ export class TransactionsComponent {
 
 		if(data){
 			var infoObject = JSON.parse(data);
-			console.log(infoObject);
 			if(type === 'physician'){
 				result.physician_firstname = infoObject.physician_firstname;
 				result.physician_middlename = infoObject.physician_middlename;
@@ -367,10 +366,11 @@ export class TransactionsComponent {
 		var toDate = this.dateConvert(null, true);
 		var now = new Date();
 		var month = this.parseDigitNumber(now.getMonth() + 1);
-		var day = this.parseDigitNumber(now.getDate() + 1);
+		var day = this.parseDigitNumber(now.getDate());
 		var hrs = this.parseDigitNumber(now.getHours());
 		var mins = this.parseDigitNumber(now.getMinutes());
 		var secs = this.parseDigitNumber(now.getSeconds());
+		var filename = 'fda_elogbook_' + now.getFullYear() + month + day + hrs + mins + secs +'.csv';
 
 		if(this.filterDateString){
 			fromDate = this.dateConvert((this.filterDate.from.month + 1) + '/' + this.filterDate.from.day + '/' + this.filterDate.from.year, false);
@@ -379,7 +379,7 @@ export class TransactionsComponent {
 
 		this._helperService.getAllPrescription(1000000, fromDate, toDate)
 		.subscribe(data => {						
-			this._jsonToCSVService.Convert(this.cleanCSVData(data.result), 'fda_elogbook_' + now.getFullYear() + month + day + hrs + mins + secs +'.csv');
+			this._jsonToCSVService.Convert(this.cleanCSVData(data.result), filename);
 		});
 	}
 
@@ -414,6 +414,9 @@ export class TransactionsComponent {
 										this.parseData(this.transactions);
 										this.getCountWithFilters(this.filterDate, pharmacy.pharmacy_id.toString(), 'pharmacy.id');
 									});
+								}else{
+									this.transactions = [];
+									this.bigTotalItems = 0;
 								}
 							}
 						});

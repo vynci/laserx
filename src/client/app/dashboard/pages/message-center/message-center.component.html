@@ -47,7 +47,7 @@
 								<th>Title</th>
 								<th>Message</th>
 								<th>Sender</th>
-								<th>Status</th>
+								<!--<th>Status</th>-->
 							</tr>
 						</thead>
 						<tbody>
@@ -57,12 +57,12 @@
 								<td>{{message.title}}</td>
 								<td>{{message.message}}</td>
 								<td>{{message.transmitted_by || 'FDA Account'}}</td>
-								<td>{{getMessageStatus(message.id)}}</td>
+								<!--<td>{{getMessageStatus(message.id)}}</td>-->
 							</tr>
 						</tbody>
 					</table>
 				</div>
-
+				<p *ngIf="messages.length == 0 && !isLoading" style="text-align: center;">No Records Found.</p>
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="loader" *ngIf="isLoading">
@@ -73,7 +73,7 @@
 					</div>
 				</div>
 
-				<div class="row">
+				<div *ngIf="messages.length > 0 && !isLoading" class="row">
 					<div class="col-lg-6">
 						<p style="margin-top: 1rem; margin-bottom: 1rem;">Showing {{bigCurrentPage * 10 - 9}} to {{(bigCurrentPage * 10) - (10-messages.length)}} of {{bigTotalItems}} entries</p>						
 					</div>

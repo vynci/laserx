@@ -510,15 +510,19 @@ export class HomeComponent implements OnInit {
 		this.productNameList = [];
 		data.forEach(transactionProduct => {
 			if(transactionProduct.generic_name){
-				this.productNameList.push(
+				var generic = transactionProduct.generic_name;
+				generic = generic.split('+');
+				generic = generic[0];
+
+				this.productNameList.push(			
 					{
 						id: transactionProduct.packaging_id,
-						name: transactionProduct.generic_name + ' ' + transactionProduct.brand_name,
+						name: generic + ' ' + transactionProduct.brand_name,
 						organization_branch : transactionProduct.organization_branch,
 						expiry_date : transactionProduct.dispense_date,
 						transactionProductId : transactionProduct.id,
-						fda_packaging : null,
-						package_form : null,
+						fda_packaging : (transactionProduct.composition_quantity || transactionProduct.quantity) + (transactionProduct.composition_unit || transactionProduct.quantity_unit),
+						package_form : transactionProduct.package_form,
 						batch_lot_number : null,
 						prescription: {}
 					}
